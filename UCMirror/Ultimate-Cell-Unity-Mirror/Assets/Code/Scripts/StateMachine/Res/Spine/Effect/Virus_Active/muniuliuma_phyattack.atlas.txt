@@ -1,0 +1,7 @@
+muniuliuma_phyattack.png
+size:184,55
+filter:Linear,Linear
+pma:true
+phy_diquan
+bounds:2,2,180,51
+offsets:0,3,180,55

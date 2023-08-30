@@ -1,0 +1,39 @@
+ManifestFileVersion: 0
+CRC: 519083555
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 6ea8021bbefba6adbb70aa346e02fb13
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: db6f8f673283412758cb50352cd86f53
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: dfec664571c86f1499dbadb997ec93c8, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: ReferenceCollectorData
+Assets:
+- Assets/Art/Audio/Music/Fear.wav
+- Assets/Level/Preferbs/Audio.prefab
+- Assets/Art/Audio/Sound/Start_Game_Button.wav
+- Assets/Art/Audio/Sound/Click_Twice.wav
+- Assets/Art/Audio/Music/FearsRightHandMan.wav
+- Assets/Art/Audio/Sound/UI_Page_Change_Left.wav
+- Assets/Art/Audio/Sound/UI_Page_Change_Right.wav
+- Assets/Art/Audio/Sound/Cell_Update1.wav
+- Assets/Art/Audio/Sound/Cell_Update2.wav
+- Assets/Art/Audio/Sound/Click_Once.wav
+- Assets/Art/Audio/Music/FearsLeftHandMan.wav
+- Assets/Art/Audio/Sound/Button_Click.wav
+- Assets/Art/Audio/Sound/Virus_Cteate.wav
+Dependencies: []

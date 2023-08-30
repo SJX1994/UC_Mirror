@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db6435ab980b1e44c8f445af90353abd, type: 3}
+  m_Name: Weapon_Virus_Spear
+  m_EditorClassIdentifier: 
+  weaponSprite: {fileID: 21300000, guid: 412e7ef1274caf34abf5a60377e653c8, type: 3}
+  attackPowerBonus: 0
+  rangeBonus: 0
+  attackSpeedBonus: 0
+  healthBonus: 0
+  weaponType: 2
+  pos_weaponX: 0.8
+  pos_weaponY: -0.8
+  rot_weapon: -215
+  scale_weapon: 0.5

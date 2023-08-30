@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e352efe9b3ff6b4cb022b15f2fc8b72, type: 3}
+  m_Name: Effect_Zhao
+  m_EditorClassIdentifier: 
+  collectEffect: {fileID: 0}
+  startEffect: {fileID: 43356885340863420, guid: 8d4986ae1b27dfd45841d0bd840be117,
+    type: 3}
+  endEffect: {fileID: 464556474004138435, guid: 4ac8a2b2fe0e9a6499f1f9d593c505bd,
+    type: 3}
+  activeEffect: {fileID: 0}
+  attackEffect: {fileID: 0}
+  effectType: 1

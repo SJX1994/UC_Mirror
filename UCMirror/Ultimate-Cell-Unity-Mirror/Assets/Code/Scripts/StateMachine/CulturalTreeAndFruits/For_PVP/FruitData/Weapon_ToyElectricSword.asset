@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db6435ab980b1e44c8f445af90353abd, type: 3}
+  m_Name: Weapon_ToyElectricSword
+  m_EditorClassIdentifier: 
+  weaponSprite: {fileID: 21300000, guid: 4d6cb39112bfd8d4b81c227c7e960bda, type: 3}
+  attackPowerBonus: 30
+  rangeBonus: 0
+  attackSpeedBonus: 0
+  healthBonus: 0
+  weaponType: 1
+  pos_weaponX: -1.26
+  pos_weaponY: 1.27
+  rot_weapon: 0
+  scale_weapon: 0.25

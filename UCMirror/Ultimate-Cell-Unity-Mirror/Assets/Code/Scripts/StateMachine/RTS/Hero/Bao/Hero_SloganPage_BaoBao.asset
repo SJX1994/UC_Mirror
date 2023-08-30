@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c795de3ecc150254d9f00d01d7bf57ee, type: 3}
+  m_Name: Hero_SloganPage_BaoBao
+  m_EditorClassIdentifier: 
+  heroName: "\u7206\u7206"
+  slogan: "\u5F80\u65E5\u7684\u8363\u5149\uFF0C\u4E0D\u53EF\u5728\u6B64\u523B\u7184\u706D\uFF01"
+  frontgroundSkeletonGraphic: {fileID: 0}
+  backgroundSkeletonGraphic: {fileID: 6925971324297489380, guid: b7dbb2f215d46894884d0221e12718ab,
+    type: 3}
+  hreoSkeletonGraphic: {fileID: 6722024287721697412, guid: 5c63e8e13bcccd4449f9cc99987ba94d,
+    type: 3}
+  price: 2
+  fininsh: 0

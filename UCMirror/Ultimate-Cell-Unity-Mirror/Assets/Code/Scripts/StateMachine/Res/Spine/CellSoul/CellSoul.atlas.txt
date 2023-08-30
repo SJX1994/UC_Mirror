@@ -1,0 +1,7 @@
+CellSoul.png
+size:91,86
+filter:Linear,Linear
+pma:true
+soul
+bounds:2,2,87,82
+offsets:2,6,89,88

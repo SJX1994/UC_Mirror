@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e352efe9b3ff6b4cb022b15f2fc8b72, type: 3}
+  m_Name: Effect_Bao
+  m_EditorClassIdentifier: 
+  collectEffect: {fileID: 0}
+  startEffect: {fileID: 5423306638843946298, guid: 7120fafbcd4494a4aa5c5656ffafc4cb,
+    type: 3}
+  endEffect: {fileID: 2093395280889947906, guid: e03a556863cecdf41b22ba50abb32d3b,
+    type: 3}
+  activeEffect: {fileID: 6636973987926563228, guid: 2e1f75a62d7f3bc4c94a32055a8af723,
+    type: 3}
+  attackEffect: {fileID: 9003534174487558221, guid: a0279a78044355a4aadddad22a0a6dfa,
+    type: 3}
+  effectType: 1

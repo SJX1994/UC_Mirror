@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 013cd8442f88af84caff59512c42f8f7, type: 3}
+  m_Name: FruitData_TurnMyBody2ATree
+  m_EditorClassIdentifier: 
+  rolePuppetsOptions: 2
+  fruitName: "\u6B8B\u8EAF\u5316\u6797"
+  fruitDescription: "\u4E00\u540D\u4F1F\u5927\u6218\u58EB\u5728\u6B7B\u540E\uFF0C\u5316\u4E3A\u6811\uFF0C\u575A\u5B88\u81EA\u5DF1\u7684\u9A7B\u5730\uFF0C\uFF0C\u89E6\u53D1\u65B9\u5F0F\uFF1A\u6FD2\u6B7B\u89E6\u53D1"
+  fruitExplanation: "\u6211\u65B92\u7EA7\u7EFF\u8272\u5355\u4F4D\u6B7B\u4EA1\u540E\uFF0C\u82E5\u8BE5\u533A\u57DF\u672A\u5360\u9886\u5219\u751F\u6210\u6811\u6728\u5E76\u5360\u9886\u533A\u57DF\uFF0C\u88AB\u654C\u65B9\u653B\u51FB5\u4E0B\u6467\u6BC1\u540E\u5237\u65B0\u8BE5\u533A\u57DF\u7684\u5360\u9886\u72B6\u6001"
+  fruitIcon: {fileID: 21300000, guid: 1193d07710425f54da82a636f6f9b959, type: 3}
+  triggerMethodOptions: 16
+  specificTriggerTime: 0
+  specificTriggerBlockPos: 0
+  specificTriggerRules: 0
+  specificTriggerLevel: 0
+  specificTriggerState: 16
+  duration: 0
+  positiveEffect: 0
+  weaponTemplate: {fileID: 0}
+  SubObject:
+  - {fileID: 4859299981933158961, guid: b10e97a3eb950df489c53a6c0bf1e32f, type: 3}

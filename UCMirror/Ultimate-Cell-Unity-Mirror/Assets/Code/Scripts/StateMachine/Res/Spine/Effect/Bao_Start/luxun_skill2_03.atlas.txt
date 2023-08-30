@@ -1,0 +1,13 @@
+luxun_skill2_03.png
+size:462,204
+filter:Linear,Linear
+pma:true
+TX_dmgq_00004
+bounds:2,2,202,200
+offsets:7,7,216,214
+TX_gq_0002
+bounds:206,20,181,182
+offsets:12,6,205,197
+TX_gy_0013
+bounds:389,129,71,73
+offsets:1,1,74,76

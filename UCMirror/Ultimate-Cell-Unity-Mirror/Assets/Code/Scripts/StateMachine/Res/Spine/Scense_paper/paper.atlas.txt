@@ -1,0 +1,6 @@
+paper.png
+size:656,588
+filter:Linear,Linear
+pma:true
+paper
+bounds:2,2,652,584

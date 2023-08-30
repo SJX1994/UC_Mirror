@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5127424957931890134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3825101084096218397}
+  - component: {fileID: -3141343389906167146}
+  m_Layer: 0
+  m_Name: UIPage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3825101084096218397
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5127424957931890134}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3141343389906167146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5127424957931890134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfec664571c86f1499dbadb997ec93c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+  - key: HomePage2D
+    gameObject: {fileID: 6120864643450374417, guid: 77b4349a47424074a885f0796fa0f3dc,
+      type: 3}
+  - key: HomePage3D
+    gameObject: {fileID: 6468887368916970630, guid: ec594e4e38fe22e449d1c2fa713afc25,
+      type: 3}
+  - key: HeroDetail
+    gameObject: {fileID: 9101235422346242699, guid: 96466d664ec96d84ba07c6cc5f128d9a,
+      type: 3}
+  - key: HeroStory
+    gameObject: {fileID: 5773517488578380550, guid: 856c2526bc56a74479e7a8c491cdfa9d,
+      type: 3}
+  - key: SubHeroItem
+    gameObject: {fileID: 71841714659585516, guid: c210646f25caa6e4fb8b7c0474feaa76,
+      type: 3}
+  - key: SubConfigItem
+    gameObject: {fileID: 1944119775611904320, guid: 73a9070d44017b24c84cc976af7c8e11,
+      type: 3}
+  - key: SubHeroTag
+    gameObject: {fileID: 6784347253029544563, guid: c1608868c2454ec4e8d90249c6cc3774,
+      type: 3}
+  - key: HeroUpgradePage
+    gameObject: {fileID: 3519022009142179307, guid: cca810de2685e3642be106f6ae634e16,
+      type: 3}
+  - key: FightUi
+    gameObject: {fileID: 8765216069798313654, guid: 9256891d657126c4ead59e20a3540542,
+      type: 3}
+  - key: LegionUi
+    gameObject: {fileID: 3325956820111324322, guid: 71a3e13b35cb01a448fa4a8cd675a3ef,
+      type: 3}
+  - key: IdelUi
+    gameObject: {fileID: 658857092640496646, guid: 5651342aa18c5534385b303daa402508,
+      type: 3}
+  - key: IdelBox
+    gameObject: {fileID: 4036098102745348983, guid: 8899e77d47bd511479b32716451c0439,
+      type: 3}
+  - key: Block
+    gameObject: {fileID: 4573485911076844373, guid: 0e3fcf444cb363e48bd13dec34b42b7d,
+      type: 3}
+  - key: VictoryPage
+    gameObject: {fileID: 1280732536001919405, guid: 211950a5a9171fa40a4dd3906a135d3a,
+      type: 3}
+  - key: FailPage
+    gameObject: {fileID: 8578005899851567919, guid: 768ae1f56d93dd1448f7b6e81f81f019,
+      type: 3}
+  - key: Star
+    gameObject: {fileID: 1739934840261700205, guid: f53000469fb01b646885e5220d933146,
+      type: 3}

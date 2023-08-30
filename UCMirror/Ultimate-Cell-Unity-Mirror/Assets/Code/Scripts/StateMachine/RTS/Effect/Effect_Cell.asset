@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e352efe9b3ff6b4cb022b15f2fc8b72, type: 3}
+  m_Name: Effect_Cell
+  m_EditorClassIdentifier: 
+  collectEffect: {fileID: 2793822931380413361, guid: bb09c661cbedb054bafce6ad90f4ff01,
+    type: 3}
+  startEffect: {fileID: 6956685204476120119, guid: 1eaf519b46754fc40a66e534365263a3,
+    type: 3}
+  endEffect: {fileID: 1013307361530384437, guid: 6fb9f6f5ab84de94dad0d3c36d03d5b6,
+    type: 3}
+  activeEffect: {fileID: 0}
+  attackEffect: {fileID: 0}
+  effectType: 1

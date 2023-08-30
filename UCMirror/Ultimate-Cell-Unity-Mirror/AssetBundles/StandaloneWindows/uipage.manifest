@@ -1,0 +1,223 @@
+ManifestFileVersion: 0
+CRC: 862202047
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 5d90bc15c3da3c956e73eea28e535053
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 530f6f16ff8857e6ddc76011b6d03b5b
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 49
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 111
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: b456557926be6ca4baf84a8b2d6bac72, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: be71010f70a442f4cb3bb0cfc18d0c22, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ae0b0349f85e8c94c9a1d8c1bdd2c385, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 25604fb5c387f1945b99f3ccb1878043, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 0548eb36201f7a848b122b0514c892cb, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d85b887af7e6c3f45a2e2d2920d641bc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 876488741ec8e1241965996978d3ff7f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d86b2cde1cc55984cba61e1d13accbd5, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 6ba19b49fcf495d4a9be27bcccc158fb, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ef98fe2d1c21c7148b88cfbd319ead57, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 64af47f168c81e74f88b7fbf4bcf5778, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d45e2e62eea79ba4f8a0489c7e788323, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3deca3d3ac3856c449a231416644793d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 72c09d004f33a624b98f938fc18d4a8f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d8d3f1808347bdb418afa7883df51d43, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: dfec664571c86f1499dbadb997ec93c8, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9e901bf2a475fe5469fcb54374a1918c, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e3dec61ce01587046b3cd82feac3d6ad, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7f726fb798ad621458c431cb9966d91d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4d989f0c19023fc40b298c88f0e9e36b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e851e0d855ca4b54fa608212d8b3a5a3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2a4db7a114972834c8e4117be1d82ba3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 0a4bd3603de07d047b0d348837a399df, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7bce61aa58e89fa479c0dfc615e2a2f9, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 457ef4c7608e0a544a81d0a5b573b227, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 440f096ca2f70de4889416cb7f25451f, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 128
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 223
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+- Class: 225
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: ReferenceCollectorData
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.FaceInfo_Legacy
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.FontAssetCreationSettings
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.KerningTable
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_Character
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_FontFeatureTable
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_FontWeightPair
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_GlyphAdjustmentRecord
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_GlyphPairAdjustmentRecord
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.TMP_GlyphValueRecord
+- AssemblyName: Unity.TextMeshPro
+  ClassName: TMPro.VertexGradient
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.ArgumentCache
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.PersistentCallGroup
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.PersistentListenerMode
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.Events.UnityEvent
+- AssemblyName: UnityEngine.CoreModule
+  ClassName: UnityEngine.RectOffset
+- AssemblyName: UnityEngine.TextCoreFontEngineModule
+  ClassName: UnityEngine.TextCore.FaceInfo
+- AssemblyName: UnityEngine.TextCoreFontEngineModule
+  ClassName: UnityEngine.TextCore.Glyph
+- AssemblyName: UnityEngine.TextCoreFontEngineModule
+  ClassName: UnityEngine.TextCore.GlyphMetrics
+- AssemblyName: UnityEngine.TextCoreFontEngineModule
+  ClassName: UnityEngine.TextCore.GlyphRect
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.AnimationTriggers
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.Button/ButtonClickedEvent
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.ColorBlock
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.FontData
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.MaskableGraphic/CullStateChangedEvent
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.Navigation
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.ScrollRect/ScrollRectEvent
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.Scrollbar/ScrollEvent
+- AssemblyName: UnityEngine.UI
+  ClassName: UnityEngine.UI.SpriteState
+- AssemblyName: spine-unity
+  ClassName: Spine.Unity.BlendModeMaterials
+- AssemblyName: spine-unity
+  ClassName: Spine.Unity.MeshGenerator
+- AssemblyName: spine-unity
+  ClassName: Spine.Unity.MeshGenerator/Settings
+Assets:
+- Assets/Level/Preferbs/UIPage/HeroStory.prefab
+- Assets/Level/Preferbs/UIPage/IdelUi.prefab
+- Assets/Level/Preferbs/UIPage/HomePage3D.prefab
+- Assets/Level/Preferbs/UIPage.prefab
+- Assets/Level/Preferbs/UIPage/SubUI/SubHeroTag.prefab
+- Assets/Level/Preferbs/UIPage/HeroUpgradePage.prefab
+- Assets/Level/Preferbs/UIPage/VictoryPage.prefab
+- Assets/Level/Preferbs/UIPage/FightUi.prefab
+- Assets/Level/Preferbs/UIPage/SubUI/IdelBox.prefab
+- Assets/Level/Preferbs/UIPage/SubUI/SubHeroItem.prefab
+- Assets/Level/Preferbs/UIPage/HomePage.prefab
+- Assets/Level/Preferbs/UIPage/HeroDetail.prefab
+- Assets/Level/Preferbs/UIPage/SubUI/Star.prefab
+- Assets/Level/Preferbs/UIPage/FailPage.prefab
+- Assets/Level/Preferbs/UIPage/MapLevel.prefab
+- Assets/Level/Preferbs/UIPage/HomePage2D.prefab
+- Assets/Level/Preferbs/UIPage/SubUI/SubConfigItem.prefab
+- Assets/Level/Preferbs/UIPage/SubUI/LevelDetails.prefab
+- Assets/Level/Preferbs/UIPage/LegionUi.prefab
+- Assets/Level/Preferbs/UIPage/Item/Block.prefab
+- Assets/Level/Preferbs/UIPage/HeroConfigPage.prefab
+Dependencies:
+- D:/Projects/UC/GIT/Ultimate-Cell/Ultimate-Cell-Unity/AssetBundles/StandaloneWindows/gameobj
+- D:/Projects/UC/GIT/Ultimate-Cell/Ultimate-Cell-Unity/AssetBundles/StandaloneWindows/spritepreferb

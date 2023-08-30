@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf45a3c8cb356442af9177e14da26de, type: 3}
+  m_Name: DifferenceAttribute_Test
+  m_EditorClassIdentifier: 
+  skeletonRenderer: {fileID: 0}
+  soldierName: "\u795E\u79D8\u4E3B\u4E49_\u8FD1\u6218\u58EB\u5175"
+  skeletonDataAsset: {fileID: 11400000, guid: 8d6026b91edb29f42a743afbdfe75e69, type: 2}
+  flipSkeleton: 1
+  animatorController: {fileID: 22100000, guid: 9baf87fa4c581544683fffa1a9f42861, type: 2}
+  weaponTemplate: {fileID: 11400000, guid: 14f41011d1b04d146ad4be640b5587e4, type: 2}

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: VirusOverride
+  m_Controller: {fileID: 9100000, guid: 9e16b3329df13b8478e845b244c6045c, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 2607857481824750383, guid: 3911c133604d01a4184892ad606264bf,
+      type: 2}
+    m_OverrideClip: {fileID: -3734546615762805555, guid: d72df952d0608c94f829e500e48f3c2b,
+      type: 2}
+  - m_OriginalClip: {fileID: 2119929675639970650, guid: 3911c133604d01a4184892ad606264bf,
+      type: 2}
+    m_OverrideClip: {fileID: 4685849145347386278, guid: d72df952d0608c94f829e500e48f3c2b,
+      type: 2}
+  - m_OriginalClip: {fileID: -2432291840052484029, guid: 3911c133604d01a4184892ad606264bf,
+      type: 2}
+    m_OverrideClip: {fileID: 3047933191387868765, guid: d72df952d0608c94f829e500e48f3c2b,
+      type: 2}
+  - m_OriginalClip: {fileID: 1023586077752323381, guid: 3911c133604d01a4184892ad606264bf,
+      type: 2}
+    m_OverrideClip: {fileID: 1975619880973405126, guid: d72df952d0608c94f829e500e48f3c2b,
+      type: 2}

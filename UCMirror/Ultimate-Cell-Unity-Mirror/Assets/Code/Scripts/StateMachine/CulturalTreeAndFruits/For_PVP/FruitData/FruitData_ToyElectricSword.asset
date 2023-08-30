@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 013cd8442f88af84caff59512c42f8f7, type: 3}
+  m_Name: FruitData_ToyElectricSword
+  m_EditorClassIdentifier: 
+  rolePuppetsOptions: 1
+  fruitName: "\u73A9\u5177\u7535\u5251"
+  fruitDescription: "\u62FF\u4E0A\u4ED6\u3002\u9ED1\u591C\u91CC\u4F60\u5C31\u662F\u6700\u4EAE\u7684\u5D3D\uFF01\u63D0\u793A\uFF1A\u867D\u7136\u662F\u73A9\u5177
+    \u4F46\u5B83\u662F\u5E26\u7535\u7684\uFF0C\uFF0C\u89E6\u53D1\u65B9\u5F0F\uFF1A\u5408\u6210\u89E6\u53D1"
+  fruitExplanation: "\u653B\u51FB\u529B+30\uFF0C\u653B\u51FB\u670930%\u9644\u5E26\u3010\u9EBB\u75F9\u3011\uFF1A\u4F7F\u5BF9\u624B\u505C\u6B62\u884C\u52A80.5s"
+  fruitIcon: {fileID: 21300000, guid: 0950afe7005e29143ba0ca82d541c6de, type: 3}
+  triggerMethodOptions: 64
+  specificTriggerTime: 0
+  specificTriggerBlockPos: 0
+  specificTriggerRules: 1
+  specificTriggerLevel: 0
+  specificTriggerState: 0
+  duration: 10
+  positiveEffect: 0
+  weaponTemplate: {fileID: 11400000, guid: 9cee8911902ec1b439d2fcaf62af99ef, type: 2}
+  SubObject: []

@@ -1,0 +1,7 @@
+如果你想要在Unity中，使用Epplus.dll类库，
+那么你需要把这些.dll文件，一起导入Unity工程中，
+才能够正常使用Epplus.dll类库，
+（否则打包之后，就无法正常读写Excel文件了）。
+
+你也可以在Unity 2018.4.25f1版本的\Editor\Data\Mono\lib\mono\2.0\文件夹中，
+找到这几个.dll文件。

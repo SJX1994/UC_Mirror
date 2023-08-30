@@ -1,0 +1,13 @@
+menghuo_phyattack.png
+size:126,250
+filter:Linear,Linear
+pma:true
+phy_diquan
+bounds:74,2,182,50
+offsets:1,0,185,50
+rotate:90
+phy_guangquan
+bounds:2,14,70,170
+phy_muguang
+bounds:2,186,97,62
+offsets:2,9,100,80

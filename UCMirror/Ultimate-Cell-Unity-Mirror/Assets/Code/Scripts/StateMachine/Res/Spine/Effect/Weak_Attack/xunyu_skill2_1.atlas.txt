@@ -1,0 +1,17 @@
+xunyu_skill2_1.png
+size:208,164
+filter:Linear,Linear
+pma:true
+guangdian
+bounds:162,118,44,44
+offsets:3,3,50,50
+guangquan
+bounds:2,3,159,158
+offsets:5,5,170,170
+rotate:90
+guangxian
+bounds:162,34,14,82
+offsets:2,3,20,90
+xingxing
+bounds:162,2,30,30
+offsets:3,3,35,35

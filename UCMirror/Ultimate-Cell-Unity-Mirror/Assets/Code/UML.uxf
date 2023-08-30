@@ -1,0 +1,2152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>3</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>834</x>
+      <y>1173</y>
+      <w>147</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>BroadcastClass
+《广播类》
+---
++ 砖块新建事件 + 砖块更新事件 + 砖块/Unit整体更新事件
++ 砖块整体销毁事件 + 砖块整体移动事件 + 敌人生成事件
++ 敌人信息更新事件 + 单位死亡事件 + 控制砖块的UI的位置移动事件
++ 英雄信息构筑触发方法
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>885</x>
+      <y>1059</y>
+      <w>36</w>
+      <h>105</h>
+    </coordinates>
+    <panel_attributes>MonoBehaviour</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>888</x>
+      <y>1161</y>
+      <w>9</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1053</x>
+      <y>1245</y>
+      <w>36</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>CountGridClass 
+--
++ 删除砖块
++ 新建Unit
++ 整体信息偏移
++ 整体砖块信息
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1053</x>
+      <y>1185</y>
+      <w>51</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>TetrisClass
+--
++ 砖块ID
++ 方块横坐标
++ 方块纵坐标
++ 是否为中心旋转点
++ Unit颜色
++ 砖块等级
++ 砖块GameObj
++ 砖块类型</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1029</x>
+      <y>1134</y>
+      <w>306</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>EventType
+--
++ Unit区分 + 角色阵营 + 角色性别 + 俄罗斯方块类型 + 俄罗斯方块移动类型 + UI控制类型 + 单位颜色类型 + 砖块类型 + 砖块品质
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1116</x>
+      <y>1185</y>
+      <w>63</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>TetrisInfoClass
+--
++ 砖块类型
++ 砖块形状位置</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1002</x>
+      <y>1185</y>
+      <w>39</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>BlocksClass
+--
++ 整体砖块ID
++ 砖块品质
++ 砖块类型
++ 砖块详细信息</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1032</x>
+      <y>1146</y>
+      <w>9</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;130.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1038</x>
+      <y>1194</y>
+      <w>21</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1080</x>
+      <y>1146</y>
+      <w>9</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;130.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1137</x>
+      <y>1146</y>
+      <w>9</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;130.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1101</x>
+      <y>1194</y>
+      <w>21</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1065</x>
+      <y>1230</y>
+      <w>9</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1179</x>
+      <y>1233</y>
+      <w>45</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>IdeaClass
+--
++ 想法ID
++ 想法类型
++ 砖块类型
++ 技能信息</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1194</x>
+      <y>1182</y>
+      <w>30</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>SkillViewClass
+--
++ 技能Id
++ 技能图标
++ 技能名称
++ 技能描述信息
++ 技能等级
++ 技能数值</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1203</x>
+      <y>1218</y>
+      <w>9</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1182</x>
+      <y>1146</y>
+      <w>9</w>
+      <h>93</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;290.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1233</x>
+      <y>1182</y>
+      <w>42</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>UnitInfoClass
+--
++ Unit全局唯一Id
++ Unit逻辑位置
++ Unit实际偏移位置
++ 是否为新建Unit
++ 细胞颜色
++ Unit等级
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1245</x>
+      <y>1146</y>
+      <w>9</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>975</x>
+      <y>1221</y>
+      <w>282</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;50.0;10.0;380.0;920.0;380.0;920.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>714</x>
+      <y>1035</y>
+      <w>816</w>
+      <h>369</h>
+    </coordinates>
+    <panel_attributes>Class
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1290</x>
+      <y>1182</y>
+      <w>48</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>HeroCreateClass
+--
++ 生成英雄所需的细胞
++ 英雄生成位置
++ 英雄配置信息</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1248</x>
+      <y>1221</y>
+      <w>54</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;380.0;160.0;380.0;160.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1272</x>
+      <y>1191</y>
+      <w>24</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>60.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1308</x>
+      <y>1242</y>
+      <w>30</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>HeroInfoClass
+--
++ 英雄配置ID
++ 全局唯一Id
++ 英雄名称
++ 英雄信息
++ 英雄位置</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1317</x>
+      <y>1221</y>
+      <w>9</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1092</x>
+      <y>1230</y>
+      <w>222</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>720.0;160.0;10.0;160.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>771</x>
+      <y>1146</y>
+      <w>51</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>SpawnClass
+--
++ Tetrominoes
++ TetrominoesSimulated
++ 生成砖块
++ 预计生成砖块
+--
+bg=red
+未使用</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>819</x>
+      <y>1152</y>
+      <w>72</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>220.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1377</x>
+      <y>1206</y>
+      <w>30</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>UserInfoClass
+--
++ 最快通关时间
++ 现有英雄
++ 死亡次数</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1446</x>
+      <y>1122</y>
+      <w>42</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>UnitViewClass
+--
++ 角色Id
++ 顶部UI配置信息
++ 锁定状态 
++ 角色基础信息
++ 角色数值信息
++ 临时数据
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1380</x>
+      <y>1113</y>
+      <w>48</w>
+      <h>75</h>
+    </coordinates>
+    <panel_attributes>UnitBasicClass
+--
++ 角色ID
++ 角色图片样式 
++ 角色背景特效
++ 角色年龄
++ 角色性别
++ 角色爱好
++ 角色标签
++ 角色背景故事
++ 角色关系网
++ 角色名称
++ 角色阵营
++ 角色技能信息
++ 临时数据
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1425</x>
+      <y>1140</y>
+      <w>27</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1332</x>
+      <y>1140</y>
+      <w>54</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>160.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1206</x>
+      <y>1164</y>
+      <w>180</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>580.0;10.0;10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>714</x>
+      <y>735</y>
+      <w>21</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>UI</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>786</x>
+      <y>735</y>
+      <w>120</w>
+      <h>69</h>
+    </coordinates>
+    <panel_attributes>Tool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>732</x>
+      <y>747</y>
+      <w>60</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;180.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>795</x>
+      <y>747</y>
+      <w>30</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>SingTon
+命名拼写错误
+（Singleton）
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>564</x>
+      <y>1641</y>
+      <w>33</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>Service</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>696</x>
+      <y>1773</y>
+      <w>303</w>
+      <h>516</h>
+    </coordinates>
+    <panel_attributes>Manager</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>708</x>
+      <y>1593</y>
+      <w>144</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>Category 类别</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>708</x>
+      <y>1680</y>
+      <w>57</w>
+      <h>87</h>
+    </coordinates>
+    <panel_attributes>Service</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>708</x>
+      <y>1530</y>
+      <w>66</w>
+      <h>51</h>
+    </coordinates>
+    <panel_attributes>Tools</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>717</x>
+      <y>1629</y>
+      <w>51</w>
+      <h>39</h>
+    </coordinates>
+    <panel_attributes>HeroInfoConfigCategory
+英雄信息配置类别
+--
+- 加载（）
+--
++ 根据ID获取对应值（ID）
++ 获取全部值（）</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>765</x>
+      <y>1653</y>
+      <w>27</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;70.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>786</x>
+      <y>1605</y>
+      <w>42</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>HeroInfoCategory
+英雄信息类别
+--
++ 配置ID
++ 阵营
++ 名称
++ 血量
++ 攻击
++ 攻速
++ 巡逻范围
++ 攻击范围
++ 销毁延迟
++ 移速
++ 费用
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>594</x>
+      <y>1659</y>
+      <w>120</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;380.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>612</x>
+      <y>1710</y>
+      <w>102</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;10.0;320.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>612</x>
+      <y>1659</y>
+      <w>90</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;520.0;280.0;520.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>612</x>
+      <y>1554</y>
+      <w>102</w>
+      <h>114</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;360.0;10.0;10.0;320.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>825</x>
+      <y>1098</y>
+      <w>828</w>
+      <h>537</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>1950.0;50.0;1950.0;10.0;2740.0;10.0;2740.0;1770.0;10.0;1770.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1464</x>
+      <y>1098</y>
+      <w>9</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>216</x>
+      <y>933</y>
+      <w>75</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>Scripts</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>945</y>
+      <w>432</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;950.0;380.0;1420.0;380.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>756</y>
+      <w>432</w>
+      <h>198</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;640.0;950.0;10.0;1420.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>669</x>
+      <y>759</y>
+      <w>879</w>
+      <h>888</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>490.0;30.0;2910.0;10.0;2910.0;2270.0;10.0;2270.0;10.0;2940.0;160.0;2940.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1542</x>
+      <y>939</y>
+      <w>39</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>奇怪的继承
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>771</x>
+      <y>1110</y>
+      <w>42</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>BattlefieldClass
+--
++ 战场高
++ 战场宽
++ 战场宽高
+bg=red
+--
+是否需要继承Mono?</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>810</x>
+      <y>1122</y>
+      <w>81</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>250.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>714</x>
+      <y>1827</y>
+      <w>120</w>
+      <h>219</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;砖块管理类&gt;&gt;
+TetrisBlocksManager
+--
++ 高度
++ 宽度
++ 宽高
++ 砖块ID起始
++ 所有砖块信息
+--
+- 临时所有砖块信息
+- 通信类
+- 通信管理器
+- 英雄生成暂存
+- 临时位置存储
+- 新建砖块？
+- 单位数量
+- 待创建单位列表
+--
++ OnCencelBlock（）
+取消块时【拼写错误 On Cancel Block】
++ CreateUnit（）
+点击更新Unit信息【命名与注释不符】
++ CreateTetrisBlocksCount（）
+计算砖块合成
++ CreateBlocksInfo（）
+砖块新建方法
++ CreateHeroClass（）
+生成英雄砖块
++ BlocksReadyUnitCreate（Dictionary&lt;int, TetrisClass&gt; info）
+砖块准备UnitList【内部引用 是否需要公开？】
++ OnCreateUnitInfo（）
+将unit dic转化为unit list的方法【内部引用 是否需要公开？】
++ onTransPos（）
+发送砖块位置信息方法【方法名开头大写 内部引用 是否需要公开？】
++ RowLeft（）
+向左破坏性移动
++ RowRight（）
+向右整体移动
++ DeleteAlone（int key）
+删除单个砖块
++ DeleteHero（int key）
+英雄销毁事件
+--
+职责
+-- 一些关于砖块的操作？
+--
+bg=red
+问题 详见括号【】内</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>729</x>
+      <y>1791</y>
+      <w>180</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>MonoBehaviour</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>762</x>
+      <y>1797</y>
+      <w>9</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>927</x>
+      <y>1224</y>
+      <w>132</w>
+      <h>273</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;890.0;360.0;890.0;360.0;10.0;420.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>495</x>
+      <y>1947</y>
+      <w>225</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>730.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>498</x>
+      <y>1233</y>
+      <w>438</w>
+      <h>723</h>
+    </coordinates>
+    <panel_attributes>lt=-
+</panel_attributes>
+    <additional_attributes>10.0;2390.0;20.0;860.0;1440.0;860.0;1440.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>840</x>
+      <y>1827</y>
+      <w>120</w>
+      <h>390</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;沟通互动管理类&gt;&gt;
+CommunicationInteractionManager
+--
+- 数据管理类
+--
++ TetrisInfoCreate（List&lt;UnitInfoClass&gt; info） 
+砖块创建方法
++ TetrisInfoUpdate（List&lt;UnitInfoClass&gt; info）
+Unit信息更新方法
++ UnitInfoAllUpdate(List&lt;UnitInfoClass&gt; info)
+砖块信息整体更新
++ UnitDieInfoProcess(int info)
+Unit死亡信息更新方法
++ VirusInfoCreate(List&lt;UnitInfoClass&gt; info)
+外尔战士生成方法
++ VirusInfoUpdate(List&lt;UnitInfoClass&gt; info)
+外尔战士信息更新方法
++ OnUIPosUpdate(Vector3 info) 
+UI位置更新方法
++ BlockUpdate(List&lt;UnitInfoClass&gt; info, bool destory) 
+方块移动、消除方法
++ CreateHero(HeroCreateClass info) 
+英雄信息构筑触发方法
++ HeroActionChange(List&lt;HeroActionClass&gt; info) 
+英雄行为改变触发方法
++ OnStoryPlay(int info)
+动画播放触发方法
++ OnStoryEnd (int info)
+动画播放完成触发事件
++ OnStoryLoadingComplete(int info) 
+故事系统加载完成
++ OnSoldierPoolBack(List&lt;UnitInfoClass&gt; info)
+士兵池回收事件
++ OnBlockCreate(int info) 
+生成第一个砖块的事件
++ OnVirusArrive(int info) 
+外尔战士到达触发事件
++ OnUIControl(EventType.UIControl info) 
+UI控制组件触发事件
++ OnFireLineChange(FireLineInfoClass info)
+兵线移动触发事件
++ OnCreateNewIdea(int info) 
+战场生成想法触发方法
++ ResponseCreateNewIdea(List&lt;IdeaClass&gt; info, EventType.BlocksGrade Level)
+战场想法生成返回值
++ BlocksReady(Dictionary&lt;int, TetrisClass&gt; info, string heroName = "Blocks") 
+砖块准备完成进入预留区
++ OnBlocksMove(Vector3 info) 
+砖块移动
++ BlocksMoveEnd(int info) 
+砖块移动结束
++ OnBlocksCancellation(int info) 
+砖块取消操作
++ OnCellUnitCreate(List&lt;UnitInfoClass&gt; info) 
+点击按钮生成Unit
++ OnUnitBack(List&lt;UnitInfoClass&gt; info)
+Unit回收
++ OnHeroCreateResponse(HeroInfoClass info)
+英雄生成时的返回信息
++ OnHeroDie(int info)
+英雄死亡信息更细触发方法
++ AddHideGameObjectList(GameObject info) 
+加入肯德基豪华午餐【请详细注明用途】
++ OnHeroUICancel(string info) 
+取消生成英雄操作
++ OnCellArrive(int info) 
+塞尔到达指定位置事件
++ BlockCreateDone(int info)
+砖块新建完成
++ SetUnitDie(List&lt;int&gt; info) 
+设置Unit死亡事件 
++ FireSkillBoss (int info) 
+释放Boss技能
++ CreateBoss(int info) 
+新建Boss触发方法
++ RequestBattlefieldInfo(int info) 
+请求战场数据方法
++ ResponseBaattledInfo(BattledInfoClass info) 
+返回战场数据方法
+--
+职责
+-- 一些关于通讯的操作？
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>876</x>
+      <y>1797</y>
+      <w>9</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>786</x>
+      <y>816</y>
+      <w>30</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Hero</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>786</x>
+      <y>843</y>
+      <w>30</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Manager</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>786</x>
+      <y>867</y>
+      <w>30</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>Page</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>786</x>
+      <y>897</y>
+      <w>39</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>SpineExample</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>945</y>
+      <w>291</w>
+      <h>702</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;10.0;950.0;2320.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>741</x>
+      <y>747</y>
+      <w>51</w>
+      <h>87</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;270.0;150.0;270.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>741</x>
+      <y>747</y>
+      <w>51</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;370.0;150.0;370.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>741</x>
+      <y>747</y>
+      <w>51</w>
+      <h>147</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;470.0;150.0;470.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>741</x>
+      <y>747</y>
+      <w>51</w>
+      <h>177</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;570.0;150.0;570.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>0</x>
+      <y>921</y>
+      <w>213</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>参考：
+--
+UML类图用法：
+https://zhuanlan.zhihu.com/p/109655171
+https://github.com/lyq946/JavaBible/blob/master/DesignPattern/从零开始单排学设计模式「UML类图」定级赛.md
+--
+类图工具下载：
+https://github.com/umlet/umlet/tags
+
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>705</x>
+      <y>726</y>
+      <w>216</w>
+      <h>234</h>
+    </coordinates>
+    <panel_attributes>沈培林
+bg=blue
+layer=0
+transparency=90
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>477</x>
+      <y>987</y>
+      <w>1248</w>
+      <h>1338</h>
+    </coordinates>
+    <panel_attributes>郑乃久
+bg=blue
+layer=0
+transparency=90
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>99</y>
+      <w>255</w>
+      <h>855</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>10.0;2830.0;640.0;10.0;830.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>537</x>
+      <y>93</y>
+      <w>36</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>《表现层》
+StateMachine</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>729</x>
+      <y>0</y>
+      <w>147</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>BackGround</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>726</x>
+      <y>93</y>
+      <w>240</w>
+      <h>105</h>
+    </coordinates>
+    <panel_attributes>Block</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>726</x>
+      <y>387</y>
+      <w>570</w>
+      <h>198</h>
+    </coordinates>
+    <panel_attributes>RTS</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>729</x>
+      <y>207</y>
+      <w>234</w>
+      <h>174</h>
+    </coordinates>
+    <panel_attributes>Idea</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>729</x>
+      <y>588</y>
+      <w>45</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Story</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>477</x>
+      <y>162</y>
+      <w>93</w>
+      <h>51</h>
+    </coordinates>
+    <panel_attributes>Helper</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>570</x>
+      <y>12</y>
+      <w>165</w>
+      <h>102</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;320.0;530.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>570</x>
+      <y>102</y>
+      <w>162</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;20.0;520.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>570</x>
+      <y>105</y>
+      <w>165</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;480.0;380.0;530.0;380.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>570</x>
+      <y>105</y>
+      <w>162</w>
+      <h>300</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;490.0;980.0;520.0;980.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>570</x>
+      <y>105</y>
+      <w>165</w>
+      <h>504</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;490.0;1660.0;530.0;1660.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>555</x>
+      <y>105</y>
+      <w>24</w>
+      <h>69</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>60.0;10.0;10.0;210.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>735</x>
+      <y>12</y>
+      <w>30</w>
+      <h>21</h>
+    </coordinates>
+    <panel_attributes>Flash
+《闪光表现》
+--
++ 闪光精灵
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>762</x>
+      <y>18</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>735</x>
+      <y>39</y>
+      <w>51</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>PawnLine
+《兵线表现》
+--
++ 兵线预制体
+--
+- communicationManager
+- broadcastClass</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>783</x>
+      <y>45</y>
+      <w>15</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>30.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>957</x>
+      <y>153</y>
+      <w>1068</w>
+      <h>1842</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>1440.0;10.0;3520.0;10.0;3540.0;6120.0;10.0;6120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1314</x>
+      <y>147</y>
+      <w>75</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;沟通互动管理类&gt;&gt;
+CommunicationInteractionManager</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>966</x>
+      <y>201</y>
+      <w>924</w>
+      <h>978</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>1410.0;10.0;3050.0;10.0;3060.0;2940.0;10.0;2950.0;10.0;3240.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1314</x>
+      <y>192</y>
+      <w>75</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>《广播类》
+BroadcastClass
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>792</x>
+      <y>15</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>MonoBehaviour</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>792</x>
+      <y>42</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>MonoBehaviour</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>783</x>
+      <y>51</y>
+      <w>519</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1</panel_attributes>
+    <additional_attributes>10.0;10.0;1710.0;10.0;1710.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>732</x>
+      <y>108</y>
+      <w>66</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>BlocksCreator
+《砖块创建》
+--
++ 心流模式遮罩
++ 单个砖块表现类：BlockDisplay
++ 长
++ 宽</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>834</x>
+      <y>117</y>
+      <w>72</w>
+      <h>75</h>
+    </coordinates>
+    <panel_attributes>BlockDisplay
+《单个砖块》
+--
++ 单个砖块位置
++ 单个砖块启用表现
++ 单个砖块武器表现
++ 单个砖块武器类型
+--
++ InFlow()
+进入心流模式表现
++ OutFlow()
+退出心流模式表现
++ Bright(EventType.UnitColor color)
+被激活表现
++ NotBright()
+不激活表现</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>531</x>
+      <y>174</y>
+      <w>30</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>Singleton</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>513</x>
+      <y>174</y>
+      <w>24</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>480</x>
+      <y>174</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>MonoBehaviour</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>558</x>
+      <y>141</y>
+      <w>195</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;120.0;630.0;120.0;630.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>795</x>
+      <y>117</y>
+      <w>45</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..n</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>795</x>
+      <y>108</y>
+      <w>195</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..n</panel_attributes>
+    <additional_attributes>10.0;10.0;630.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1170</x>
+      <y>225</y>
+      <w>726</w>
+      <h>915</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>730.0;10.0;2390.0;10.0;2400.0;2880.0;10.0;2890.0;10.0;3030.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1314</x>
+      <y>219</y>
+      <w>75</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;事件类型&gt;&gt;
+EventType</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>903</x>
+      <y>165</y>
+      <w>390</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;1280.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>861</x>
+      <y>288</y>
+      <w>63</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>template=Idels
+IdelTemplate
+--
++ idea类型
++ 精灵样式
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>912</x>
+      <y>300</y>
+      <w>18</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>40.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>924</x>
+      <y>297</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>ScriptableObject</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>735</x>
+      <y>228</y>
+      <w>93</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>IdelBox
+--
++ idea模板:IdelTemplate
++ idel按钮
++ idel容器
++ idel点击屏蔽
++ idel倒计时
++ idel等级：EventType.BlocksGrade
+--
+- 改变培养皿中液体：ChangeLiquid
+- communicationManager
+- broadcastClass
+--
++ OnBeginDrag(PointerEventData data)
++ OnDrag(PointerEventData data)
++ OnEndDrag(PointerEventData eventData)
++ OnPointerDown(PointerEventData eventData)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>825</x>
+      <y>291</y>
+      <w>42</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>825</x>
+      <y>228</y>
+      <w>21</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>840</x>
+      <y>225</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>MonoBehaviour</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>759</x>
+      <y>216</y>
+      <w>534</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;40.0;10.0;10.0;1760.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>825</x>
+      <y>237</y>
+      <w>21</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>840</x>
+      <y>237</y>
+      <w>54</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>UnityEngine.EventSystems</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>825</x>
+      <y>249</y>
+      <w>27</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>846</x>
+      <y>249</y>
+      <w>42</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>IBeginDragHandler</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>825</x>
+      <y>258</y>
+      <w>27</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>846</x>
+      <y>258</y>
+      <w>42</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>IDragHandler</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>846</x>
+      <y>267</y>
+      <w>42</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>IEndDragHandler</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>846</x>
+      <y>276</y>
+      <w>42</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>IPointerDownHandler</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>825</x>
+      <y>267</y>
+      <w>27</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>825</x>
+      <y>276</y>
+      <w>27</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>792</x>
+      <y>303</y>
+      <w>12</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>735</x>
+      <y>327</y>
+      <w>93</w>
+      <h>51</h>
+    </coordinates>
+    <panel_attributes>ChangeLiquid
+--
++ 液面
++ 液体
++ 完成指示灯
+--
+- IdelBox
+--
++ DoCount()
+重新装填倒计时
++ ChangeColor()
+根据等级改变颜色</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>759</x>
+      <y>303</y>
+      <w>12</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>903</x>
+      <y>117</y>
+      <w>21</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>918</x>
+      <y>117</y>
+      <w>36</w>
+      <h>9</h>
+    </coordinates>
+    <panel_attributes>MonoBehaviour</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>729</x>
+      <y>615</y>
+      <w>45</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>Queue
+未启用</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>570</x>
+      <y>105</y>
+      <w>165</w>
+      <h>525</h>
+    </coordinates>
+    <panel_attributes>lt=(+)-</panel_attributes>
+    <additional_attributes>10.0;10.0;460.0;1730.0;530.0;1730.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>942</x>
+      <y>444</y>
+      <w>87</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Unit
+--
++ 士兵单位模板：UnitTemplate
++ 士兵状态：UnitState
++ 是否翻转：bool
++ 灵魂单位：UnitSoul
++ 单位id：int
++ 单位等级：int
+--
+- 武器类型：WeaponTemplate.WeaponType
+- 状态机管理器：StateMachineManager
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1065</x>
+      <y>399</y>
+      <w>66</w>
+      <h>57</h>
+    </coordinates>
+    <panel_attributes>template= Cell / Virus
+UnitTemplate
+--
++ 士兵单位类型：UnitType
++ 血量
++ 攻击力
++ 攻速
++ 攻击范围
++ 巡逻范围
++ 遇敌追击时长
++ 死亡消除时间
++ 等级表现
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1026</x>
+      <y>444</y>
+      <w>45</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1065</x>
+      <y>462</y>
+      <w>69</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>template= 四种武器类型
+WeaponTemplate
+--
++ 武器形象
++ 攻击力加成
++ 攻击距离加成
++ 攻击速度加成
++ 血量加成
++ 武器类型：WeaponType
++ 武器抓握点位置纵向调整
++ 武器抓握点位置横向调整
++ 武器抓握点位置旋转调整
++ 武器抓握点位置缩放调整
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1026</x>
+      <y>471</y>
+      <w>45</w>
+      <h>12</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>759</x>
+      <y>444</y>
+      <w>108</w>
+      <h>93</h>
+    </coordinates>
+    <panel_attributes>StateMachineManager
+--
++ 塞尔单位：Unit
++ 外尔单位：Unit
++ 英雄单位创建失败表现：GameObject
++ 英雄单位列表：List&lt;GameObject&gt;
++ 英雄单位出场UI相关组件
++ 动画曲线：AnimationCurve
++ 敌方头目列表：List&lt;GameObject&gt;
++ 灵魂数量UI
++ 作战经验UI
+--
+- CommunicationInteractionManager
+--
++ OnHeroCreate(HeroCreateClass infoList, int indexId)
+英雄创建
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>864</x>
+      <y>453</y>
+      <w>84</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..n
+m2=1
+</panel_attributes>
+    <additional_attributes>260.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>558</x>
+      <y>174</y>
+      <w>207</w>
+      <h>306</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;70.0;10.0;70.0;1000.0;670.0;1000.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>864</x>
+      <y>462</y>
+      <w>84</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=0..n
+m2=1
+</panel_attributes>
+    <additional_attributes>10.0;20.0;260.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1287</x>
+      <y>129</y>
+      <w>132</w>
+      <h>204</h>
+    </coordinates>
+    <panel_attributes>通讯相关</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>795</x>
+      <y>231</y>
+      <w>498</w>
+      <h>219</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;710.0;10.0;620.0;700.0;620.0;1640.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1314</x>
+      <y>249</y>
+      <w>75</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>HeroCreateClass</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>1314</x>
+      <y>273</y>
+      <w>75</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>UnitInfoClass</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

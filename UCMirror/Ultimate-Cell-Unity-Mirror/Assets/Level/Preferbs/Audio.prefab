@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5127424957931890134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3825101084096218397}
+  - component: {fileID: -3141343389906167146}
+  m_Layer: 0
+  m_Name: Audio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3825101084096218397
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5127424957931890134}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3141343389906167146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5127424957931890134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfec664571c86f1499dbadb997ec93c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+  - key: Fear
+    gameObject: {fileID: 8300000, guid: 1a9b140ba8dc55b4fa9a1f00ccf72a41, type: 3}
+  - key: Fear_LeftHand
+    gameObject: {fileID: 8300000, guid: 159f7d18317ffe9408fbea8c721aaad4, type: 3}
+  - key: FearsRightHandMan
+    gameObject: {fileID: 8300000, guid: c92dd9171aa46854c9d3ae72dbc503a2, type: 3}
+  - key: Cell_Update1
+    gameObject: {fileID: 8300000, guid: 9e3e8a0e04e4a5c4db3f9c3fde7715a2, type: 3}
+  - key: Cell_Update2
+    gameObject: {fileID: 8300000, guid: ddcefcfdf8d737d45a8c1e9b544b99fc, type: 3}
+  - key: Click_Once
+    gameObject: {fileID: 8300000, guid: 24eafb6d03448e94eb9e0c1a385800cb, type: 3}
+  - key: Click_Twice
+    gameObject: {fileID: 8300000, guid: 7d8f617e0b4ea3547a950eeebbbb99ea, type: 3}
+  - key: Start_Game_Button
+    gameObject: {fileID: 8300000, guid: 3444fce266c7c084f80ceb10306191d7, type: 3}
+  - key: UI_Page_Change_Left
+    gameObject: {fileID: 8300000, guid: 3dbd39f56c8acfa4fadf6d1a49b3bb28, type: 3}
+  - key: UI_Page_Change_Right
+    gameObject: {fileID: 8300000, guid: 51e62d599de90144ca3247e9513e0724, type: 3}
+  - key: Virus_Cteate
+    gameObject: {fileID: 8300000, guid: 2082c1d05ce431e4b9a57b465ec894f6, type: 3}
+  - key: Button_Click
+    gameObject: {fileID: 8300000, guid: 2610315c16130cb4d984b7066370ddcf, type: 3}

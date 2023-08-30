@@ -1,0 +1,7 @@
+VirusSoul.png
+size:90,87
+filter:Linear,Linear
+pma:true
+experience
+bounds:2,2,86,83
+offsets:2,3,89,88
