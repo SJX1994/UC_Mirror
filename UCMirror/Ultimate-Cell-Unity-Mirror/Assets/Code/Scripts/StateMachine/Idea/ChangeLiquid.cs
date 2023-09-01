@@ -44,6 +44,7 @@ public class ChangeLiquid : MonoBehaviour
         //ChangeColor();
         top.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
         ready.SetActive(false);
+        ideaBox.Idel.SetActive(false);
         top.GetComponent<RectTransform>().DOAnchorPos(new Vector3(0f,0f,0f),6f);
         DOVirtual.Float(0, 1, 6f, (float value) =>
         {
@@ -52,6 +53,8 @@ public class ChangeLiquid : MonoBehaviour
         }).onComplete=() =>
         {
              ready.SetActive(true);
+             ideaBox.Idel.SetActive(true);
+             ideaBox.OnGameObjCreate();
         };
         
     }

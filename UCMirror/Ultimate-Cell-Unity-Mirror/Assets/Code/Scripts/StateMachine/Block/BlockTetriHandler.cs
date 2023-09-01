@@ -29,6 +29,7 @@ public class BlockTetriHandler : MonoBehaviour
     [HideInInspector]
     
     public Vector2 posId;
+    public TetriBlockSimple tetriBlockSimpleHolder;
     // Start is called before the first frame update
     void Start()
     {

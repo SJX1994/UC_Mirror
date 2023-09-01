@@ -11,5 +11,10 @@ namespace PlayerData
         Player2,
         NotReady,
     }
+    public class Dispaly
+    {
+        public const int FlowOrder = 1000;
+        public const int NotFlowOrder = 14;
+    }
     
 }

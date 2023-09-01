@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Spine.Unity;
-
+using PlayerData;
 public class Building : MonoBehaviour
 {
 #region 数据对象 
@@ -50,8 +50,7 @@ public class Building : MonoBehaviour
     BuildingSlot firstSlot = null;
     BuildingSlot currentSlot = null;
     List<SpriteRenderer> selectionCircles = new();
-    const int FlowOrder = 1000;
-    const int NotFlowOrder = 14;
+  
     float spacing = 1f;
 #endregion 数据对象
 #region 数据关系
@@ -111,7 +110,7 @@ public class Building : MonoBehaviour
         // 效果
         skeletonRenderer.transform.localScale += Vector3.one * 0.1f;
         selectionCircle.color = new Color(selectionCircle.color.r,selectionCircle.color.g,selectionCircle.color.b,1.0f);
-        selectionCircle.sortingOrder = FlowOrder;
+        selectionCircle.sortingOrder = Dispaly.FlowOrder;
         lastPos = transform.position;
         animator.SetFloat("Speed", 1f);
         blocksCreator.FlowMask.color = new Color(0.0f,0.0f,0.0f,0.3f);
@@ -138,7 +137,7 @@ public class Building : MonoBehaviour
                 // 创建物体
                 SpriteRenderer obj = Instantiate(selectionCircle, position, selectionCircle.transform.localRotation,selectionCircle.transform);
                 obj.transform.localScale = Vector3.one * 0.5f;
-                obj.sortingOrder = FlowOrder;
+                obj.sortingOrder = Dispaly.FlowOrder;
                 // obj.transform.localScale = new Vector3(selectionCircle.transform.localScale.x/i,obj.transform.localScale.y,selectionCircle.transform.localScale.z/i);
                 selectionCircles.Add(obj);
             }
@@ -164,7 +163,7 @@ public class Building : MonoBehaviour
         blocksCreator.FlowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);
         skeletonRenderer.transform.localScale -= Vector3.one * 0.1f;
         selectionCircle.color = new Color(selectionCircle.color.r,selectionCircle.color.g,selectionCircle.color.b,0.5f);
-        selectionCircle.sortingOrder = FlowOrder;
+        selectionCircle.sortingOrder = Dispaly.FlowOrder;
         
         foreach (var item in selectionCircles)
         {
@@ -256,7 +255,7 @@ public class Building : MonoBehaviour
                 {
                     slot.Building = this;
 
-                    Debug.Log("Building pos Changeing: " + slot.blockDisplay.posId);
+                    // Debug.Log("Building pos Changeing: " + slot.blockDisplay.posId);
 
                     BuildingSlot tempslot = slot;
 

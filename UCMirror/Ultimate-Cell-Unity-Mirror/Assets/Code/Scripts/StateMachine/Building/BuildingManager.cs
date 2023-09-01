@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using PlayerData;
 
 public class BuildingManager : Singleton<BuildingManager>
 {
@@ -20,7 +21,6 @@ public class BuildingManager : Singleton<BuildingManager>
 
     SpriteRenderer keepText;
     public List<Building> buildings = new List<Building>();
-    const int FlowOrder = 1000;
     const int NotFlowOrder = 101;
     Color FlowColor = new Color(1, 1, 1, 1);
     Color NotFlowColor = new Color(1, 1, 1, 0.5f);
@@ -64,17 +64,17 @@ public class BuildingManager : Singleton<BuildingManager>
         }
 
         //设置建筑初始位置 && 用建筑名对建筑进行区分
-        buildings[0].gameObject.name = "SelfBuilding";
+        // buildings[0].gameObject.name = "SelfBuilding";
 
-        buildings[0].gameObject.transform.position = new Vector3(-1.08f, 0, -2.52221f);
+        // buildings[0].gameObject.transform.position = new Vector3(-1.08f, 0, -2.52221f);
 
-        SelfBuilding = buildings[0].gameObject;
+        // SelfBuilding = buildings[0].gameObject;
 
-        buildings[1].gameObject.name = "RivalBuilding";
+        // buildings[1].gameObject.name = "RivalBuilding";
 
-        buildings[1].gameObject.transform.position = new Vector3(3.78f, 0, -2.52221f);
+        // buildings[1].gameObject.transform.position = new Vector3(3.78f, 0, -2.52221f);
 
-        RivalBuilding = buildings[1].gameObject;
+        // RivalBuilding = buildings[1].gameObject;
 
        // Debug.Log("建筑初始化完成");
     }
@@ -155,41 +155,45 @@ public class BuildingManager : Singleton<BuildingManager>
         {
             marshalling.color = NotFlowColor;
             unmarshal.color = NotFlowColor;
+            keep.color = NotFlowColor;
             marshalling.sortingOrder = NotFlowOrder;
             unmarshal.sortingOrder = NotFlowOrder;
+            keep.sortingOrder = NotFlowOrder;
             marshallingText.color = NotFlowColor;
             unmarshalText.color = NotFlowColor;
+            keepText.color = NotFlowColor;
             marshallingText.sortingOrder = NotFlowOrder - 1;
             unmarshalText.sortingOrder = NotFlowOrder - 1;
+            keepText.sortingOrder = NotFlowOrder - 1;
         }
         else
         {
             if (spriteRenderer.name == "marshalling")
             {
                 marshalling.color = FlowColor;
-                marshalling.sortingOrder = FlowOrder;
+                marshalling.sortingOrder = Dispaly.FlowOrder;
 
                 marshallingText.color = FlowColor;
-                marshallingText.sortingOrder = FlowOrder + 1;
+                marshallingText.sortingOrder = Dispaly.FlowOrder + 1;
 
             }
             else if (spriteRenderer.name == "unmarshal")
             {
                 unmarshal.color = FlowColor;
-                unmarshal.sortingOrder = FlowOrder;
+                unmarshal.sortingOrder = Dispaly.FlowOrder;
 
                 unmarshalText.color = FlowColor;
-                unmarshalText.sortingOrder = FlowOrder + 1;
+                unmarshalText.sortingOrder = Dispaly.FlowOrder + 1;
 
 
             }
             else if (spriteRenderer.name == "keep")
             {
                 keep.color = FlowColor;
-                keep.sortingOrder = FlowOrder;
+                keep.sortingOrder = Dispaly.FlowOrder;
 
                 keepText.color = FlowColor;
-                keepText.sortingOrder = FlowOrder + 1;
+                keepText.sortingOrder = Dispaly.FlowOrder + 1;
 
 
             }

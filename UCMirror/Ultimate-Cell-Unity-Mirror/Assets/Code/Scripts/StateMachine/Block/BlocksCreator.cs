@@ -5,7 +5,7 @@ using UnityEngine;
 using static ResManager;
 using DG.Tweening;
 using UnityEngine.Events;
-
+using System.Linq;
 public class BlocksCreator : Singleton<BlocksCreator>
 {
     // 通讯对象
@@ -39,7 +39,8 @@ public class BlocksCreator : Singleton<BlocksCreator>
     List<Vector2> lastDestoryPosList;
 
     // 销毁方块位置
-
+    private Tweener inflowTweener;
+    private Tweener outflowTweener;
     private void Start()
     {
         // // TODO 暂时获取方式
@@ -73,47 +74,50 @@ public class BlocksCreator : Singleton<BlocksCreator>
         FlowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);
 
         CreateBlocks();
-    }
 
-    void OnListenBlocksMoveStart(Dictionary<int, TetrisClass> dic ,  string str)
+        Invoke(nameof(LateStart),0.1f);
+    }
+    void LateStart()
     {
+        FindObjectsOfType<IdelBox>().ToList().ForEach((box) => {
+            box.OnTetriBeginDrag += OnListenBlocksMoveStart;
+            box.OnTetriEndDrag += OnListenBlocksMoveEnd;
+        });
+    }
+    void OnListenBlocksMoveStart(IdelBox idelBox)
+    {
+        
+        if(outflowTweener!=null){outflowTweener.Kill();}
         FlowMask.color = new Color(0.0f,0.0f,0.0f,0.3f);
 
         foreach(BlockDisplay block in blocks)
         {
             block.InFlow();
         }
-
-        Time.timeScale = 1.0f;
+        FindObjectsOfType<TetriBlockSimple>().ToList().ForEach((tetri) => {    
+                tetri.InFlow();
+        });
         transform.position = originPos;
-        transform.DOMoveY(originPos.y+0.1f,0.5f).SetEase(Ease.OutCirc).onComplete = () =>
-        {
-            Time.timeScale = 1.0f;
-        };
+        inflowTweener = transform.DOMoveY(originPos.y+0.1f,0.5f).SetEase(Ease.OutCirc);
     }
-    void OnListenBlocksMoveEnd(int index)
+    void OnListenBlocksMoveEnd(IdelBox idelBox)
     {
-        OnEnd();
-    }
-    void OnListenBlocksMoveEnd(string index)
-    {
-        OnEnd();
-    }
-    void OnEnd()
-    {
+        
+        if(inflowTweener!=null){inflowTweener.Kill();}
+
         FlowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);
 
         foreach(BlockDisplay block in blocks)
         {
             block.OutFlow();
         }
-
-        Time.timeScale = 1.0f;
-        transform.DOMoveY(originPos.y,0.5f).SetEase(Ease.OutBounce).onComplete = () =>
-        {
-           Time.timeScale = 1.0f;
-        };
+        FindObjectsOfType<TetriBlockSimple>().ToList().ForEach((tetri) => {    
+                tetri.OutFlow();
+        });
+       
+        outflowTweener = transform.DOMoveY(originPos.y,0.5f).SetEase(Ease.OutBounce);
     }
+    
 
     /// <summary>
     /// 砖块销毁监听事件（运行中砖块）
@@ -254,7 +258,7 @@ public class BlocksCreator : Singleton<BlocksCreator>
     }
     void SetPosition()
     {
-        Vector3 pos = new Vector3(-14f,0,-8f);
+        Vector3 pos = new Vector3(-15f,0,-8f);
         Vector3 scale = new Vector3(1.62f,1.5f,1.37f);
         Vector3 rot = new Vector3(7.57f,0f,0f);
         transform.DOMove(pos,0.1f).onComplete = () => {

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using PlayerData;
+using I18N.West;
 
 public class BlockDisplay : MonoBehaviour
 {
@@ -44,8 +46,7 @@ public class BlockDisplay : MonoBehaviour
     public Color blockColorPurple = new Color(1f,0,1,1f);
     public Color blockColorYellow = new Color(1f, 1, 0, 1f);
     Color tempColor;
-    const int FlowOrder = 1000;
-    const int NotFlowOrder = 14;
+   
 
     public SpriteRenderer _renderer;
     Color _rendererTemp;
@@ -90,10 +91,10 @@ public class BlockDisplay : MonoBehaviour
     {
         _renderer.color = _rendererTemp;
         spriteRenderer_Weapon.color = Color.white;
-        spriteRenderer_Weapon.sortingOrder = FlowOrder;
+        spriteRenderer_Weapon.sortingOrder = Dispaly.FlowOrder;
         spriteRenderer_Faction.color = Color.white;
-        spriteRenderer_Faction.sortingOrder = FlowOrder;
-        _renderer.sortingOrder = NotFlowOrder;
+        spriteRenderer_Faction.sortingOrder = Dispaly.FlowOrder;
+        _renderer.sortingOrder = Dispaly.NotFlowOrder;
        
     }
     /// <summary>
@@ -103,10 +104,10 @@ public class BlockDisplay : MonoBehaviour
     {
         _renderer.color = _rendererTemp;
         spriteRenderer_Weapon.color = _rendererChildenTemp;
-        spriteRenderer_Weapon.sortingOrder = NotFlowOrder;
+        spriteRenderer_Weapon.sortingOrder = Dispaly.NotFlowOrder;
         spriteRenderer_Faction.color = _rendererChildenTemp;
-        spriteRenderer_Faction.sortingOrder = NotFlowOrder;
-         _renderer.sortingOrder = NotFlowOrder;
+        spriteRenderer_Faction.sortingOrder = Dispaly.NotFlowOrder;
+         _renderer.sortingOrder = Dispaly.NotFlowOrder;
             
     }
   
@@ -131,17 +132,25 @@ public class BlockDisplay : MonoBehaviour
             switch(PVP_faction.MyFaction)
             {
                 case PVP_faction.faction.Environmentalism:
-                    transform.GetComponent<SpriteRenderer>().color = new Color(blockColorGreen.r,blockColorGreen.g,blockColorGreen.b,1.0f);
+                    transform.GetComponent<SpriteRenderer>().color = Color.green;
                     if(stayLogo)
                     {
-                        spriteRenderer_Bright.color = blockColorGreen;
+                        spriteRenderer_Bright.color = Color.green;
                         spriteRenderer_Faction.sprite = sprite_Environmentalism;
                         spriteRenderer_Faction.gameObject.SetActive(true);
                     }
                 break;
                 case PVP_faction.faction.Capitalism:
+                    
                 break;
                 case PVP_faction.faction.Socialism:
+                    transform.GetComponent<SpriteRenderer>().color = Color.red;
+                    if(stayLogo)
+                    {
+                        spriteRenderer_Bright.color = Color.red;
+                        spriteRenderer_Faction.sprite = sprite_Environmentalism;
+                        spriteRenderer_Faction.gameObject.SetActive(true);
+                    }
                 break;
                 case PVP_faction.faction.Technological:
                 break;
