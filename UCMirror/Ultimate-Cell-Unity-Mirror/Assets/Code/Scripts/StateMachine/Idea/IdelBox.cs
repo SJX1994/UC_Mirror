@@ -20,6 +20,7 @@ public class IdelBox : MonoBehaviour,
 
     #region 数据对象
     public int idelId;
+    
     public Player player = Player.NotReady;
     public LayerMask blockTargetMask;
     /// <summary>
@@ -44,11 +45,6 @@ public class IdelBox : MonoBehaviour,
     /// idel加载倒计时
     /// </summary>
     public GameObject blockText;
-    /// <summary>
-    /// idel等级
-    /// </summary>
-    public EventType.BlocksGrade blockGrade;
-
     private ChangeLiquid changeLiquid;
 
     Vector3 originScale;
@@ -82,11 +78,6 @@ public class IdelBox : MonoBehaviour,
     #region 数据关系
     void Start()
     {
-        
-        // 通信获取
-        // TODO 暂时获取方式
-        // CommunicationManager = GameObject.Find("LanNetWorkManager").gameObject.GetComponent<CommunicationInteractionManager>();
-        // broadcastClass = CommunicationManager.GetComponent<BroadcastClass>();
         Init();
         Invoke(nameof(LateStart),0.1f);
     }
@@ -109,98 +100,129 @@ public class IdelBox : MonoBehaviour,
         
     }
     Sequence sequence;
+    Vector2 pointerDownPosition; // 放置短暂下落的位置
+    public void OnPointerDown(PointerEventData eventData)
+    {
+       Invoke(nameof(DoRotate),0.3f);
+       pointerDownPosition = eventData.pointerCurrentRaycast.screenPosition;
+    }
     public void OnBeginDrag(PointerEventData data)
     {
+        CancelInvoke(nameof(DoRotate));
+        InFlow();
+    }
+    public void OnDrag(PointerEventData data)
+    {
         
-        // CommunicationManager.BlocksReady(BlocksInfo.TetrisInfo);
+        if(!tetrominoe)return;
+        Vector2 currentPosition = data.pointerCurrentRaycast.screenPosition;
+        float distance = Vector2.Distance(currentPosition, pointerDownPosition);
+        float threshold = 55f;
+        if (distance <= threshold)return;  
+
+        //传输鼠标当前位置
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if (!hitBlock)return;
+        hitBlock = hit.collider.transform.TryGetComponent(out BlockTetriHandler block);
+        if (!hitBlock)return;
+        tetrominoe.transform.parent = hit.collider.transform.parent;
+        tetrominoe.transform.localPosition = Vector3.zero;
+        tetrominoe.transform.localScale = Vector3.one;
+        tetrominoe.transform.localPosition = new Vector3( block.posId.x, 0.3f, block.posId.y);
+        tetrominoe.ColliderCheck();
+        // 如果不在棋盘上 子物体 需要错位挪动
+        tetrominoe.posId = new Vector2(tetrominoe.transform.localPosition.x,tetrominoe.transform.localPosition.z);
+        bool isInCheckerboard = Dispaly.IsInCheckerboard(tetrominoe.posId);
+        if(!isInCheckerboard)
+        {
+            tetrominoe.transform.localPosition = new Vector3( block.posId.x, 0.3f, block.posId.y);
+            return;
+        }
         
-        // broadcastClass.BlockCreateDone += RmoveItemAndRefresh;
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        OutFlow();
+        if(!tetrominoe)return;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if(!hitBlock)
+        {
+            FailToCreat();
+        }
+        else
+        {
+            if(!tetrominoe.ColliderCheck())
+            {
+                FailToCreat();
+                return;
+            }
+            SuccessToCreat();
+        }
+        
+    }
+    
+    #endregion
+
+    #region 数据操作
+    void SuccessToCreat()
+    {
+        tetrominoe.SuccessToCreat();
+        tetrominoe.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Create;
+        if(!tetrominoe.Active()){ FailToCreat(); return;};
+        if(!tetrominoe.ColliderCheckOnEndDrag()){ FailToCreat(); return;}
+        tetrominoe.posId = new Vector2(tetrominoe.transform.localPosition.x,tetrominoe.transform.localPosition.z);
+        // 使用 DOTween.Sequence 创建一个序列
+        sequence = DOTween.Sequence();
+        // 在序列中添加需要执行的动画
+        sequence.Append(tetrominoe.transform.DOLocalMoveY(0.2f, tetrominoe.occupyingTime/4).SetEase(Ease.Linear));
+        sequence.Append(tetrominoe.transform.DOLocalMoveY(0f, tetrominoe.occupyingTime/4).SetEase(Ease.Linear));
+        // 设置循环模式为 PingPong
+        sequence.SetLoops(-1, LoopType.Yoyo);
+        // 开始计时
+        changeLiquid.DoCount();
+        tetrominoe = null;
+    }
+    void FailToCreat()
+    {
+        if(sequence!=null)
+        {
+            sequence.Kill();
+        }
+        TetrisBlockSimple tetrominoeTemp = Instantiate(tetrominoe.gameObject, IdelWorldSpace.transform.position,IdelWorldSpace.transform.rotation).GetComponent<TetrisBlockSimple>();
+        tetrominoe.FailToCreat();
+        DestroyImmediate(tetrominoe.gameObject);
+        tetrominoe = tetrominoeTemp;
+        MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.CancelOperation;
+    }
+    Tween flowScaleTween;
+    Tween flowAnchorPosTween;
+    void InFlow()
+    {
         
         // 心流模式
         OnTetriBeginDrag?.Invoke(this);
         Canvas idelCanvas = Idel.GetComponent<Canvas>();
         idelCanvas.sortingLayerName = "Flow";
         idelCanvas.sortingOrder = Dispaly.FlowOrder;
+        // 清理
         RectTransform idelRT = Idel.GetComponent<RectTransform>();
         idelRT.localScale = originScale;
         idelRT.anchoredPosition3D = idelAnchoredPos;
-        idelRT.DOScale(2.0f, 0.5f);
-        idelRT.DOAnchorPos3D(new Vector3(idelAnchoredPos.x+20.0f,idelAnchoredPos.y,idelAnchoredPos.z),0.5f);
+        if(flowScaleTween!=null)flowScaleTween.Kill();
+        if(flowAnchorPosTween!=null)flowAnchorPosTween.Kill();
+        // 播放动画
+        flowScaleTween = idelRT.DOScale(2.0f, 0.5f);
+        flowAnchorPosTween = idelRT.DOAnchorPos3D(new Vector3(idelAnchoredPos.x+20.0f,idelAnchoredPos.y,idelAnchoredPos.z),0.5f);
         // 机制事件
         MechanismInPut.Instance.modeTest = MechanismInPut.ModeTest.Reflash;
     }
-    
-    public void OnDrag(PointerEventData data)
+    void OutFlow()
     {
-        //传输鼠标当前位置
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        
-        // CommunicationManager.OnBlocksMove(hit.point);
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask))
-        {
-            tetrominoe.transform.parent = hit.collider.transform.parent;
-            tetrominoe.transform.localPosition = Vector3.zero;
-            tetrominoe.transform.localScale = Vector3.one;
-            
-            if(hit.collider.transform.TryGetComponent(out BlockTetriHandler block))
-            {
-                tetrominoe.transform.localPosition = new Vector3( block.posId.x, 0.3f, block.posId.y);
-                
-                foreach(var childTetri in tetrominoe.childTetris)
-                {
-                    childTetri.CheckCollider();
-                }
-            }
-        }
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        bool hitBlock = false;
-        RaycastHit[] hits;
-        hits = Physics.RaycastAll(ray);
-        for (int i = 0; i < hits.Length; i++)
-        {
-            RaycastHit hit = hits[i];
-            if (hit.transform.TryGetComponent(out BlockDisplay block))
-            {
-                hitBlock = true;
-            }
-        }
-        if (hits[0].transform)
-        {
-            if (!hitBlock)
-            {
-                TetrisBlockSimple tetrominoeTemp = Instantiate(tetrominoe.gameObject, IdelWorldSpace.transform.position,IdelWorldSpace.transform.rotation).GetComponent<TetrisBlockSimple>();
-                DestroyImmediate(tetrominoe.gameObject);
-                tetrominoe = tetrominoeTemp;
-                if(sequence!=null)
-                {
-                    sequence.Kill();
-                }
-                // CommunicationManager.OnHeroUICancel("");
-                MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.CancelOperation;
-            }
-            else
-            {
-                // CommunicationManager.BlocksMoveEnd(1);
-                
-                // 使用 DOTween.Sequence 创建一个序列
-                    sequence = DOTween.Sequence();
-
-                // 在序列中添加需要执行的动画
-                    sequence.Append(tetrominoe.transform.DOLocalMoveY(0.2f, tetrominoe.occupyingTime/4).SetEase(Ease.Linear));
-                    sequence.Append(tetrominoe.transform.DOLocalMoveY(0f, tetrominoe.occupyingTime/4).SetEase(Ease.Linear));
-
-                // 设置循环模式为 PingPong
-                    sequence.SetLoops(-1, LoopType.Yoyo);
-                changeLiquid.DoCount();
-                tetrominoe.Active();
-                tetrominoe = null;
-            }
-        }
         // 退出心流
         OnTetriEndDrag?.Invoke(this);
         Canvas idelCanvas = Idel.GetComponent<Canvas>();
@@ -212,16 +234,6 @@ public class IdelBox : MonoBehaviour,
         // 机制事件
         Invoke(nameof(ReflashMechanism),0.2f);
     }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-  
-       // Debug.LogError("按钮被点击");   
-    }
-
-    #endregion
-
-    #region 数据操作
     void ReflashMechanism()
     {
         MechanismInPut.Instance.modeTest = MechanismInPut.ModeTest.FourDirectionsLinks;
@@ -229,17 +241,11 @@ public class IdelBox : MonoBehaviour,
     }
     void Init()
     {
-        transform.TryGetComponent<ChangeLiquid>(out changeLiquid);
+        transform.TryGetComponent(out changeLiquid);
         RectTransform rt = Idel.GetComponent<RectTransform>();
         idelAnchoredPos = rt.anchoredPosition3D;
         originScale = rt.localScale;
         OnGameObjCreate();
-         // 通讯协议绑定触发方法
-        // broadcastClass.CreateNewIdea += OnGameObjCreate;
-
-        // 触发生成方块方法
-        // CommunicationManager.OnCreateNewIdea(1);
-        
     }
     /// <summary>
     /// 初始化生成砖块GameObject
@@ -251,63 +257,7 @@ public class IdelBox : MonoBehaviour,
         
         tetrominoe = Instantiate(tetrominoes[Random.Range(0, tetrominoes.Length)].gameObject, IdelWorldSpace.transform.position,IdelWorldSpace.transform.rotation).GetComponent<TetrisBlockSimple>();
         tetrominoe.player = player;
-    }
-    private void OnGameObjCreate(List<IdeaClass> IdeaClass, EventType.BlocksGrade Level)
-    {
-        foreach (IdeaClass info in IdeaClass)
-        {
-            var tetrisInfo = info.BlocksInfo.TetrisInfo;
-
-            foreach (int key in tetrisInfo.Keys)
-            {
-                var infoObj = GameObject.Instantiate(tetrisInfo[key].BlocksGameObject, Idel.transform);
-                Image infoObjImg = infoObj.GetComponent<Image>();
-                infoObjImg.sprite = SetIdelElement(tetrisInfo[key].Color);
-                infoObjImg.raycastTarget = false;
-                infoObj.transform.localPosition = new Vector3(tetrisInfo[key].posx * X_space, tetrisInfo[key].posy * Y_space, 0);
-                //if(!yMoved)
-                {
-                    
-                    if( infoObj.GetComponent<RectTransform>().anchoredPosition3D.y >= Max_space_Y )
-                    {
-                        // Debug.LogError("y轴移动");
-                        Idel.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(idelAnchoredPos.x, idelAnchoredPos.y - 10f , idelAnchoredPos.z );
-                        // yMoved = true;
-                    }
-                    if( infoObj.GetComponent<RectTransform>().anchoredPosition3D.y <= Min_space_Y )
-                    {
-                        // Debug.LogError("y轴移动");
-                        Idel.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(idelAnchoredPos.x, idelAnchoredPos.y + 10f , idelAnchoredPos.z );
-                        // yMoved = true;
-                    }
-                }
-                //if(!xMoved)
-                {
-                    
-                    if( infoObj.GetComponent<RectTransform>().anchoredPosition3D.x >= Max_space_X )
-                    {
-                        // Debug.LogError("x轴移动");
-                        Idel.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(idelAnchoredPos.x - 10f, idelAnchoredPos.y , idelAnchoredPos.z );
-                        // xMoved = true;
-                    }
-                    if( infoObj.GetComponent<RectTransform>().anchoredPosition3D.x <= Min_space_X )
-                    {
-                        // Debug.LogError("x轴移动");
-                        Idel.GetComponent<RectTransform>().anchoredPosition3D = new Vector3(idelAnchoredPos.x + 10f, idelAnchoredPos.y , idelAnchoredPos.z );
-                        // xMoved = true;
-                    }
-                }
-                
-
-            }
-        }
-
-        // BlocksInfo = IdeaClass[0].BlocksInfo;
-
-        blockGrade = Level;
-        changeLiquid.ChangeColor();
-
-        // broadcastClass.CreateNewIdea -= OnGameObjCreate;
+        changeLiquid.ChangeColor(tetrominoe.color);
     }
     Sprite SetIdelElement(EventType.UnitColor color)
     {
@@ -410,10 +360,11 @@ public class IdelBox : MonoBehaviour,
     }
     public void DoRotate()
     {
-        if(tetrominoe)
-        {
-            tetrominoe.Rotate(tetrominoe.transform.forward);
-        }
+        bool reverse = false;
+        if(!tetrominoe)return;
+        if(!reverse){tetrominoe.Rotate(tetrominoe.transform.forward);}
+        else{tetrominoe.RotateReverse(tetrominoe.transform.forward);}
+        
     }
     #endregion
 

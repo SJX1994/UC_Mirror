@@ -13,8 +13,8 @@ public class BossManagerExample : MonoBehaviour
     public GameObject boss;
     bool finishBossDisplay;
 
-    private BroadcastClass broadcastClass;
-    private CommunicationInteractionManager CommunicationManager;
+    // private BroadcastClass broadcastClass;
+    // private CommunicationInteractionManager CommunicationManager;
     #endregion 数据对象
     #region 数据关系
     void Start()
@@ -29,10 +29,10 @@ public class BossManagerExample : MonoBehaviour
 
         // 通信获取
         // TODO 暂时获取方式
-        CommunicationManager = GameObject.Find("LanNetWorkManager").gameObject.GetComponent<CommunicationInteractionManager>();
-        broadcastClass = CommunicationManager.GetComponent<BroadcastClass>();
+        // CommunicationManager = GameObject.Find("LanNetWorkManager").gameObject.GetComponent<CommunicationInteractionManager>();
+        // broadcastClass = CommunicationManager.GetComponent<BroadcastClass>();
 
-        broadcastClass.CreateBoss += CreateBoss;
+        // broadcastClass.CreateBoss += CreateBoss;
     }
 
     public void CreateBoss(int info)
@@ -61,7 +61,7 @@ public class BossManagerExample : MonoBehaviour
 
 
         // Boss Just Create Once
-        broadcastClass.CreateBoss -= CreateBoss;
+        // broadcastClass.CreateBoss -= CreateBoss;
     }
 
     void Update()

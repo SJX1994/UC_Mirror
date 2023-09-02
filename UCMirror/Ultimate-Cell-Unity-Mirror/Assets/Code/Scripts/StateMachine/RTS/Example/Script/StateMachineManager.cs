@@ -10,9 +10,9 @@ public class StateMachineManager : Singleton<StateMachineManager>
 {
     #region 数据对象
     // 通讯对象
-    private GameObject sceneLoader;
-    private CommunicationInteractionManager CommunicationManager;
-    private BroadcastClass broadcastClass;
+    // private GameObject sceneLoader;
+    // private CommunicationInteractionManager CommunicationManager;
+    // private BroadcastClass broadcastClass;
     private Dictionary<int, UnitInfoClass> unitInfoState = new();
     private Dictionary<int, UnitInfoClass> VirusInfoState = new();
     public UnityAction<Soldier> OnSyntheticEvent;// 合成事件
@@ -48,47 +48,47 @@ public class StateMachineManager : Singleton<StateMachineManager>
 
     void Start()
     {
-        // TODO 暂时获取方式
-        if (GameObject.Find("LanNetWorkManager") == null)
-        {
-            return;
-        }
-        sceneLoader = GameObject.Find("LanNetWorkManager").gameObject;
-        // 全局通信方法管理
-        CommunicationManager = sceneLoader.GetComponent<CommunicationInteractionManager>();
-        // 全局通信事件注册类
-        broadcastClass = sceneLoader.GetComponent<BroadcastClass>();
+        // // TODO 暂时获取方式
+        // if (GameObject.Find("LanNetWorkManager") == null)
+        // {
+        //     return;
+        // }
+        // sceneLoader = GameObject.Find("LanNetWorkManager").gameObject;
+        // // 全局通信方法管理
+        // CommunicationManager = sceneLoader.GetComponent<CommunicationInteractionManager>();
+        // // 全局通信事件注册类
+        // broadcastClass = sceneLoader.GetComponent<BroadcastClass>();
 
-        // 生成砖块信息监听
-        broadcastClass.OnCellUnitCreate += OnListenCellsUnitCreate;
+        // // 生成砖块信息监听
+        // broadcastClass.OnCellUnitCreate += OnListenCellsUnitCreate;
 
-        // 更新砖块信息监听
-        // broadcastClass.TetrisInfoUpdate += OnListenCellUnitUpdate;
+        // // 更新砖块信息监听
+        // // broadcastClass.TetrisInfoUpdate += OnListenCellUnitUpdate;
 
-        // Unit信息整体更新监听
-        broadcastClass.UnitInfoAllUpdate += OnListenCellUnitUpdate;
+        // // Unit信息整体更新监听
+        // broadcastClass.UnitInfoAllUpdate += OnListenCellUnitUpdate;
 
-        // 外尔新建监听
-        broadcastClass.VirusInfoCreate += OnlistenVirusCreate;
+        // // 外尔新建监听
+        // broadcastClass.VirusInfoCreate += OnlistenVirusCreate;
 
-        // 外尔信息更新监听
-        broadcastClass.VirusInfoUpdate += OnlistenVirusUpdate;
+        // // 外尔信息更新监听
+        // broadcastClass.VirusInfoUpdate += OnlistenVirusUpdate;
 
-        // 英雄生成监听
-        // broadcastClass.OnHeroCreate += OnHeroCreate;
+        // // 英雄生成监听
+        // // broadcastClass.OnHeroCreate += OnHeroCreate;
 
-        // Unit回退事件
-        broadcastClass.OnUnitBack += OnUnitBack;
+        // // Unit回退事件
+        // broadcastClass.OnUnitBack += OnUnitBack;
 
-        // 删除 - 兵线向左/向右移动删除一整列Unit事件
-        // broadcastClass.SetUnitDie += SetUnitDie;
+        // // 删除 - 兵线向左/向右移动删除一整列Unit事件
+        // // broadcastClass.SetUnitDie += SetUnitDie;
 
-        // 获取所有英雄UI
-        heroUI = transform.GetComponentsInChildren<DragUIItem>();
-        foreach (DragUIItem item in heroUI)
-        {
-            item.OnCancel += OnHeroUICancel;
-        }
+        // // 获取所有英雄UI
+        // heroUI = transform.GetComponentsInChildren<DragUIItem>();
+        // foreach (DragUIItem item in heroUI)
+        // {
+        //     item.OnCancel += OnHeroUICancel;
+        // }
         // 触发刷新
         mechanismInPut = FindObjectOfType<MechanismInPut>();
     }
@@ -264,7 +264,7 @@ public class StateMachineManager : Singleton<StateMachineManager>
     /// <param name="UnitIndexId"></param>
     void OnUnitDie(int UnitIndexId)
     {
-        CommunicationManager.UnitDieInfoProcess(UnitIndexId);
+        // CommunicationManager.UnitDieInfoProcess(UnitIndexId);
     }
     #endregion 数据关系
     #region 数据操作
@@ -535,7 +535,7 @@ public class StateMachineManager : Singleton<StateMachineManager>
     /// <param name="whichVirus"></param>
     void VirusArrive(Unit whichVirus)
     {
-        CommunicationManager.OnVirusArrive(whichVirus.id);
+        // CommunicationManager.OnVirusArrive(whichVirus.id);
     }
     /// <summary>
     /// 塞尔到达指定位置事件 订阅者
@@ -543,7 +543,7 @@ public class StateMachineManager : Singleton<StateMachineManager>
     /// <param name="whichCell">细胞到达事件</param>
     void CellArrive(Unit whichCell)
     {
-        CommunicationManager.OnCellArrive(whichCell.id);
+        // CommunicationManager.OnCellArrive(whichCell.id);
     }
     /// <summary>
     /// 塞尔单位死亡事件 订阅者
@@ -567,7 +567,7 @@ public class StateMachineManager : Singleton<StateMachineManager>
     /// <param name="whichHero">英雄单位</param>
     void HeroDie(Unit whichHero)
     {
-        CommunicationManager.OnHeroDie(whichHero.id);
+        // CommunicationManager.OnHeroDie(whichHero.id);
 
         if (heroUnitsInfo.ContainsKey(whichHero.id))
         {
@@ -580,7 +580,7 @@ public class StateMachineManager : Singleton<StateMachineManager>
     /// <param name="whichHeroUI">英雄对应的UI</param>
     void OnHeroUICancel(DragUIItem whichHeroUI)
     {
-        CommunicationManager.OnHeroUICancel(whichHeroUI.heroName);
+        // CommunicationManager.OnHeroUICancel(whichHeroUI.heroName);
     }
     /// <summary>
     /// 塞尔战士切换武器

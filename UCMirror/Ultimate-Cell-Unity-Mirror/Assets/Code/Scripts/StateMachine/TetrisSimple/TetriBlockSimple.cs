@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 
 public class TetriBlockSimple : MonoBehaviour
 {
-    TetrisBlockSimple tetrisBlockSimple;
+    public TetrisBlockSimple tetrisBlockSimple;
     public PlayerData.Player player = PlayerData.Player.NotReady;
     public LayerMask blockTargetMask;
     public Vector2 posId;
@@ -15,28 +15,26 @@ public class TetriBlockSimple : MonoBehaviour
     private bool canMove = false;
     public bool CanMove
     {
-          get { return canMove; }
-          set
-          {
-                if (value != canMove)
-                {
-                    canMove = value;
-                    DoGroupMoveCheck();
-                }
-          }
+        get 
+        { 
+            return canMove; 
+        }
+        set
+        {
+            if(value == canMove)return;
+            canMove = value;
+            DoGroupMoveCheck();
+        }
     }
+    bool canCreate = false;
+    bool canDrop = false;
     BlockTetriHandler blockOccupying;
     SortingGroup cubeSortingGroup;
     // Start is called before the first frame update
     void Start()
     {
         tetrisBlockSimple = transform.parent.GetComponent<TetrisBlockSimple>();
-        tetrisBlockSimple.OnTetrisMoveing += ()=>{ 
-            CanMove = false; 
-            // currentBlockTetriHandler.tetriBlockSimpleHolder = null;
-            // currentBlockTetriHandler = null;
-        };
-        
+        tetrisBlockSimple.OnTetrisMoveing += ()=>{CanMove = false;};
         cubeSortingGroup = transform.Find("Cube").GetComponent<SortingGroup>();
     }
 
@@ -45,121 +43,248 @@ public class TetriBlockSimple : MonoBehaviour
     {
         
     }
+    public void FailToCreat()
+    {
+        canCreate = false;
+        CancelInvoke(nameof(DoOccupied));
+    }
+    public void SuccessToCreat()
+    {
+        canCreate = true;
+    }
+    public void Reset()
+    {
+        currentBlockTetriHandler = null;
+        blockOccupying = null;
+        CanMove = false;
+        canDrop = false;
+        canCreate = false;
+    }
+    public bool CheckColliderOnEndDrag()
+    {
+        if(!canCreate)return false;
+        // 发射射线向下进行检测
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if(!hitBlock)return false;
+        // 进一步的处理
+        BlockTetriHandler block;
+        hit.collider.transform.TryGetComponent(out block);
+        if(!block)return false;
+        return true;
+            
+    }
     public bool CheckCollider()
     {
         // 发射射线向下进行检测
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask))
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if(hitBlock)
         {
-            // 如果射线命中了对象
-            // Debug.Log("射线命中了: " + hit.collider.gameObject.name);
-            // Debug.DrawLine(ray.origin, hit.point, Color.red, 100f);
             // 进一步的处理
-            if(hit.collider.transform.TryGetComponent(out BlockTetriHandler block))
+            BlockTetriHandler block;
+            hit.collider.transform.TryGetComponent(out block);
+            if(!block)return false;
+            if(block.State == BlockTetriHandler.BlockTetriState.Occupying)
             {
-                if(block.State == BlockTetriHandler.BlockTetriState.Occupying)
-                {
-                    // 不能放置
-                    CantPutCallback?.Invoke(this);
-                    return false;
-                }
-                if(player == PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2)
-                {
-                    // 不能放置
-                    CantPutCallback?.Invoke(this);
-                    return false;
-                }
-                else if(player == PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1)
-                {
-                    // 不能放置
-                    CantPutCallback?.Invoke(this);
-                    return false;
-                }
-                if(!block.tetriBlockSimpleHolder)
-                {
-                    // 可以放置
-                    return true;
-                }
-                else
-                {
-                    CantPutCallback?.Invoke(this);
-                    return false;
-                }
+                // 不能放置
+                CantPutCallback?.Invoke(this);
+                return false;
             }
+            if(player == PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2)
+            {
+                // 不能放置
+                CantPutCallback?.Invoke(this);
+                return false;
+            }
+            else if(player == PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1)
+            {
+                // 不能放置
+                CantPutCallback?.Invoke(this);
+                return false;
+            }
+            if(!block.tetriBlockSimpleHolder)
+            {
+                // 可以放置
+                return true;
+            }
+            else
+            {
+                CantPutCallback?.Invoke(this);
+                return false;
+            }
+            
         }else
         {
             CantPutCallback?.Invoke(this);
             return false;
         }
-        return false;
     }
     public void Active()
     {
+        if(!canCreate)return;
         // 发射射线向下进行检测
         Ray ray = new Ray(transform.position, Vector3.down);
-
         RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask))
-        {
-            if(hit.collider.transform.TryGetComponent(out BlockTetriHandler block))
-            {
-                blockOccupying = block;
-                posId = block.posId;
-            }
-        }
-        
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if (!hitBlock)return;
+        BlockTetriHandler block;
+        hit.collider.transform.TryGetComponent(out block);
+        if(!block)return;
+        blockOccupying = block;
+        posId = block.posId;
     }
-    public void DoGroupMoveCheck()
+    public void AfterDropCheck()
     {
         // 占领
         // 发射射线向下进行检测
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask))
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if (!hitBlock)return;
+        // 进一步的处理
+        BlockTetriHandler block;
+        hit.collider.transform.TryGetComponent(out block);
+        if(!block)return;
+        blockOccupying = block;
+        posId = block.posId;
+        if(player == PlayerData.Player.Player1 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
-            // 如果射线命中了对象
-            // Debug.Log("射线命中了: " + hit.collider.gameObject.name);
-            // Debug.DrawLine(ray.origin, hit.point, Color.red, 100f);
-            // 进一步的处理
-            if(hit.collider.transform.TryGetComponent(out BlockTetriHandler block))
-            {
-                
-                blockOccupying = block;
-                posId = block.posId;
-                if(player == PlayerData.Player.Player1)
-                {
-                    if(block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
-                    {
-                        block.State = BlockTetriHandler.BlockTetriState.Occupying;
-                        Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.1f);
-                    }else
-                    {
-                        Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.5f);
-                    }
-                    
-                }
-                else if(player == PlayerData.Player.Player2 )
-                {
-                    if(block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player2)
-                    {
-                        block.State = BlockTetriHandler.BlockTetriState.Occupying;
-                        Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.1f);
-                    }else
-                    {
-                        Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.5f);
-                    }
-                    
-                }
-               
-                
-            }
+            block.State = BlockTetriHandler.BlockTetriState.Occupying;   
         }
+        else if(player == PlayerData.Player.Player2 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        {
+            block.State = BlockTetriHandler.BlockTetriState.Occupying;   
+        }
+        
+    }
+    public BlockTetriHandler NextBlock()
+    {
+        BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
+        var blockP1 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x + 1,posId.y));
+        var blockP2 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x - 1,posId.y));
+        if(player == PlayerData.Player.Player1)
+        {
+            if(!blockP1)return null;
+            return blockP1.GetComponent<BlockTetriHandler>();
+        }
+        else if(player == PlayerData.Player.Player2)
+        {
+            if(!blockP2)return null;
+            return blockP2.GetComponent<BlockTetriHandler>();
+        }
+        return null;
+    }
+    public BlockTetriHandler CurrentBlock()
+    {
+        BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
+        BlockTetriHandler currentBlock = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x,posId.y)).GetComponent<BlockTetriHandler>();
+        return currentBlock;
+        
+    }
+    public bool BlockNextCheck(BlockTetriHandler block)
+    {
+        if(block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2 && player == PlayerData.Player.Player1 && block.tetriBlockSimpleHolder != null)
+        {
+            return false;
+        }
+        if(block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1 && player== PlayerData.Player.Player2 && block.tetriBlockSimpleHolder != null)
+        {
+            return false;
+        }
+        if(block.State == BlockTetriHandler.BlockTetriState.Occupying)
+        {
+            return false;
+        }
+        return true;
+            
+    }
+    public void DoGroupMoveCheck()
+    {
+        if(!canCreate)return;
+        // 占领
+        // 发射射线向下进行检测
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if (!hitBlock)return;
+        BlockTetriHandler block;
+        hit.collider.transform.TryGetComponent(out block);
+        // 进一步的处理
+        if(!block)return;
+        blockOccupying = block;
+        posId = block.posId;
+        if(player == PlayerData.Player.Player1 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
+        {
+            block.State = BlockTetriHandler.BlockTetriState.Occupying;
+            Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.1f);
+        }
+        else if(player == PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1)
+        {
+            Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.5f);
+        }
+        else if(player == PlayerData.Player.Player2 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        {
+            block.State = BlockTetriHandler.BlockTetriState.Occupying;
+            Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.1f);
+        }
+        else if(player == PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        {
+            Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.5f);
+        }
+        
        
+    }
+    public bool DoGroupDropCheck()
+    {
+        
+        // 是否可以放下
+        CanMove = false;
+        // 发射射线向下进行检测
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if (!hitBlock)return false;
+        // 进一步的处理
+        BlockBuoyHandler block;
+        hit.collider.transform.TryGetComponent(out block);
+        if(!block)return false;
+        if(block.blockTetriHandler.tetriBlockSimpleHolder)
+        {
+            return false;
+        }
+        if(block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace)
+        {
+            return true;
+        }
+        if(player == PlayerData.Player.Player1 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player1)
+        {
+            return false;
+        }
+        else if(player == PlayerData.Player.Player2 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        {
+            
+            return false;
+            
+        }
+        return true;
+    }
+    public void CancleOccupied()
+    {
+        CancelInvoke(nameof(DoOccupied));
+
+        if(!blockOccupying)
+        {
+            blockOccupying = tetrisBlockSimple.blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x,posId.y)).transform.GetComponent<BlockTetriHandler>();
+        }
+
+        blockOccupying.State = BlockTetriHandler.BlockTetriState.Peace;
     }
     void DoOccupied()
     {
+        if(!canCreate)return;
         if(!blockOccupying)
         {
             blockOccupying = tetrisBlockSimple.blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x,posId.y)).transform.GetComponent<BlockTetriHandler>();
@@ -181,19 +306,15 @@ public class TetriBlockSimple : MonoBehaviour
     /// </summary>
     public void InFlow()
     {
-       if(cubeSortingGroup)
-       {
-            cubeSortingGroup.sortingOrder = PlayerData.Dispaly.FlowOrder;
-       }
+        if(!cubeSortingGroup)return;
+        cubeSortingGroup.sortingOrder = PlayerData.Dispaly.FlowOrder;
     }
     /// <summary>
     /// 退出心流模式表现
     /// </summary>
     public void OutFlow()
     {
-       if(cubeSortingGroup)
-       {
-            cubeSortingGroup.sortingOrder = PlayerData.Dispaly.NotFlowOrder;
-       }
+        if(!cubeSortingGroup)return;
+        cubeSortingGroup.sortingOrder = PlayerData.Dispaly.NotFlowOrder;
     }
 }

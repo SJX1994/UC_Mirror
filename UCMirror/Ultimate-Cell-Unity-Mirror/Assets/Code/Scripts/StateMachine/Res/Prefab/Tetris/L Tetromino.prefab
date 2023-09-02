@@ -425,12 +425,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df009bfde6bbf09479e7215f672cc9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tetrisBlockSimple: {fileID: 0}
   player: 2
   blockTargetMask:
     serializedVersion: 2
     m_Bits: 512
   posId: {x: 0, y: 0}
   currentBlockTetriHandler: {fileID: 0}
+  canDrop: 0
 --- !u!1 &4290743319842590739
 GameObject:
   m_ObjectHideFlags: 0
@@ -529,12 +531,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df009bfde6bbf09479e7215f672cc9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tetrisBlockSimple: {fileID: 0}
   player: 2
   blockTargetMask:
     serializedVersion: 2
     m_Bits: 512
   posId: {x: 0, y: 0}
   currentBlockTetriHandler: {fileID: 0}
+  canDrop: 0
 --- !u!1 &4290743319883046585
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,12 +637,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df009bfde6bbf09479e7215f672cc9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tetrisBlockSimple: {fileID: 0}
   player: 2
   blockTargetMask:
     serializedVersion: 2
     m_Bits: 512
   posId: {x: 0, y: 0}
   currentBlockTetriHandler: {fileID: 0}
+  canDrop: 0
 --- !u!1 &4290743319927967198
 GameObject:
   m_ObjectHideFlags: 0
@@ -737,12 +743,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df009bfde6bbf09479e7215f672cc9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tetrisBlockSimple: {fileID: 0}
   player: 2
   blockTargetMask:
     serializedVersion: 2
     m_Bits: 512
   posId: {x: 0, y: 0}
   currentBlockTetriHandler: {fileID: 0}
+  canDrop: 0
 --- !u!1 &4290743320113375981
 GameObject:
   m_ObjectHideFlags: 0
@@ -797,6 +805,8 @@ MonoBehaviour:
   pioneerTetris: []
   childTetris: []
   blocksCreator: {fileID: 0}
+  tetrisCheckMode: 3
+  color: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &4766558069869805148
 GameObject:
   m_ObjectHideFlags: 0

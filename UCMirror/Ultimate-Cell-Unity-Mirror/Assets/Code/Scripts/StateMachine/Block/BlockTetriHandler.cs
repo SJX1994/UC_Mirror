@@ -76,4 +76,9 @@ public class BlockTetriHandler : MonoBehaviour
             
         }
     }
+    public void Reset()
+    {
+        State = BlockTetriState.Peace;
+        tetriBlockSimpleHolder = null;
+    }
 }

@@ -1,5 +1,5 @@
 /// **************************************
-/// ·â×°°´Å¥ÊÂ¼þ
+/// ï¿½ï¿½×°ï¿½ï¿½Å¥ï¿½Â¼ï¿½
 /// **************************************
 using System;
 using UnityEngine;
@@ -19,9 +19,9 @@ public class EventTriggerListener : EventTrigger
     public MyEventHandler onPointerUp;
     public static EventTriggerListener GetListener(GameObject go)
     {
-        //»ñÈ¡Eventtrigger×é¼þ
+        //ï¿½ï¿½È¡Eventtriggerï¿½ï¿½ï¿½
         EventTriggerListener eventTriggerListener = go.GetComponent<EventTriggerListener>();
-        //Èç¹û²»´æÔÚ×é¼þ£¬ÔòÌí¼Ó
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (eventTriggerListener == null)
         {
             eventTriggerListener = go.AddComponent<EventTriggerListener>();
@@ -30,7 +30,7 @@ public class EventTriggerListener : EventTrigger
     }
     
     /// <summary>
-    /// ÖØÐ´µã»÷ÊÂ¼þ
+    /// ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
     /// </summary>
     /// <param name="eventData"></param>
     public override void OnPointerClick(PointerEventData eventData)
@@ -39,7 +39,7 @@ public class EventTriggerListener : EventTrigger
     }
 
     /// <summary>
-    /// ÖØÐ´°´ÏÂÊÂ¼þ
+    /// ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
     /// </summary>
     /// <param name="eventData"></param>
     public override void OnPointerDown(PointerEventData eventData)
@@ -48,7 +48,7 @@ public class EventTriggerListener : EventTrigger
     }
 
     /// <summary>
-    /// ÖØÐ´Ì§ÆðÊÂ¼þ
+    /// ï¿½ï¿½Ð´Ì§ï¿½ï¿½ï¿½Â¼ï¿½
     /// </summary>
     /// <param name="eventData"></param>
     public override void OnPointerUp(PointerEventData eventData)
@@ -57,7 +57,7 @@ public class EventTriggerListener : EventTrigger
     }
 
     /// <summary>
-    /// ÖØÐ´ÐüÍ£ÊÂ¼þ
+    /// ï¿½ï¿½Ð´ï¿½ï¿½Í£ï¿½Â¼ï¿½
     /// </summary>
     /// <param name="eventData"></param>
     public override void OnPointerEnter(PointerEventData eventData)
@@ -66,7 +66,7 @@ public class EventTriggerListener : EventTrigger
     }
 
     /// <summary>
-    /// ÖØÐ´Àë¿ªÊÂ¼þ
+    /// ï¿½ï¿½Ð´ï¿½ë¿ªï¿½Â¼ï¿½
     /// </summary>
     /// <param name="eventData"></param>
     public override void OnPointerExit(PointerEventData eventData)
@@ -75,7 +75,7 @@ public class EventTriggerListener : EventTrigger
     }
 
     /// <summary>
-    /// ¿ªÊ¼ÍÏ×§ÊÂ¼þ
+    /// ï¿½ï¿½Ê¼ï¿½ï¿½×§ï¿½Â¼ï¿½
     /// </summary>
     /// <param name="eventData"></param>
     public override void OnBeginDrag(PointerEventData eventData)
@@ -85,7 +85,7 @@ public class EventTriggerListener : EventTrigger
 
 
     /// <summary>
-    /// ÍÏ×§ÖÐÊÂ¼þ
+    /// ï¿½ï¿½×§ï¿½ï¿½ï¿½Â¼ï¿½
     /// </summary>
     /// <param name="eventData"></param>
     public override void OnDrag(PointerEventData eventData)
@@ -94,7 +94,7 @@ public class EventTriggerListener : EventTrigger
     }
 
     /// <summary>
-    /// ÍÏ×§½áÊøÊÂ¼þ
+    /// ï¿½ï¿½×§ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
     /// </summary>
     /// <param name="eventData"></param>
     public override void OnEndDrag(PointerEventData eventData)

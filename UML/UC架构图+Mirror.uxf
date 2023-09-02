@@ -1855,7 +1855,7 @@ transparency=95</panel_attributes>
       <x>2112</x>
       <y>738</y>
       <w>726</w>
-      <h>228</h>
+      <h>234</h>
     </coordinates>
     <panel_attributes>俄罗斯方块逻辑
 bg=green
@@ -1883,19 +1883,8 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2424</x>
-      <y>762</y>
-      <w>90</w>
-      <h>18</h>
-    </coordinates>
-    <panel_attributes>俄罗斯方块生成</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
       <x>2322</x>
-      <y>762</y>
+      <y>798</y>
       <w>60</w>
       <h>60</h>
     </coordinates>
@@ -1912,7 +1901,7 @@ transparency=95</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>2376</x>
-      <y>762</y>
+      <y>828</y>
       <w>60</w>
       <h>18</h>
     </coordinates>
@@ -1920,25 +1909,17 @@ transparency=95</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
   </element>
   <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>2454</x>
-      <y>774</y>
-      <w>18</w>
-      <h>60</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLClass</id>
     <coordinates>
       <x>2424</x>
       <y>918</y>
       <w>90</w>
-      <h>18</h>
+      <h>42</h>
     </coordinates>
-    <panel_attributes>俄罗斯方块的行为</panel_attributes>
+    <panel_attributes>俄罗斯方块的行为
+--
++ 检查是否能前进
++ 检查是否能放置</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -1979,10 +1960,10 @@ transparency=95</panel_attributes>
     <coordinates>
       <x>2550</x>
       <y>918</y>
-      <w>102</w>
+      <w>126</w>
       <h>18</h>
     </coordinates>
-    <panel_attributes>砖块俄罗斯方块逻辑处理</panel_attributes>
+    <panel_attributes>砖块_俄罗斯方块逻辑处理</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -1999,8 +1980,8 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2190</x>
-      <y>762</y>
+      <x>2214</x>
+      <y>828</y>
       <w>60</w>
       <h>18</h>
     </coordinates>
@@ -2010,20 +1991,20 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>2244</x>
-      <y>762</y>
-      <w>90</w>
+      <x>2268</x>
+      <y>828</y>
+      <w>66</w>
       <h>18</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;130.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>24</x>
-      <y>612</y>
-      <w>318</w>
+      <x>2112</x>
+      <y>996</y>
+      <w>306</w>
       <h>306</h>
     </coordinates>
     <panel_attributes>实时性
@@ -2035,16 +2016,83 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>138</x>
-      <y>654</y>
+      <x>2226</x>
+      <y>1038</y>
       <w>84</w>
       <h>54</h>
     </coordinates>
-    <panel_attributes>建筑
+    <panel_attributes>浮标信息
+--
+- 点击移动 _完成</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2226</x>
+      <y>1122</y>
+      <w>84</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>浮标行为
 --
 - 拖拽操作
-- 点击移动
-- 建筑表现</panel_attributes>
+- 放大缩小选区</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2256</x>
+      <y>1086</y>
+      <w>18</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2226</x>
+      <y>1194</y>
+      <w>84</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>砖块_浮标逻辑处理</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2256</x>
+      <y>1158</y>
+      <w>18</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2304</x>
+      <y>858</y>
+      <w>132</w>
+      <h>300</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;480.0;110.0;480.0;110.0;10.0;200.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2190</x>
+      <y>1134</y>
+      <w>48</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>60.0;10.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>

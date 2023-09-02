@@ -23,8 +23,6 @@ public class ChangeLiquid : MonoBehaviour
    
     void Start()
     {
-        // 通信获取
-        // TODO 暂时获取方式
 
         buttom = transform.Find("liquidSet").Find("liquid_bottom").gameObject;
         top = transform.Find("liquidSet").Find("liquid_top").gameObject;
@@ -35,13 +33,12 @@ public class ChangeLiquid : MonoBehaviour
         ideaBox = transform.GetComponent<IdelBox>();
         top.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         buttom.GetComponent<Image>().fillAmount = 1;
-        ChangeColor();
+        
     }
    
         
     public void DoCount()
     {
-        //ChangeColor();
         top.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
         ready.SetActive(false);
         ideaBox.Idel.SetActive(false);
@@ -58,25 +55,12 @@ public class ChangeLiquid : MonoBehaviour
         };
         
     }
-
-    public void ChangeColor()
+    public void ChangeColor(Color color)
     {
-        switch(ideaBox.blockGrade)
-        {
-            case EventType.BlocksGrade.BottomGrade:
-                buttom.GetComponent<Image>().DOColor(Color.green,0.5f);
-                top.GetComponent<Image>().DOColor(Color.green,0.5f);
-            break;
-            case EventType.BlocksGrade.MiddleGrade:
-                buttom.GetComponent<Image>().DOColor(Color.cyan,0.5f);
-                top.GetComponent<Image>().DOColor(Color.cyan,0.5f);
-            break;
-            case EventType.BlocksGrade.TopGrade:
-                buttom.GetComponent<Image>().DOColor(new Color32( 143 , 0 , 254, 255 ),0.5f);
-                top.GetComponent<Image>().DOColor(new Color32( 143 , 0 , 254, 255 ),0.5f);
-            break;
-        }
+        buttom.GetComponent<Image>().DOColor(color,0.5f);
+        top.GetComponent<Image>().DOColor(color,0.5f);
     }
+    
 
 
   

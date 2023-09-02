@@ -266,6 +266,7 @@ GameObject:
   - component: {fileID: 7486268708185842489}
   - component: {fileID: 4325501496576908595}
   - component: {fileID: 99985441644556186}
+  - component: {fileID: 3252238316002773928}
   m_Layer: 9
   m_Name: Block
   m_TagString: Untagged
@@ -414,7 +415,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5664357317081196537}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea2e069d4c2e03d4290323e92bbcd028, type: 3}
   m_Name: 
@@ -422,3 +423,15 @@ MonoBehaviour:
   slotPos: {x: 0, y: 0, z: 0}
   theLastStayBuilding: {fileID: 0}
   blockDisplay: {fileID: 0}
+--- !u!114 &3252238316002773928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5664357317081196537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c1fb554d9cde0241a57ca087bb30029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

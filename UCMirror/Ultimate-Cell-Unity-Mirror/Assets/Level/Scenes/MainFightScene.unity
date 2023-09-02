@@ -243,7 +243,6 @@ GameObject:
   - component: {fileID: 653622993}
   - component: {fileID: 653622992}
   - component: {fileID: 653622991}
-  - component: {fileID: 653622994}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -301,18 +300,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &653622994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 653622990}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7b3ec6325477fb49a328dd0d88195cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1419440597
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +422,6 @@ GameObject:
   - component: {fileID: 1942075570}
   - component: {fileID: 1942075573}
   - component: {fileID: 1942075571}
-  - component: {fileID: 1942075572}
   m_Layer: 0
   m_Name: SceneLoader
   m_TagString: Untagged
@@ -472,33 +458,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ServerSwitchCheck: 0
   sceneToLoads:
-  - sceneAsset: {fileID: 102900000, guid: 772aa6fed5f1e2e4bb435fd28f3e7a5d, type: 3}
-    scenePath: Assets/Level/Scenes/FightScene/GlobalControlScene.unity
   - sceneAsset: {fileID: 102900000, guid: b721dd67f5747ad479bc8641de58c8ac, type: 3}
     scenePath: Assets/Level/Scenes/FightScene/ArtBackGroundScene.unity
-  - sceneAsset: {fileID: 102900000, guid: 6c2121448a44c9247adaef39d2445548, type: 3}
-    scenePath: Assets/Level/Scenes/FightScene/StoryScene.unity
   - sceneAsset: {fileID: 102900000, guid: de75a33610544774b88cf219f923a830, type: 3}
     scenePath: Assets/Level/Scenes/FightScene/Blocks.unity
-  - sceneAsset: {fileID: 102900000, guid: 02c015aa9c0f2c347922426c31abe41f, type: 3}
-    scenePath: Assets/Level/Scenes/FightScene/TetrisLogicScene.unity
   - sceneAsset: {fileID: 102900000, guid: 1bb5cac832a58054fbaf980acb68c955, type: 3}
     scenePath: Assets/Level/Scenes/FightScene/Idea.unity
   - sceneAsset: {fileID: 102900000, guid: 5ff33fc129e02174e84fb4afb5889da9, type: 3}
     scenePath: Assets/Level/Scenes/FightScene/StayMachineExample_SJX.unity
---- !u!114 &1942075572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942075568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88f3d3d00f96a8e4dbb4f83633d39c7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ServerState: 0
+  - sceneAsset: {fileID: 102900000, guid: eb433c0cd7a571045ad906a8d5ddace4, type: 3}
+    scenePath: Assets/Level/Scenes/FightScene/Buoy.unity
 --- !u!114 &1942075573
 MonoBehaviour:
   m_ObjectHideFlags: 0
