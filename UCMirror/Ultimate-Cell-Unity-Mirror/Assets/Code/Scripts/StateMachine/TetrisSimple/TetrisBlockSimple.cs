@@ -15,6 +15,8 @@ public class TetrisBlockSimple : MonoBehaviour
     public UnityAction OnTetrisMoveing;
     public BlocksCreator blocksCreator;
     public Dictionary<TetriBlockSimple,BlockTetriHandler> TB_cache = new();
+    public UnityAction<Dictionary<TetriBuoySimple,BlockBuoyHandler>> OnCacheUpdateForBuoyMarkers;
+    public UnityAction OnUpdatDisplay;
     private Stack<Vector3> positionStack;
     int moveStep = 1;
     public enum TetrisCheckMode
@@ -56,6 +58,7 @@ public class TetrisBlockSimple : MonoBehaviour
         EvaluatePioneers();
         EvaluateCollision();
         Move();
+        transform.GetComponent<TetrisBuoySimple>().Display_Active();
         return true;
     }
     public bool ColliderCheck()
@@ -105,6 +108,10 @@ public class TetrisBlockSimple : MonoBehaviour
     {
         RollbackPosition();
     }
+    void CantPutAction()
+    {
+        RollbackPosition();
+    }
     void RecordPosition()
     {
         // 将当前位置入栈
@@ -129,19 +136,28 @@ public class TetrisBlockSimple : MonoBehaviour
             }
             TB_cache.Clear();
         }
+        Dictionary<TetriBuoySimple,BlockBuoyHandler> buoyMarkersTemp = new();
         foreach (TetriBlockSimple tetriBlock in childTetris)
         {
             BlockTetriHandler blockCurrent = null;
             blockCurrent = blocksCreator.blocks.Find((block) => block.posId == new Vector2(tetriBlock.posId.x,tetriBlock.posId.y)).GetComponent<BlockTetriHandler>();
-            if(!blockCurrent)return;
+            if(!blockCurrent)continue;
             blockCurrent.tetriBlockSimpleHolder = tetriBlock;
             tetriBlock.currentBlockTetriHandler = blockCurrent;
             // 可视化
             // blockCurrent.transform.localScale -= Vector3.one*0.3f;
             // tetriBlock.transform.localScale -= Vector3.one*0.3f;
-            if (TB_cache.ContainsKey(tetriBlock))return;
+            if (TB_cache.ContainsKey(tetriBlock))continue;
             TB_cache.Add(tetriBlock,blockCurrent);
+            TetriBuoySimple t = tetriBlock.GetComponent<TetriBuoySimple>();
+            t.posId = tetriBlock.posId;
+            BlockBuoyHandler b = blockCurrent.GetComponent<BlockBuoyHandler>();
+            b.posId = blockCurrent.posId;
+            buoyMarkersTemp.Add(t,b);
+            
         }
+        OnCacheUpdateForBuoyMarkers?.Invoke(buoyMarkersTemp);
+        OnUpdatDisplay?.Invoke();
     }
     void EvaluatePioneers()
     {
@@ -151,7 +167,7 @@ public class TetrisBlockSimple : MonoBehaviour
             foreach(var childTetri in childTetris)
             {
                 bool P1FrontObj = childTetris.FirstOrDefault(obj => obj.posId == new Vector2(childTetri.posId.x+1,childTetri.posId.y));
-                if(P1FrontObj)return;
+                if(P1FrontObj)continue;
                 pioneerTetris.Add(childTetri);
                 
             }
@@ -160,7 +176,7 @@ public class TetrisBlockSimple : MonoBehaviour
             foreach(var childTetri in childTetris)
             {
                 bool P2FrontObj = childTetris.FirstOrDefault(obj => obj.posId == new Vector2(childTetri.posId.x-1,childTetri.posId.y));
-                if(P2FrontObj)return;
+                if(P2FrontObj)continue;
                 pioneerTetris.Add(childTetri);
             }
         }
@@ -244,7 +260,7 @@ public class TetrisBlockSimple : MonoBehaviour
         moveStep = 0;
         foreach(var child in childTetris)
         {
-            child.AfterDropCheck();
+            child.DropCheck();
         }
         return true;
     }
@@ -269,14 +285,7 @@ public class TetrisBlockSimple : MonoBehaviour
         
         return true;
     }
-    public bool BuoyValidDrop()
-    {
-        foreach(var child in childTetris)
-        {
-            return child.DoGroupDropCheck();
-        }
-        return true;
-    }
+    
     public bool OnBuoyDrop()
     {
         List<bool> buoyDrop = new();
@@ -302,6 +311,6 @@ public class TetrisBlockSimple : MonoBehaviour
             tetri.Reset();
         }
     }
-    
+  
 }
 

@@ -66,8 +66,8 @@ public class IdelBox : MonoBehaviour,
     public TetrisBlockSimple[] tetrominoes;
     TetrisBlockSimple tetrominoe;
 
-    public UnityAction<IdelBox> OnTetriBeginDrag;
-    public UnityAction<IdelBox> OnTetriEndDrag;
+    public UnityAction OnTetriBeginDrag;
+    public UnityAction OnTetriEndDrag;
     // 通信管理器
     // private CommunicationInteractionManager CommunicationManager;
 
@@ -150,20 +150,9 @@ public class IdelBox : MonoBehaviour,
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
-        if(!hitBlock)
-        {
-            FailToCreat();
-        }
-        else
-        {
-            if(!tetrominoe.ColliderCheck())
-            {
-                FailToCreat();
-                return;
-            }
-            SuccessToCreat();
-        }
-        
+        if(!hitBlock){FailToCreat();return;}
+        if(!tetrominoe.ColliderCheck()){FailToCreat();return;}
+        SuccessToCreat();
     }
     
     #endregion
@@ -189,10 +178,7 @@ public class IdelBox : MonoBehaviour,
     }
     void FailToCreat()
     {
-        if(sequence!=null)
-        {
-            sequence.Kill();
-        }
+        if(sequence!=null)sequence.Kill();
         TetrisBlockSimple tetrominoeTemp = Instantiate(tetrominoe.gameObject, IdelWorldSpace.transform.position,IdelWorldSpace.transform.rotation).GetComponent<TetrisBlockSimple>();
         tetrominoe.FailToCreat();
         DestroyImmediate(tetrominoe.gameObject);
@@ -205,7 +191,7 @@ public class IdelBox : MonoBehaviour,
     {
         
         // 心流模式
-        OnTetriBeginDrag?.Invoke(this);
+        OnTetriBeginDrag?.Invoke();
         Canvas idelCanvas = Idel.GetComponent<Canvas>();
         idelCanvas.sortingLayerName = "Flow";
         idelCanvas.sortingOrder = Dispaly.FlowOrder;
@@ -224,7 +210,7 @@ public class IdelBox : MonoBehaviour,
     void OutFlow()
     {
         // 退出心流
-        OnTetriEndDrag?.Invoke(this);
+        OnTetriEndDrag?.Invoke();
         Canvas idelCanvas = Idel.GetComponent<Canvas>();
         idelCanvas.sortingLayerName = "Default";
         idelCanvas.sortingOrder = NotFlowOrder;
@@ -284,13 +270,9 @@ public class IdelBox : MonoBehaviour,
     /// </summary>
     public void RefreshGameObj()
     {
-        // RemoveItem(0);
-
-        // broadcastClass.CreateNewIdea += OnGameObjCreate;
-
-        // CommunicationManager.OnCreateNewIdea(1);
-
-        // broadcastClass.CreateNewIdea -= OnGameObjCreate;
+        if(!tetrominoe)return;
+        DestroyImmediate(tetrominoe.gameObject);
+        changeLiquid.DoCount();
     }
 
     /// <summary>

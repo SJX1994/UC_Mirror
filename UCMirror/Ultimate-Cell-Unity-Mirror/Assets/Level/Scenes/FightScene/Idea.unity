@@ -440,7 +440,6 @@ MonoBehaviour:
   IdelWorldSpace: {fileID: 392975596}
   ImageBlock: {fileID: 1147100973}
   blockText: {fileID: 1942342886}
-  blockGrade: 0
   tetrominoes:
   - {fileID: 1415807295820550346, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: -523616940837414915, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
@@ -695,7 +694,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 237395254}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
@@ -814,7 +813,6 @@ MonoBehaviour:
   IdelWorldSpace: {fileID: 871368970}
   ImageBlock: {fileID: 1247162084}
   blockText: {fileID: 1690131761}
-  blockGrade: 0
   tetrominoes:
   - {fileID: 1415807295820550346, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: -523616940837414915, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
@@ -1298,7 +1296,6 @@ MonoBehaviour:
   IdelWorldSpace: {fileID: 1048985493}
   ImageBlock: {fileID: 105559686}
   blockText: {fileID: 629616020}
-  blockGrade: 0
   tetrominoes:
   - {fileID: 1415807295820550346, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: -523616940837414915, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
@@ -7556,7 +7553,6 @@ MonoBehaviour:
   IdelWorldSpace: {fileID: 964668152}
   ImageBlock: {fileID: 5097061217083320079}
   blockText: {fileID: 2270119906175146361}
-  blockGrade: 0
   tetrominoes:
   - {fileID: 1415807295820550346, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: -523616940837414915, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
@@ -7910,7 +7906,6 @@ MonoBehaviour:
   IdelWorldSpace: {fileID: 2001347166}
   ImageBlock: {fileID: 5714882758873577328}
   blockText: {fileID: 1617398896535718150}
-  blockGrade: 0
   tetrominoes:
   - {fileID: 1415807295820550346, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: -523616940837414915, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
@@ -8048,7 +8043,6 @@ MonoBehaviour:
   IdelWorldSpace: {fileID: 1549887019}
   ImageBlock: {fileID: 6133325322087469720}
   blockText: {fileID: 873842155382746350}
-  blockGrade: 0
   tetrominoes:
   - {fileID: 1415807295820550346, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: -523616940837414915, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}

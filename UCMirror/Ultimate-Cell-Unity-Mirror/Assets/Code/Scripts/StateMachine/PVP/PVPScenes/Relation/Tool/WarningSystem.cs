@@ -20,7 +20,7 @@ public class WarningSystem : Singleton<WarningSystem>
           get { return play2EndFadeDuration; }
           set
           {
-                if (value != play2EndFadeDuration)
+                if (value == play2EndFadeDuration)return;
                 {
                     play2EndFadeDuration = value;
                     if(play2EndFadeDuration)
@@ -43,6 +43,7 @@ public class WarningSystem : Singleton<WarningSystem>
         BuildingUnmarshal,// 建筑 操作：解组
         BuildingKeep,// 建筑 操作：保持
         CancelOperation,// 取消 操作
+        BuoyInfo,// 浮标 控制
         Custom_Emergency, /// 紧急自定义显示
     }
     WarningType warningTypes;
@@ -193,6 +194,15 @@ public class WarningSystem : Singleton<WarningSystem>
                 };
                 TextDispaly(temp10, fadeDuration);
                 Play2EndFadeDuration = true;
+            break;
+            case WarningType.BuoyInfo:
+                string[] temp11 = {
+                    "<b>控制</b> 砖块数量有" + inText1 + "格, 齐心协力!",
+                    "<b>控制</b> 砖块数量有" + inText1 + "格, 如臂使指!",
+                    "<b>控制</b> 砖块数量有" + inText1 + "格, 众志成城!",
+                    "<b>控制</b> 砖块数量有" + inText1 + "格, 和衷共济!",
+                };
+                TextDispaly(temp11, fadeDuration);
             break;
             
         }

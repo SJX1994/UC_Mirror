@@ -30,12 +30,16 @@ public class TetriBlockSimple : MonoBehaviour
     bool canDrop = false;
     BlockTetriHandler blockOccupying;
     SortingGroup cubeSortingGroup;
+    Material sharedMaterial;
+    TetriDisplayRange tetriDisplayRange;
     // Start is called before the first frame update
     void Start()
     {
         tetrisBlockSimple = transform.parent.GetComponent<TetrisBlockSimple>();
         tetrisBlockSimple.OnTetrisMoveing += ()=>{CanMove = false;};
         cubeSortingGroup = transform.Find("Cube").GetComponent<SortingGroup>();
+        sharedMaterial = cubeSortingGroup.transform.GetComponent<MeshRenderer>().sharedMaterial;
+        Display_playerColor();
     }
 
     // Update is called once per frame
@@ -136,7 +140,7 @@ public class TetriBlockSimple : MonoBehaviour
         blockOccupying = block;
         posId = block.posId;
     }
-    public void AfterDropCheck()
+    public void DropCheck()
     {
         // 占领
         // 发射射线向下进行检测
@@ -198,6 +202,10 @@ public class TetriBlockSimple : MonoBehaviour
         {
             return false;
         }
+        if(block.tetriBlockSimpleHolder != null)
+        {
+            return false;
+        }
         return true;
             
     }
@@ -237,40 +245,7 @@ public class TetriBlockSimple : MonoBehaviour
         
        
     }
-    public bool DoGroupDropCheck()
-    {
-        
-        // 是否可以放下
-        CanMove = false;
-        // 发射射线向下进行检测
-        Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit hit;
-        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
-        if (!hitBlock)return false;
-        // 进一步的处理
-        BlockBuoyHandler block;
-        hit.collider.transform.TryGetComponent(out block);
-        if(!block)return false;
-        if(block.blockTetriHandler.tetriBlockSimpleHolder)
-        {
-            return false;
-        }
-        if(block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace)
-        {
-            return true;
-        }
-        if(player == PlayerData.Player.Player1 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player1)
-        {
-            return false;
-        }
-        else if(player == PlayerData.Player.Player2 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player2)
-        {
-            
-            return false;
-            
-        }
-        return true;
-    }
+    
     public void CancleOccupied()
     {
         CancelInvoke(nameof(DoOccupied));
@@ -317,4 +292,26 @@ public class TetriBlockSimple : MonoBehaviour
         if(!cubeSortingGroup)return;
         cubeSortingGroup.sortingOrder = PlayerData.Dispaly.NotFlowOrder;
     }
+    public void Display_playerColor()
+    {
+        Transform displayGo = transform.Find("Display_Range");
+        if(!displayGo)return;
+        tetriDisplayRange = displayGo.GetComponent<TetriDisplayRange>();
+        Material materialP1 = new(sharedMaterial);
+        Material materialP2 = new(sharedMaterial);
+        // materialP1.color = PlayerData.Dispaly.Player1Color;
+        // materialP2.color = PlayerData.Dispaly.Player2Color;
+        materialP1.color = transform.GetComponent<SpriteRenderer>().color;
+        materialP2.color = transform.GetComponent<SpriteRenderer>().color;
+        if(player == PlayerData.Player.Player1)
+        {
+            cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP1;
+            tetriDisplayRange.SetColor(Color.red + Color.white*0.3f);
+        }else if (player == PlayerData.Player.Player2)
+        {
+            cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP2;
+            tetriDisplayRange.SetColor(Color.blue + Color.white*0.3f);
+        }
+    }
+    
 }

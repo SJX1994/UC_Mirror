@@ -460,14 +460,14 @@ MonoBehaviour:
   sceneToLoads:
   - sceneAsset: {fileID: 102900000, guid: b721dd67f5747ad479bc8641de58c8ac, type: 3}
     scenePath: Assets/Level/Scenes/FightScene/ArtBackGroundScene.unity
+  - sceneAsset: {fileID: 102900000, guid: eb433c0cd7a571045ad906a8d5ddace4, type: 3}
+    scenePath: Assets/Level/Scenes/FightScene/Buoy.unity
   - sceneAsset: {fileID: 102900000, guid: de75a33610544774b88cf219f923a830, type: 3}
     scenePath: Assets/Level/Scenes/FightScene/Blocks.unity
   - sceneAsset: {fileID: 102900000, guid: 1bb5cac832a58054fbaf980acb68c955, type: 3}
     scenePath: Assets/Level/Scenes/FightScene/Idea.unity
   - sceneAsset: {fileID: 102900000, guid: 5ff33fc129e02174e84fb4afb5889da9, type: 3}
     scenePath: Assets/Level/Scenes/FightScene/StayMachineExample_SJX.unity
-  - sceneAsset: {fileID: 102900000, guid: eb433c0cd7a571045ad906a8d5ddace4, type: 3}
-    scenePath: Assets/Level/Scenes/FightScene/Buoy.unity
 --- !u!114 &1942075573
 MonoBehaviour:
   m_ObjectHideFlags: 0

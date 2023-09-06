@@ -42,40 +42,28 @@ public class BlocksCreator : Singleton<BlocksCreator>
     private Tweener inflowTweener;
     private Tweener outflowTweener;
     private void Start()
-    {
-        // // TODO 暂时获取方式
-        // sceneLoader = GameObject.Find(nameof(LanNetWorkManager)).gameObject;
-
-        // // 全局通信方法管理
-        // CommunicationManager = sceneLoader.GetComponent<CommunicationInteractionManager>();
-
-        // // 全局通信事件注册类
-        // broadcastClass = sceneLoader.GetComponent<BroadcastClass>();
-
-        // // 砖块信息新建监听
-        // broadcastClass.TetrisInfoCreate += OnlistenTetrisUpdateLight;
-
-        // // 砖块信息更新监听
-        // broadcastClass.TetrisInfoUpdate += OnlistenTetrisUpdateLight;
-
-        // // 砖块整体销毁监听
-        // broadcastClass.BlocksInfoDestory += OnListenBlocksDestoryLight;
-
-        // // 砖块整体移动监听方法
-        // broadcastClass.BlocksInfoMove += OnListenBlocksUpdateLight;
-
-        // broadcastClass.BlocksReady += OnListenBlocksMoveStart;
-        
-        // broadcastClass.BlocksMoveEnd += OnListenBlocksMoveEnd;
-        
-        // broadcastClass.OnHeroUICancel += OnListenBlocksMoveEnd;
-        
-
+    {   
         FlowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);
 
         CreateBlocks();
 
         Invoke(nameof(LateStart),0.1f);
+        OnBlocksInitEnd += () =>
+        {
+            foreach(var blockTemp in blocks)
+            {
+                float i = blockTemp.posId.x;
+                // 初始放置区域
+                if(i>=0 && i<=9)
+                {
+                    blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player1;
+                }else if(i>=10 && i<=20)
+                {
+                    blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player2;
+                }
+            }
+            
+        };
     }
     void LateStart()
     {
@@ -83,8 +71,12 @@ public class BlocksCreator : Singleton<BlocksCreator>
             box.OnTetriBeginDrag += OnListenBlocksMoveStart;
             box.OnTetriEndDrag += OnListenBlocksMoveEnd;
         });
+        FindObjectsOfType<BuoyInfo>().ToList().ForEach((buoy) => {
+            buoy.OnBuoyDrag += OnListenBlocksMoveStart;
+            buoy.OnBuoyEndDrag += OnListenBlocksMoveEnd;
+        });
     }
-    void OnListenBlocksMoveStart(IdelBox idelBox)
+    void OnListenBlocksMoveStart()
     {
         
         if(outflowTweener!=null){outflowTweener.Kill();}
@@ -96,11 +88,12 @@ public class BlocksCreator : Singleton<BlocksCreator>
         }
         FindObjectsOfType<TetriBlockSimple>().ToList().ForEach((tetri) => {    
                 tetri.InFlow();
+                tetri.GetComponent<TetriBlockSimple>().InFlow();
         });
         transform.position = originPos;
         inflowTweener = transform.DOMoveY(originPos.y+0.1f,0.5f).SetEase(Ease.OutCirc);
     }
-    void OnListenBlocksMoveEnd(IdelBox idelBox)
+    void OnListenBlocksMoveEnd()
     {
         
         if(inflowTweener!=null){inflowTweener.Kill();}
@@ -113,6 +106,7 @@ public class BlocksCreator : Singleton<BlocksCreator>
         }
         FindObjectsOfType<TetriBlockSimple>().ToList().ForEach((tetri) => {    
                 tetri.OutFlow();
+                tetri.GetComponent<TetriBlockSimple>().OutFlow();
         });
        
         outflowTweener = transform.DOMoveY(originPos.y,0.5f).SetEase(Ease.OutBounce);
@@ -271,10 +265,8 @@ public class BlocksCreator : Singleton<BlocksCreator>
                 if(block.transform.TryGetComponent<BuildingSlot>(out BuildingSlot slot))
                 {
                     slot.slotPos = block.transform.position;
-                    if(OnBlocksInitEnd!=null)
-                    {
-                        OnBlocksInitEnd();
-                    }
+                    OnBlocksInitEnd?.Invoke();
+                    
                 }
                 
             }
@@ -298,6 +290,7 @@ public class BlocksCreator : Singleton<BlocksCreator>
         blockTemp.posId = new Vector2(i, j);
         blockTemp.finalHigh = 0.15f;
         blocks.Add(blockTemp);
+        
     }
 
     

@@ -31,6 +31,10 @@ public class BlockTetriHandler : MonoBehaviour
     public Vector2 posId;
     public TetriBlockSimple tetriBlockSimpleHolder;
     // Start is called before the first frame update
+    void Awake()
+    {
+        blockDisplay = GetComponent<BlockDisplay>();
+    }
     void Start()
     {
         State = BlockTetriState.Peace;
@@ -40,7 +44,6 @@ public class BlockTetriHandler : MonoBehaviour
     void LateStart()
     {
         NotReady = false;
-        blockDisplay = GetComponent<BlockDisplay>();
         posId = blockDisplay.posId;
     }
 
