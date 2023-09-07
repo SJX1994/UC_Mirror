@@ -17,10 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Level/Scenes/MainFightScene.unity
     guid: 71a15b8407c82dd4eb4a99b6ce4b81fc
-  - enabled: 1
+  - enabled: 0
     path: Assets/Code/Scripts/StateMachine/Helper/Management/SceneMerge/DevelopersSceneExample/UITest.unity
     guid: 4ef4abcfeb41ddb4cb3b6118ed2695fc
-  - enabled: 1
+  - enabled: 0
     path: Assets/Code/Scripts/StateMachine/Helper/Management/SceneMerge/DevelopersSceneExample/3DTest.unity
     guid: fcb33ebc84bf76a43a0680e624bbc5ed
   - enabled: 1

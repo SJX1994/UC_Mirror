@@ -30,8 +30,6 @@ public class BuoyBehavior : MonoBehaviour
         tsBuoyControleds = buoyInfo.buoyTurnHandle.GetControledTetris();
         state = buoyInfo.buoyTurnHandle.GetControlState();
         Behavior_OnMouseDown();
-        // 进入心流状态
-        buoyInfo.OnBuoyDrag?.Invoke();
     }
 
     private void OnMouseDrag()
@@ -43,8 +41,7 @@ public class BuoyBehavior : MonoBehaviour
         Behavior_OnMouseUp();
         // 重置
         Reset();
-        // 推出心流状态
-        // 进入心流状态
+        // 退出心流状态
         buoyInfo.OnBuoyEndDrag?.Invoke();
     }
     void Reset()
@@ -194,6 +191,8 @@ public class BuoyBehavior : MonoBehaviour
             // 转成Buoy坐标系
             tetrisBuoySimpleTemp.transform.localPosition = tsBuoyControled.transform.localPosition -transform.parent.localPosition;
             tetrisBuoySimpleTemp.Display_OnDragBuoy();
+            // 进入心流状态
+            buoyInfo.OnBuoyDrag?.Invoke();
         }
         else if (state == BuoyTurnHandle.TurnHandleControlState.Scaning_9 || state == BuoyTurnHandle.TurnHandleControlState.Scaning_25 )
         {
@@ -219,5 +218,8 @@ public class BuoyBehavior : MonoBehaviour
             tetrisControledTemp.transform.localPosition = new Vector3(idChanger.x,0,idChanger.y);
             tetrisControledTemp.Display_OnDragBuoy();
         }
+        if(tetrisBuoySimpleTemps.Count==0)return;
+        // 进入心流状态
+        buoyInfo.OnBuoyDrag?.Invoke();
     }
 }
