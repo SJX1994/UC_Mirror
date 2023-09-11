@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using System.Linq;
+using Mirror;
+using UC_PlayerData;
 
-public class BuoyBehavior : MonoBehaviour
+public class BuoyBehavior : NetworkBehaviour
 {
     
     BuoyInfo buoyInfo;
@@ -19,8 +21,19 @@ public class BuoyBehavior : MonoBehaviour
     void Start()
     {
         buoyInfo = transform.parent.GetComponent<BuoyInfo>();
+        if(buoyInfo.Local())
+        {
+            Init();
+        }else
+        {
+            if(!isLocalPlayer)return;
+            Init();
+        }
+    }
+    void Init()
+    {
         blockTargetMask = buoyInfo.blockTargetMask;
-        GetComponent<SortingGroup>().sortingOrder = PlayerData.Dispaly.NotFlowOrder;
+        GetComponent<SortingGroup>().sortingOrder = UC_PlayerData.Dispaly.NotFlowOrder;
     }
     private void OnMouseDown()
     {
@@ -29,16 +42,38 @@ public class BuoyBehavior : MonoBehaviour
         tsBuoyControled = buoyInfo.blockBuoyHandler.GetTetrisBuoy();
         tsBuoyControleds = buoyInfo.buoyTurnHandle.GetControledTetris();
         state = buoyInfo.buoyTurnHandle.GetControlState();
-        Behavior_OnMouseDown();
+        if(buoyInfo.Local())
+        {
+            Behavior_OnMouseDown();
+        }else
+        {
+            if(!isLocalPlayer)return;
+            Behavior_OnMouseDown();
+        }
     }
 
     private void OnMouseDrag()
     {
-        Behavior_OnMouseDrag();
+        if(buoyInfo.Local())
+        {
+            Behavior_OnMouseDrag();
+        }else
+        {
+            if(!isLocalPlayer)return;
+            Behavior_OnMouseDrag();
+        }
+        
     }
     private void OnMouseUp()
     {
-        Behavior_OnMouseUp();
+        if(buoyInfo.Local())
+        {
+            Behavior_OnMouseUp();
+        }else
+        {
+            if(!isLocalPlayer)return;
+            Behavior_OnMouseUp();
+        }
         // 重置
         Reset();
         // 退出心流状态
@@ -132,14 +167,14 @@ public class BuoyBehavior : MonoBehaviour
     {
         if(state == BuoyTurnHandle.TurnHandleControlState.Scaning_1)
         {
-            if(!tsBuoyControled)return;
+            if(!tsBuoyControled || !tetrisBuoySimpleTemp)return;
             bool canPutChecker = CanPutChecker();
             if(!canPutChecker){CantPutAction();return;}
             // 可以放置
             PutAction();
         }else if (state == BuoyTurnHandle.TurnHandleControlState.Scaning_9 || state == BuoyTurnHandle.TurnHandleControlState.Scaning_25)
         {
-            if(tetrisBuoySimpleTemps.Count == 0)return;
+            if(tetrisBuoySimpleTemps.Count == 0 || tetrisBuoySimpleTemps.Count == 0)return;
             if(tsBuoyControleds.Count == 0)return;
             // 自碰撞检测
             foreach(var tetrisBuoySimpleTemp in tetrisBuoySimpleTemps)
@@ -183,6 +218,7 @@ public class BuoyBehavior : MonoBehaviour
         if(state == BuoyTurnHandle.TurnHandleControlState.Scaning_1)
         {
             if(!tsBuoyControled)return;
+            if(tsBuoyControled.tetrisBlockSimple.player != buoyInfo.player)return;
             if(tsBuoyControled.tetrisBlockSimple.tetrisCheckMode != TetrisBlockSimple.TetrisCheckMode.Normal) return;
             tsBuoyControled.tetrisBlockSimple.Stop();
             tetrisBuoySimpleTemp = Instantiate(tsBuoyControled, transform.parent);
@@ -204,7 +240,8 @@ public class BuoyBehavior : MonoBehaviour
         if(tsBuoyControleds.Count == 0)return;
         foreach(var tetrisBuoy in tsBuoyControleds)
         {
-            if(!tetrisBuoy)return;
+            if(!tetrisBuoy)continue;
+            if(tetrisBuoy.tetrisBlockSimple.player != buoyInfo.player)continue;
             TetrisBuoySimple tetrisBlockSimple = tetrisBuoy;
             if(tetrisBlockSimple.tetrisBlockSimple.tetrisCheckMode != TetrisBlockSimple.TetrisCheckMode.Normal)continue;
             tetrisBlockSimple.tetrisBlockSimple.Stop();
@@ -222,4 +259,5 @@ public class BuoyBehavior : MonoBehaviour
         // 进入心流状态
         buoyInfo.OnBuoyDrag?.Invoke();
     }
+   
 }

@@ -64,7 +64,6 @@ namespace Mirror
 
         void Awake()
         {
-            Debug.LogError(transform.name + "TelepathyTransport Awake");
             // tell Telepathy to use Unity's Debug.Log
             Telepathy.Log.Info = Debug.Log;
             Telepathy.Log.Warning = Debug.LogWarning;

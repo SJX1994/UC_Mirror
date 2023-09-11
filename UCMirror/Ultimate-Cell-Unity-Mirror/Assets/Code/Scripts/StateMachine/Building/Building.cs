@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Spine.Unity;
-using PlayerData;
+using UC_PlayerData;
 public class Building : MonoBehaviour
 {
 #region 数据对象 

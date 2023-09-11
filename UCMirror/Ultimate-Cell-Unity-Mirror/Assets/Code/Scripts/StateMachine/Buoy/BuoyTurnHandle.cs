@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using UnityEngine;
+using UC_PlayerData;
+using Mirror;
 
-public class BuoyTurnHandle : MonoBehaviour
+public class BuoyTurnHandle : NetworkBehaviour
 {
     BuoyInfo buoyInfo;
     BlocksCreator blocksCreator;
@@ -23,7 +24,7 @@ public class BuoyTurnHandle : MonoBehaviour
     }
     private float currentValue = 1f; // 初始值
     public bool actived = false;
-    List<TetrisBuoySimple> tetrisBuoysControled = new(); // TODO: 用于控制的俄罗斯方块
+    List<TetrisBuoySimple> tetrisBuoysControled = new();
     List<BlockBuoyHandler> blocksScanned = new(); 
     public float CurrentValue
     {
@@ -32,8 +33,17 @@ public class BuoyTurnHandle : MonoBehaviour
                 if (value == currentValue)return;
                 currentValue = value;
                 Dispaly_TurnHandleTurning(currentValue);
-                colliderDraw.size = new Vector3(currentValue,1,currentValue);
-                CountScanning();
+                if(buoyInfo.Local())
+                {
+                    colliderDraw.size = new Vector3(currentValue,1,currentValue);
+                    CountScanning();
+                }else
+                {
+                    if(!isLocalPlayer)return;
+                    colliderDraw.size = new Vector3(currentValue,1,currentValue);
+                    CountScanning();
+                }
+                
             }
     }
     public enum TurnHandleControlState
@@ -54,11 +64,16 @@ public class BuoyTurnHandle : MonoBehaviour
     bool isWarningSystem;
     void Start()
     {
-        InitRender();
-        CurrentValue = 0;
-        CurrentValue = currentValue;
-        CenterOfControl = new Vector2(-1f,-1f);
-        Dispaly_TurnHandleTurning(CurrentValue);
+        buoyInfo = transform.parent.GetComponent<BuoyInfo>();
+        if(buoyInfo.Local())
+        {
+            InitRender();
+        }else
+        {
+            if(!isLocalPlayer)return;
+            InitRender();
+        }
+        
     }
     public void Active()
     {
@@ -68,21 +83,31 @@ public class BuoyTurnHandle : MonoBehaviour
     }
     void LateUpdate()
     {
-        // 滚轮
-        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
-        CurrentValue += scrollInput * zoomSpeed;
-        CurrentValue = Mathf.Clamp(currentValue, minValue, maxValue);
-
-        Dispaly_PaintColliderBox();
-        
+        if(buoyInfo.Local())
+        {
+            ScrollSize();
+            Dispaly_PaintColliderBox();
+        }else
+        {
+            if(!isLocalPlayer)return;
+            ScrollSize();
+            Dispaly_PaintColliderBox();
+        }
     }
     void InitRender()
     {
         pointsToDraw = new Vector3[5];
-        buoyInfo = transform.parent.GetComponent<BuoyInfo>();
         buoyInfo.OnBuoyPosIDChange += (posId) =>
         {
             centerOfControl = posId;
+        };
+        buoyInfo.OnBuoyDrag += () =>
+        {
+            Display_InFlow();
+        };
+        buoyInfo.OnBuoyEndDrag += () =>
+        {
+            Display_OutFlow();
         };
         // 材质
         List<Renderer> renderers = GetComponentsInChildren<Renderer>().ToList();
@@ -95,7 +120,19 @@ public class BuoyTurnHandle : MonoBehaviour
         if(!colliderDraw)return;
         lineRenderer = GetComponent<LineRenderer>();
         Dispaly_PaintColliderBox();
+        // 初始化材质
+        CurrentValue = 0;
+        CurrentValue = currentValue;
+        CenterOfControl = new Vector2(-1f,-1f);
+        Dispaly_TurnHandleTurning(CurrentValue);
         
+    }
+    void ScrollSize()
+    {
+        // 滚轮
+        float scrollInput = Input.GetAxis("Mouse ScrollWheel");
+        CurrentValue += scrollInput * zoomSpeed;
+        CurrentValue = Mathf.Clamp(currentValue, minValue, maxValue);
     }
     public void CountScanning(bool showWarning = true)
     {
@@ -277,4 +314,13 @@ public class BuoyTurnHandle : MonoBehaviour
         CountScanning();
         return turnHandleControlState;
     }
+    public void Display_InFlow()
+    {
+        lineRenderer.sortingOrder = Dispaly.FlowOrder+10;
+    }
+    public void Display_OutFlow()
+    {
+        lineRenderer.sortingOrder = Dispaly.NotFlowOrder+1;
+    }
+   
 }

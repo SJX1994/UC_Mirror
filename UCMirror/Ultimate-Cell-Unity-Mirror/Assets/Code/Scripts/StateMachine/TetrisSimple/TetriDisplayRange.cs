@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using PlayerData;
+using UC_PlayerData;
 public class TetriDisplayRange : MonoBehaviour
 {
     public SpriteRenderer Up,Down,Left,Right;

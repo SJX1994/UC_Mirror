@@ -505,7 +505,7 @@ public class BattlefieldControlManager : MonoBehaviour
             // 场景管理类
             var sceneManager = sceneLoader.GetComponent<MainSceneControlManager>();
 
-            sceneManager.LoadMainBasicScene();
+            // sceneManager.LoadMainBasicScene();
         }
 
         if (lineInfo < 4)
@@ -519,7 +519,7 @@ public class BattlefieldControlManager : MonoBehaviour
             // 场景管理类
             var sceneManager = sceneLoader.GetComponent<MainSceneControlManager>();
 
-            sceneManager.LoadMainBasicScene();
+            // sceneManager.LoadMainBasicScene();
         }
     }
 

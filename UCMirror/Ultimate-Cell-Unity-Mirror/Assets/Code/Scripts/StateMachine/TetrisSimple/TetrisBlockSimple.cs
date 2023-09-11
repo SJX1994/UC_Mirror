@@ -1,14 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using PlayerData;
+using UC_PlayerData;
 using System.Linq;
 using UnityEngine.Events;
-public class TetrisBlockSimple : MonoBehaviour
+using Mirror;
+public class TetrisBlockSimple : NetworkBehaviour
 {
     public Vector2 posId;
     public float occupyingTime = 3f;
     public Player player = Player.NotReady;
+    public Player Player
+    {
+        get
+        {
+            return player;
+        }
+        set
+        {
+            if(!isClient)return;
+            if(player == value)return;
+            player = value;
+            Client_Reflash();
+        }
+    }
     public Vector3 rotationPoint;
     public List<TetriBlockSimple> pioneerTetris;
     public List<TetriBlockSimple> childTetris;
@@ -19,6 +34,9 @@ public class TetrisBlockSimple : MonoBehaviour
     public UnityAction OnUpdatDisplay;
     private Stack<Vector3> positionStack;
     int moveStep = 1;
+    public IdelBox idelBox;
+    [SyncVar]
+    public int serverID = -1;
     public enum TetrisCheckMode
     {
         Create,
@@ -44,6 +62,10 @@ public class TetrisBlockSimple : MonoBehaviour
        }
        positionStack = new Stack<Vector3>();
        TB_cache = new();
+       if(Local())return;
+       if(!isServer)return;
+       serverID = ServerLogic.GetTetrisGroupID();
+       // Debug.Log($"serverID:{serverID}");
     }
     public bool Active()
     {
@@ -311,6 +333,24 @@ public class TetrisBlockSimple : MonoBehaviour
             tetri.Reset();
         }
     }
-  
+    /// <summary>
+    /// 检查是否是本地模式
+    /// </summary>
+    /// <returns></returns>
+    public bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+    public void Client_Reflash()
+    {
+        if(!isClient)return;
+        if(Local())return;
+        foreach(var tetri in childTetris)
+        {
+            tetri.player = player;
+            tetri.Display_playerColor();
+        }
+    }
 }
 

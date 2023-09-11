@@ -4,13 +4,13 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static ResManager;
+using UC_PlayerData;
 
 public class IdelUI : MonoBehaviour
 {
-   
-
     #region 数据对象
+    public IdelHolder idelHolder;
+    public Player player;
     public GameObject SelectionBox;
 
     public GameObject[] BoxInfo;
@@ -20,10 +20,27 @@ public class IdelUI : MonoBehaviour
     #region 数据关系
     void Start()
     {
-        Invoke("Init", 0.1f);
+        // Active();
     }
-
-
+    public void Active()
+    {
+        if(!idelHolder)
+        {
+            idelHolder = transform.parent.GetComponent<IdelHolder>();
+            idelHolder.idelUI = this;
+            player = idelHolder.player;
+        }
+      
+        Invoke(nameof(Init), 0.1f);
+        
+    }
+    public void Hide()
+    {
+        foreach (var Info in BoxInfo)
+        {
+            Info.SetActive(false);
+        }
+    }
     #endregion
 
     #region 数据方法
@@ -38,9 +55,7 @@ public class IdelUI : MonoBehaviour
             canvas.worldCamera = uiCam;
             canvas.sortingOrder = 21;
         }
-        
-        
-        Invoke("LateStart", 0.2f);
+        Invoke(nameof(LateStart), 0.2f);
     }
     void LateStart()
     {
@@ -60,5 +75,6 @@ public class IdelUI : MonoBehaviour
 
         AudioSystemManager.Instance.PlaySound("Button_Click");
     }
+    
     #endregion
 }

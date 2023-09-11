@@ -18,7 +18,7 @@ public class G2C_NetWorkManager : NetworkManager
     // 本地服务启动程序
     private CommunicationInteractionManager comm;
 
-    private void Start()
+    public override void Start()
     {
         comm = GameObject.Find("LanNetWorkManager").GetComponent<CommunicationInteractionManager>();
 

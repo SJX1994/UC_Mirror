@@ -6,7 +6,7 @@ public class TetriBuoySimple : MonoBehaviour
 {
     public Vector2 posId;
     public BlockBuoyHandler blockBuoyHandler;
-    PlayerData.Player player;
+    UC_PlayerData.Player player;
     public TetriBlockSimple tetriBlockSimple;
     public TetrisBuoySimple tetrisBuoySimple;
     TetriDisplayRange tetriDisplayRange;
@@ -59,11 +59,11 @@ public class TetriBuoySimple : MonoBehaviour
         {
             return true;
         }
-        if(tetriBlockSimple.player == PlayerData.Player.Player1 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player1)
+        if(tetriBlockSimple.player == UC_PlayerData.Player.Player1 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
             return false;
         }
-        else if(tetriBlockSimple.player == PlayerData.Player.Player2 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        else if(tetriBlockSimple.player == UC_PlayerData.Player.Player2 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player2)
         {
             return false;   
         }
@@ -96,11 +96,11 @@ public class TetriBuoySimple : MonoBehaviour
         {
             return true;
         }
-        if(tetriBlockSimple.player == PlayerData.Player.Player1 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player1)
+        if(tetriBlockSimple.player == UC_PlayerData.Player.Player1 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
             return false;
         }
-        else if(tetriBlockSimple.player == PlayerData.Player.Player2 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        else if(tetriBlockSimple.player == UC_PlayerData.Player.Player2 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player2)
         {
             return false;   
         }
@@ -109,12 +109,12 @@ public class TetriBuoySimple : MonoBehaviour
     public void InFlow()
     {
         if(!tetriDisplayRange)return;
-        tetriDisplayRange.SetSortingOrder(PlayerData.Dispaly.FlowOrder+1);
+        tetriDisplayRange.SetSortingOrder(UC_PlayerData.Dispaly.FlowOrder+1);
     }
     public void OutFlow()
     {
         if(!tetriDisplayRange)return;
-        tetriDisplayRange.SetSortingOrder(PlayerData.Dispaly.NotFlowOrder+1);
+        tetriDisplayRange.SetSortingOrder(UC_PlayerData.Dispaly.NotFlowOrder+1);
     }
     public void Display_Evaluate()
     {

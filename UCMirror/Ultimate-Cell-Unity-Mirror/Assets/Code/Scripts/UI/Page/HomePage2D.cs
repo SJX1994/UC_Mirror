@@ -10,7 +10,7 @@ using static HeroSelect;
 public class HomePage2D : BaseUI
 {
     /// <summary>
-    /// Ê×Ò³ÉÏµÄ2D½»»¥UI
+    /// ï¿½ï¿½Ò³ï¿½Ïµï¿½2Dï¿½ï¿½ï¿½ï¿½UI
     /// </summary>
     /// <returns></returns>
     public override UIType GetUIType()
@@ -18,31 +18,31 @@ public class HomePage2D : BaseUI
         return UIType.HomePage2D;
     }
 
-    #region ½»»¥×é¼þ
-    [Header("°´Å¥×é¼þ")]
-    public Button StartGameBtn;//¿ªÊ¼ÓÎÏ·
-    public Button HeroToLeftBtn;//Ïò×ó»¬¶¯°´Å¥
-    public Button HeroToRightBtn;//ÏòÓÒ»¬¶¯°´Å¥
-    public Button UserBtn;//ÓÃ»§½çÃæ°´Å¥
-    public Button CoinsBtn;//½ð±Ò»ñÈ¡°´Å¥
-    public Button ExperienceBtn;//¾­Ñé»ñÈ¡°´Å¥
-    public Button LanNetButton; //¾ÖÓòÍø¶ÔÕ½°´Å¥
-    public Button StartMatchingButton;//¿ªÊ¼Æ¥Åä°´Å¥
+    #region ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    [Header("ï¿½ï¿½Å¥ï¿½ï¿½ï¿½")]
+    public Button StartGameBtn;//ï¿½ï¿½Ê¼ï¿½ï¿½Ï·
+    public Button HeroToLeftBtn;//ï¿½ï¿½ï¿½ó»¬¶ï¿½ï¿½ï¿½Å¥
+    public Button HeroToRightBtn;//ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Å¥
+    public Button UserBtn;//ï¿½Ã»ï¿½ï¿½ï¿½ï¿½æ°´Å¥
+    public Button CoinsBtn;//ï¿½ï¿½Ò»ï¿½È¡ï¿½ï¿½Å¥
+    public Button ExperienceBtn;//ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Å¥
+    public Button LanNetButton; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ½ï¿½ï¿½Å¥
+    public Button StartMatchingButton;//ï¿½ï¿½Ê¼Æ¥ï¿½ä°´Å¥
 
     [Space(20)]
-    [Header("Ó¢ÐÛ»¬¶¯×é¼þ")]
-    public HeroSelect heroSelect;//Ó¢ÐÛ»¬¶¯×é¼þ
+    [Header("Ó¢ï¿½Û»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    public HeroSelect heroSelect;//Ó¢ï¿½Û»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     public HeroSelect.ItemInfo[] itemInfos;
 
     #endregion
 
-    #region ÒµÎñÂß¼­
+    #region Òµï¿½ï¿½ï¿½ß¼ï¿½
 
     public override void OnStart()
     {
-        #region Ïà»úÂß¼­
-        //ÕâÀïÐèÒª°ÑUIÉè¶¨Îª3DUI
+        #region ï¿½ï¿½ï¿½ï¿½ß¼ï¿½
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½UIï¿½è¶¨Îª3DUI
         Camera uiCam = GameObject.FindGameObjectWithTag("UICamera").GetComponent<Camera>();
         Canvas canvas = this.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
@@ -51,7 +51,7 @@ public class HomePage2D : BaseUI
         canvas.planeDistance = 5;
         #endregion
 
-        //°ó¶¨µã»÷¼àÌýÊÂ¼þ
+        //ï¿½ó¶¨µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
         BtnEvent.RigisterButtonClickEvent(StartGameBtn.transform.gameObject, p => { StartGame(); });
         BtnEvent.RigisterButtonClickEvent(HeroToLeftBtn.transform.gameObject, p => { LeftBtn(); });
         BtnEvent.RigisterButtonClickEvent(HeroToRightBtn.transform.gameObject, p => { RightBtn(); });
@@ -63,7 +63,7 @@ public class HomePage2D : BaseUI
 
     }
 
-    //¼ÓÔØÓ¢ÐÛÁÐ±í
+    //ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½ï¿½Ð±ï¿½
     private void LoadHeroItems()
     {
         if (heroSelect != null)
@@ -83,25 +83,25 @@ public class HomePage2D : BaseUI
         }
         heroSelect.SelectAction += (index) =>
         {
-            //ÒªÍ¨¹ýID»ñÈ¡µ½Ó¢ÐÛÐÅÏ¢£¬·µ»ØÒ»¸öStatic class
+            //ÒªÍ¨ï¿½ï¿½IDï¿½ï¿½È¡ï¿½ï¿½Ó¢ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Static class
             UnitBasicClass heroInfo = UnitInfoManager.GetUnitBasicInfoByUnitId(index);
-            //´ò¿ªÓ¢ÐÛÏ¸½Ú½çÃæ£¬½«class´«ÈëÐÂ´ò¿ªµÄ½çÃæ
+            //ï¿½ï¿½Ó¢ï¿½ï¿½Ï¸ï¿½Ú½ï¿½ï¿½æ£¬ï¿½ï¿½classï¿½ï¿½ï¿½ï¿½ï¿½Â´ò¿ªµÄ½ï¿½ï¿½ï¿½
             object[] data = new object[] { heroInfo };
             UIManager.Instance.OpenUI(UIType.HeroDetail, data);
         };
     }
     #endregion
 
-    #region Êý¾Ý¼ÓÔØ
+    #region ï¿½ï¿½ï¿½Ý¼ï¿½ï¿½ï¿½
 
     public override void OnLoadData(params object[] param)
     {
 
-        //»ñÈ¡ËùÓÐÓ¢ÐÛ£¬²¢ÇÒ½«Ó¢ÐÛÊý¾Ý·ÅÈëitemInfosÀïÃæÈ¥
+        //ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½Û£ï¿½ï¿½ï¿½ï¿½Ò½ï¿½Ó¢ï¿½ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½itemInfosï¿½ï¿½ï¿½ï¿½È¥
         List<UnitViewClass> _beConfigHerosInfo = (List<UnitViewClass>)param[0];
         if (_beConfigHerosInfo.Count == 0)
         {
-            Debug.Log("Ê×Ò³Ó¢ÐÛÅäÖÃÎ´ÊÕ¼¯µ½ÈÎºÎÊý¾Ý£¡");
+            Debug.Log("ï¿½ï¿½Ò³Ó¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½Õ¼ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ï¿½Ý£ï¿½");
             return;
         }
         else
@@ -116,13 +116,13 @@ public class HomePage2D : BaseUI
                 itemInfos[i] = new ItemInfo(_beConfigHerosInfo[i].ExcelTemp.Name, _beConfigHerosInfo[i].BasicInfo.CharacterStyle, _beConfigHerosInfo[i].ConfigId);
             }
         }
-        //itemInfosÖÐµÄÊý¾Ý¸³Öµµ½ÍÏ¶¯ÁÐ±íÖÐ£¬²¢ÇÒ½¨Á¢Î¨Ò»IDÓÃÓÚµã»÷ÊÂ¼þ
+        //itemInfosï¿½Ðµï¿½ï¿½ï¿½ï¿½Ý¸ï¿½Öµï¿½ï¿½ï¿½Ï¶ï¿½ï¿½Ð±ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½Î¨Ò»IDï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½Â¼ï¿½
         LoadHeroItems();
     }
 
     #endregion
 
-    #region ¼àÌýÊÂ¼þ
+    #region ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 
     void StartGame()
     {
@@ -130,7 +130,7 @@ public class HomePage2D : BaseUI
 
         var info = GameObject.Find("LanNetWorkManager");
 
-        info.GetComponent<MainSceneControlManager>().LoadMainFightScene();
+        // info.GetComponent<MainSceneControlManager>().LoadMainFightScene();
     }
 
     void LeftBtn()

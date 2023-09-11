@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 public class TetriBlockSimple : MonoBehaviour
 {
     public TetrisBlockSimple tetrisBlockSimple;
-    public PlayerData.Player player = PlayerData.Player.NotReady;
+    public UC_PlayerData.Player player = UC_PlayerData.Player.NotReady;
     public LayerMask blockTargetMask;
     public Vector2 posId;
     public BlockTetriHandler currentBlockTetriHandler;
@@ -97,13 +97,13 @@ public class TetriBlockSimple : MonoBehaviour
                 CantPutCallback?.Invoke(this);
                 return false;
             }
-            if(player == PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2)
+            if(player == UC_PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2)
             {
                 // 不能放置
                 CantPutCallback?.Invoke(this);
                 return false;
             }
-            else if(player == PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1)
+            else if(player == UC_PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1)
             {
                 // 不能放置
                 CantPutCallback?.Invoke(this);
@@ -154,11 +154,11 @@ public class TetriBlockSimple : MonoBehaviour
         if(!block)return;
         blockOccupying = block;
         posId = block.posId;
-        if(player == PlayerData.Player.Player1 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
+        if(player == UC_PlayerData.Player.Player1 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
             block.State = BlockTetriHandler.BlockTetriState.Occupying;   
         }
-        else if(player == PlayerData.Player.Player2 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        else if(player == UC_PlayerData.Player.Player2 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player2)
         {
             block.State = BlockTetriHandler.BlockTetriState.Occupying;   
         }
@@ -169,12 +169,12 @@ public class TetriBlockSimple : MonoBehaviour
         BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
         var blockP1 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x + 1,posId.y));
         var blockP2 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x - 1,posId.y));
-        if(player == PlayerData.Player.Player1)
+        if(player == UC_PlayerData.Player.Player1)
         {
             if(!blockP1)return null;
             return blockP1.GetComponent<BlockTetriHandler>();
         }
-        else if(player == PlayerData.Player.Player2)
+        else if(player == UC_PlayerData.Player.Player2)
         {
             if(!blockP2)return null;
             return blockP2.GetComponent<BlockTetriHandler>();
@@ -190,11 +190,11 @@ public class TetriBlockSimple : MonoBehaviour
     }
     public bool BlockNextCheck(BlockTetriHandler block)
     {
-        if(block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2 && player == PlayerData.Player.Player1 && block.tetriBlockSimpleHolder != null)
+        if(block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2 && player == UC_PlayerData.Player.Player1 && block.tetriBlockSimpleHolder != null)
         {
             return false;
         }
-        if(block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1 && player== PlayerData.Player.Player2 && block.tetriBlockSimpleHolder != null)
+        if(block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1 && player== UC_PlayerData.Player.Player2 && block.tetriBlockSimpleHolder != null)
         {
             return false;
         }
@@ -224,21 +224,21 @@ public class TetriBlockSimple : MonoBehaviour
         if(!block)return;
         blockOccupying = block;
         posId = block.posId;
-        if(player == PlayerData.Player.Player1 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
+        if(player == UC_PlayerData.Player.Player1 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
             block.State = BlockTetriHandler.BlockTetriState.Occupying;
             Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.1f);
         }
-        else if(player == PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1)
+        else if(player == UC_PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
             Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.5f);
         }
-        else if(player == PlayerData.Player.Player2 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        else if(player == UC_PlayerData.Player.Player2 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player2)
         {
             block.State = BlockTetriHandler.BlockTetriState.Occupying;
             Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.1f);
         }
-        else if(player == PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        else if(player == UC_PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2)
         {
             Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.5f);
         }
@@ -266,11 +266,11 @@ public class TetriBlockSimple : MonoBehaviour
         }
         if(!blockOccupying)return;
         
-        if(player == PlayerData.Player.Player1)
+        if(player == UC_PlayerData.Player.Player1)
         {
             blockOccupying.State = BlockTetriHandler.BlockTetriState.Occupied_Player1;
         }
-        else if(player == PlayerData.Player.Player2)
+        else if(player == UC_PlayerData.Player.Player2)
         {
             blockOccupying.State = BlockTetriHandler.BlockTetriState.Occupied_Player2;
         }
@@ -282,7 +282,7 @@ public class TetriBlockSimple : MonoBehaviour
     public void InFlow()
     {
         if(!cubeSortingGroup)return;
-        cubeSortingGroup.sortingOrder = PlayerData.Dispaly.FlowOrder;
+        cubeSortingGroup.sortingOrder = UC_PlayerData.Dispaly.FlowOrder;
     }
     /// <summary>
     /// 退出心流模式表现
@@ -290,7 +290,7 @@ public class TetriBlockSimple : MonoBehaviour
     public void OutFlow()
     {
         if(!cubeSortingGroup)return;
-        cubeSortingGroup.sortingOrder = PlayerData.Dispaly.NotFlowOrder;
+        cubeSortingGroup.sortingOrder = UC_PlayerData.Dispaly.NotFlowOrder;
     }
     public void Display_playerColor()
     {
@@ -303,11 +303,11 @@ public class TetriBlockSimple : MonoBehaviour
         // materialP2.color = PlayerData.Dispaly.Player2Color;
         materialP1.color = transform.GetComponent<SpriteRenderer>().color;
         materialP2.color = transform.GetComponent<SpriteRenderer>().color;
-        if(player == PlayerData.Player.Player1)
+        if(player == UC_PlayerData.Player.Player1)
         {
             cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP1;
             tetriDisplayRange.SetColor(Color.red + Color.white*0.3f);
-        }else if (player == PlayerData.Player.Player2)
+        }else if (player == UC_PlayerData.Player.Player2)
         {
             cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP2;
             tetriDisplayRange.SetColor(Color.blue + Color.white*0.3f);

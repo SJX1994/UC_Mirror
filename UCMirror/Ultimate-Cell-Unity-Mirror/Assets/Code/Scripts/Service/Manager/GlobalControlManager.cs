@@ -170,7 +170,7 @@ public class GlobalControlManager : MonoBehaviour
     /// </summary>
     public void ReplayGame()
     {
-        sceneManager.LoadMainFightScene();
+        // sceneManager.LoadMainFightScene();
     }
 
     /// <summary>

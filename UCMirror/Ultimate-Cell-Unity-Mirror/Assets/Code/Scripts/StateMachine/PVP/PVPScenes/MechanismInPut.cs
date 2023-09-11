@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UC_PlayerData;
 public class MechanismInPut : Singleton<MechanismInPut>
 {
       public ModeTest modeTest;
@@ -31,6 +32,7 @@ public class MechanismInPut : Singleton<MechanismInPut>
                   if (value != modeVariable)
                   {
                   modeVariable = value;
+                  if(RunModeData.CurrentRunMode != RunMode.Local)return;
                   OnModeVariableChanged();
                   }
             }

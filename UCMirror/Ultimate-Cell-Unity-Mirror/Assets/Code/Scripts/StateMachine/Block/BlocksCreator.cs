@@ -41,6 +41,7 @@ public class BlocksCreator : Singleton<BlocksCreator>
     // 销毁方块位置
     private Tweener inflowTweener;
     private Tweener outflowTweener;
+    
     private void Start()
     {   
         FlowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);

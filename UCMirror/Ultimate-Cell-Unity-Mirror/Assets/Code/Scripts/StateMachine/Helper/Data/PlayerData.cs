@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PlayerData
+namespace UC_PlayerData
 {
     
     public enum Player
@@ -31,5 +31,39 @@ namespace PlayerData
         public static Color Player1Color = new(Color.red.r + 0.3f,Color.red.g+ 0.3f,Color.red.b+ 0.3f,0.6f);
         public static Color Player2Color = new(Color.blue.r+ 0.3f,Color.blue.g+ 0.3f,Color.blue.b+ 0.3f,0.6f);
     }
-    
+    public enum RunMode
+    {
+        Host,
+        Local,
+    }
+    public static class RunModeData
+    {
+        public static RunMode CurrentRunMode { get; set; }
+
+        public static void ChangeRunMode(RunMode newState)
+        {
+            CurrentRunMode = newState;
+        }
+    }
+    public static class ServerLogic
+    {
+        // 俄罗斯砖块组ID
+        private static int TetrisGroupID = 10_0000;
+        // 俄罗斯砖块ID
+        private static int Tetris = 1_0000;
+        // 砖块ID
+        private static int Block = 1000;
+        public static int GetTetrisGroupID()
+        {
+            return TetrisGroupID++;
+        }
+        public static int GetTetrisID()
+        {
+            return Tetris++;
+        }
+        public static int GetBlockID()
+        {
+            return Block++;
+        }
+    }
 }

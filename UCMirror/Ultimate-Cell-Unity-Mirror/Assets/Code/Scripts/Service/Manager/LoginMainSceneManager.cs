@@ -122,7 +122,7 @@ public class LoginMainSceneManager : MonoBehaviour
     {
         var sceneload = SceneLoad.GetComponent<MainSceneControlManager>();
 
-        sceneload.LoadMainBasicScene();
+        // sceneload.LoadMainBasicScene();
     }
     #endregion
 
