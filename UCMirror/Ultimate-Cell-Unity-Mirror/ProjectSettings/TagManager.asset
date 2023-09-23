@@ -14,6 +14,8 @@ TagManager:
   - BaseRegion
   - Soul_Cell
   - Soul_Virus
+  - Player1
+  - Player2
   layers:
   - Default
   - TransparentFX

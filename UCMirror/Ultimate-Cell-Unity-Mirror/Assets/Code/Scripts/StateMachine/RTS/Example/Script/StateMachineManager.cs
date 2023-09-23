@@ -15,10 +15,10 @@ public class StateMachineManager : Singleton<StateMachineManager>
     // private BroadcastClass broadcastClass;
     private Dictionary<int, UnitInfoClass> unitInfoState = new();
     private Dictionary<int, UnitInfoClass> VirusInfoState = new();
-    public UnityAction<Soldier> OnSyntheticEvent;// 合成事件
-    public UnityAction<Soldier> OnUnitCreat;// 单位创建事件
-    public UnityAction<Soldier> OnUnitDied;// 单位死亡事件
-    public UnityAction<Soldier, int> OnUnitDying;// 单位濒死事件
+    public UnityAction<SoldierBehaviors> OnSyntheticEvent;// 合成事件
+    public UnityAction<SoldierBehaviors> OnUnitCreat;// 单位创建事件
+    public UnityAction<SoldierBehaviors> OnUnitDied;// 单位死亡事件
+    public UnityAction<SoldierBehaviors, int> OnUnitDying;// 单位濒死事件
     MechanismInPut mechanismInPut;
     // 逻辑对象
     [Header("战士单位")]
@@ -48,7 +48,7 @@ public class StateMachineManager : Singleton<StateMachineManager>
 
     void Start()
     {
-        // // TODO 暂时获取方式
+        // // 暂时获取方式
         // if (GameObject.Find("LanNetWorkManager") == null)
         // {
         //     return;
@@ -486,7 +486,7 @@ public class StateMachineManager : Singleton<StateMachineManager>
         }
         if (info.UnitLevel > 1)
         {
-            Soldier soldier = cell.GetComponent<Soldier>();
+            SoldierBehaviors soldier = cell.GetComponent<SoldierBehaviors>();
             mechanismInPut.modeTest = MechanismInPut.ModeTest.Morale;
             soldier.morale.AddMorale(soldier, 3.2f, true);
             soldier.morale.EffectByMorale(soldier, ref soldier.strength);

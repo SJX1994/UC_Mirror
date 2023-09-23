@@ -6,7 +6,7 @@ public class Effect : MonoBehaviour
 {
 #region 数据对象
     public bool filp = false;
-    public EffectTemplate spine_effect;
+    public EffectTemplate effectCollection;
     public EffectTemplate.EffectType effectType;
     List<GameObject> effects = new();
     const string CLONE = "(Clone)";
@@ -16,7 +16,7 @@ public class Effect : MonoBehaviour
 #region 数据关系
     public void Start()
     {
-        
+        effectCollection = Instantiate(effectCollection);
     }
     public void FixedUpdate()
     {
@@ -36,27 +36,27 @@ public class Effect : MonoBehaviour
         switch(effectType)
         {
             case EffectTemplate.EffectType.Collect:
-                if(!spine_effect.collectEffect)return;
+                if(!effectCollection.collectEffect)return;
                 
                 AddCollectEffect();
                 break;
             case EffectTemplate.EffectType.Start:
-                if(!spine_effect.startEffect)return;
+                if(!effectCollection.startEffect)return;
                 
                 AddStartEffect();
                 break;
             case EffectTemplate.EffectType.End:
-                if(!spine_effect.endEffect)return;
+                if(!effectCollection.endEffect)return;
                 
                 AddEndEffect();
                 break;
             case EffectTemplate.EffectType.Active:
-                if(!spine_effect.activeEffect)return;
+                if(!effectCollection.activeEffect)return;
                 
                 AddActiveEffect();
                 break;
             case EffectTemplate.EffectType.Attacking:
-                if(!spine_effect.attackEffect)return;
+                if(!effectCollection.attackEffect)return;
                 
                 AddAttackEffect();
                 break;
@@ -106,7 +106,7 @@ static public GameObject GetChildGameObject(GameObject fromGameObject, string wi
 /// </summary>
 void AddAttackEffect()
 {
-    GameObject effectChecker = GetEffect(spine_effect.attackEffect.name + EffectTemplate.EffectStateTag.Always);
+    GameObject effectChecker = GetEffect(effectCollection.attackEffect.name + EffectTemplate.EffectStateTag.Always);
     
     if(effectChecker)
     {
@@ -122,7 +122,7 @@ void AddAttackEffect()
     }else
     {
         
-        GameObject effect = Instantiate(spine_effect.attackEffect.transform.gameObject, this.transform);
+        GameObject effect = Instantiate(effectCollection.attackEffect.transform.gameObject, this.transform);
         effect.name = effect.name.Replace(CLONE, EffectTemplate.EffectStateTag.Always);
         effects.Add(effect);
         SkeletonAnimation effectChecker_sa = effect.GetComponent<SkeletonAnimation>();
@@ -132,7 +132,7 @@ void AddAttackEffect()
 }
 void AddCollectEffect()
 {
-    GameObject effectChecker = GetEffect(spine_effect.collectEffect.name + EffectTemplate.EffectStateTag.Always);
+    GameObject effectChecker = GetEffect(effectCollection.collectEffect.name + EffectTemplate.EffectStateTag.Always);
     
     if(effectChecker)
     {
@@ -145,7 +145,7 @@ void AddCollectEffect()
     }else
     {
         
-        GameObject effect = Instantiate(spine_effect.collectEffect.transform.gameObject, this.transform);
+        GameObject effect = Instantiate(effectCollection.collectEffect.transform.gameObject, this.transform);
         effect.name = effect.name.Replace(CLONE, EffectTemplate.EffectStateTag.Always);
         effects.Add(effect);
         SkeletonAnimation effectChecker_sa = effect.GetComponent<SkeletonAnimation>();
@@ -157,7 +157,7 @@ void AddCollectEffect()
 void AddStartEffect() 
 {
     // 创建
-    GameObject effect = Instantiate(spine_effect.startEffect.transform.gameObject, this.transform);
+    GameObject effect = Instantiate(effectCollection.startEffect.transform.gameObject, this.transform);
     SkeletonAnimation effectChecker_sa = effect.GetComponent<SkeletonAnimation>();
     effectChecker_sa = SetFlip(filp?-1:1,effectChecker_sa) as SkeletonAnimation;
     effect.name = effect.name.Replace(CLONE, EffectTemplate.EffectStateTag.Onece);
@@ -174,7 +174,7 @@ void AddStartEffect()
 void AddEndEffect() 
 {
     // 创建
-    GameObject effect = Instantiate(spine_effect.endEffect.transform.gameObject, this.transform);
+    GameObject effect = Instantiate(effectCollection.endEffect.transform.gameObject, this.transform);
     SkeletonAnimation effectChecker_sa = effect.GetComponent<SkeletonAnimation>();
     effectChecker_sa = SetFlip(filp?-1:1,effectChecker_sa) as SkeletonAnimation;
     effect.name = effect.name.Replace(CLONE, EffectTemplate.EffectStateTag.Onece);
@@ -190,7 +190,7 @@ void AddEndEffect()
 }
 void AddActiveEffect() 
 {
-    GameObject effectChecker = GetEffect(spine_effect.activeEffect.name + EffectTemplate.EffectStateTag.Always);
+    GameObject effectChecker = GetEffect(effectCollection.activeEffect.name + EffectTemplate.EffectStateTag.Always);
     
     if(effectChecker)
     {
@@ -205,7 +205,7 @@ void AddActiveEffect()
     }else
     {
         
-        GameObject effect = Instantiate(spine_effect.activeEffect.transform.gameObject, this.transform);
+        GameObject effect = Instantiate(effectCollection.activeEffect.transform.gameObject, this.transform);
         effect.name = effect.name.Replace(CLONE, EffectTemplate.EffectStateTag.Always);
         effects.Add(effect);
         SkeletonAnimation effectChecker_sa = effect.GetComponent<SkeletonAnimation>();

@@ -4,12 +4,23 @@ using UnityEngine;
 
 namespace UC_PlayerData
 {
-    
     public enum Player
     {
         Player1,
         Player2,
         NotReady,
+    }
+    public class UnitData
+    {
+        public enum Color
+        {
+            notReady,
+            red,
+            green,
+            blue,
+            purple,
+            yellow,
+        }
     }
     public class Dispaly
     {
@@ -30,6 +41,8 @@ namespace UC_PlayerData
         // 颜色
         public static Color Player1Color = new(Color.red.r + 0.3f,Color.red.g+ 0.3f,Color.red.b+ 0.3f,0.6f);
         public static Color Player2Color = new(Color.blue.r+ 0.3f,Color.blue.g+ 0.3f,Color.blue.b+ 0.3f,0.6f);
+        // PVP
+        public static float HidenAlpha = 0.1f;
     }
     public enum RunMode
     {
@@ -45,10 +58,20 @@ namespace UC_PlayerData
             CurrentRunMode = newState;
         }
     }
+    public static class BlocksData
+    {
+        public static int Player1_numb = 0;
+        public static int Player2_numb = 0;
+        public static int Peace_numb = 0;
+        public static int max_numb = 200;
+    }
     public static class ServerLogic
     {
         // 俄罗斯砖块组ID
         private static int TetrisGroupID = 10_0000;
+        // 俄罗斯砖块预示ID
+        private static int TetrisGroupIDTempP1 = 1;
+        private static int TetrisGroupIDTempP2 = 2;
         // 俄罗斯砖块ID
         private static int Tetris = 1_0000;
         // 砖块ID
@@ -64,6 +87,26 @@ namespace UC_PlayerData
         public static int GetBlockID()
         {
             return Block++;
+        }
+        public static int GetTetrisGroupIDTemp(int player = 1)
+        {
+            if(player == 2)
+            {
+                return TetrisGroupIDTempP2;
+            }else
+            {
+                return TetrisGroupIDTempP1;
+            }
+            
+        }
+    }
+    public class PropsData
+    {
+        public enum PropsState
+        {
+            None,
+            ChainBall,
+            HealthAdder,
         }
     }
 }

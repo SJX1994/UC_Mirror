@@ -5,6 +5,8 @@ using System.Collections;
 using DG.Tweening;
 using UnityEngine.AI;
 using Unity.VisualScripting;
+using System.Linq;
+using UC_PlayerData;
 
 public class ChainTransfer : MonoBehaviour, ISoldierRelation
 {
@@ -28,13 +30,13 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
 
       public LayerMask targetLayer;
       MechanismInPut mechanismInPut;
-      List<Soldier> soldiers = new();
+      List<SoldierBehaviors> soldiers = new();
       MechanismInPut.ModeTest modeTest;
-      SkillCooldownTimer skillCooldownTimer;
-      SkillCooldown skillCooldown;
+      // SkillCooldownTimer skillCooldownTimer;
+      // SkillCooldown skillCooldown;
       
-      Soldier self;
-      Soldier next;
+      SoldierBehaviors self;
+      SoldierBehaviors next;
       bool counted = false;
       public bool collected = false;
       public bool theFirst = false;
@@ -44,11 +46,11 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       [HideInInspector]
       public float originDuration;
       int gloableIndex = 0;
-      Soldier[] gloableSoldiers;
+      SoldierBehaviors[] gloableSoldiers;
       [HideInInspector]
       public bool bombIsMoving = false;
       bool chainTransfering = false; // 正在传递 碰撞伤害计算
-      List<Soldier> dealAttackSoldiers = new(); // 需要处理伤害的士兵们
+      List<SoldierBehaviors> dealAttackSoldiers = new(); // 需要处理伤害的士兵们
       private Vector3 targetPosition;
       // 表现
       public Material boonMat;
@@ -68,15 +70,24 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             chainDamageTotal = 0;
             Invoke(nameof(Init), 0.1f);
       }
-      void AllSoldiers(List<Soldier> soldiers)
+      void AllSoldiers()
       {
-            this.soldiers = soldiers;
+            soldiers = new List<SoldierBehaviors>(FindObjectsOfType<SoldierBehaviors>().ToList().Where(x=>CheckSoldier(x)));
+      }
+      bool CheckSoldier(SoldierBehaviors soldierBehavior)
+      {
+            List<bool> condition = new();
+            if(!soldierBehavior)return false;
+            if(soldierBehavior.unitBase.IsDeadOrNull(soldierBehavior.unitBase))return false;
+            condition.Add(soldierBehavior.morale.soldierType == self.morale.soldierType);
+            condition.Add(soldierBehavior.UnitSimple.unitTemplate.player == self.UnitSimple.unitTemplate.player);
+            bool allTrue = condition.All(b => b);
+            return allTrue;
       }
       private void ModeChangedAction(MechanismInPut.ModeTest modeTest)
       {
             this.modeTest = modeTest;
       }
-
       public bool CanDoChain()
       {
             if(GetClosestSoldier()!=null)
@@ -91,19 +102,18 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       public void FirstChain(bool preview)
       {
             this.preview = preview;
-            skillCooldown.NotActive();
+            // skillCooldown.NotActive();
             theFirst = true;
             this.soldiers = GetSameTypeSoldier(self);
-           
             foreach(var soldier in this.soldiers)
             {
                   soldier.chainTransfer.bombIsMoving = true;
             }
-            gloableSoldiers = new Soldier[this.soldiers.Count];
+            gloableSoldiers = new SoldierBehaviors[this.soldiers.Count];
             gloableIndex = 0;
             StartCoroutine(Forward_ExecuteEveryFewSeconds());
       }
-      public IEnumerator LastChain(Soldier[] soldiers, int tempIndex)
+      public IEnumerator LastChain(SoldierBehaviors[] soldiers, int tempIndex)
       {
             
             for(int i = soldiers.Length-1; i >= 0; i--)
@@ -131,11 +141,9 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       }
       IEnumerator Forward_ExecuteEveryFewSeconds()
       {
-            
             chainDamageTotal = chainDamage;
             if(theFirst)
             {
-                  
                   gloableIndex = 0;
                   gloableIndex+=1;
                   gloableSoldiers[0] = self;
@@ -146,8 +154,6 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                   soldiers.Remove(self);
                   yield return new WaitForSeconds(duration);
             }
-            
-            
             foreach (var soldier in soldiers)
             {     
                   gloableSoldiers[gloableIndex] = soldier;
@@ -155,12 +161,10 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                   float tempDuration = soldier.chainTransfer.duration;
                   soldier.chainTransfer.duration *= tempDuration/gloableIndex;
                   float modifyDuration = soldier.chainTransfer.duration;
-                  
                   if(gloableIndex-1 == soldiers.Count)
                   {
                        StartCoroutine(soldier.chainTransfer.LastChain(gloableSoldiers,gloableIndex));
-                       continue; 
-                       
+                       continue;
                   }
                   soldier.chainTransfer.next = soldiers[gloableIndex-1];
                   soldier.chainTransfer.SoldiersStartRelation(soldier,soldier.chainTransfer.next);
@@ -176,13 +180,16 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             
       }
    
-      public void SoldiersStartRelation(Soldier from, Soldier to)
+      public void SoldiersStartRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             if(from == null || to == null) return;
             to.chainTransfer.counted = true;
             Vector3 backPosition = from.transform.position;
             Vector3 targetPosition = to.transform.position;
 
+            // 停止砖块移动
+            from.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Stop();
+            to.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Stop();
             // 停止状态机的移动
             NavMeshAgent agent;
             agent = from.transform.TryGetComponent<NavMeshAgent>(out agent) ? agent : null;
@@ -196,16 +203,24 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             from.transform.DOMove(targetPosition, from.chainTransfer.duration/2).onComplete = () =>
             {
                   to.positiveEffect.Play();
-                  PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.Positive);
-                  to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
+                  // PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.Positive);
+                  // to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
 
-                  from.transform.DOMove(backPosition, from.chainTransfer.duration/2).onComplete = () =>
+                  from.transform.DOLocalMove(Vector3.zero, from.chainTransfer.duration/2).onComplete = () =>
                   {  
+                        transform.localPosition = Vector3.zero;
                   };
             };
+            
       }
-
-      public void SoldiersUpdateRelation(Soldier from, Soldier to)
+      void ResetPos()
+      {
+            while(transform.localPosition != Vector3.zero)
+            {
+                  transform.localPosition = Vector3.zero;
+            }
+      }
+      public void SoldiersUpdateRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             if(from == null || to == null) return;
             to.chainTransfer.counted = false;
@@ -218,7 +233,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                   to.positiveEffect.Play();
                   PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.Positive);
                   to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
-                  from.transform.DOMove(backPosition, from.chainTransfer.duration/2).onComplete = () =>
+                  from.transform.DOLocalMove(Vector3.zero, from.chainTransfer.duration/2).onComplete = () =>
                   {  
                         // 允许状态机的移动
                         NavMeshAgent agent;
@@ -232,105 +247,94 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                   };
             };
       }
-      public void SoldiersEndRelation(Soldier from, Soldier to)
+      public void SoldiersEndRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
-           
-       // 发出射线
+            // 发出射线
             targetPosition = Vector3.zero;
-        if (Physics.Raycast(from.transform.position, (to.transform.position - from.transform.position), out RaycastHit hit, Mathf.Infinity, targetLayer))
-        {
-            // 如果射线与物体相交，则打印相交点和相交物体的名称
-            // Debug.Log("Intersection point: " + hit.point);
-            // Debug.Log("Intersected object: " + hit.collider.gameObject.name);
-            targetPosition = hit.point;
-            bombIsMoving = true;
-
-        }
-        else
-        {
-            //TODO 增强士气？
-        }
-        if (targetPosition == Vector3.zero)
+            if (Physics.Raycast(from.transform.position, (to.transform.position - from.transform.position), out RaycastHit hit, Mathf.Infinity, targetLayer))
+            {
+                // 如果射线与物体相交，则打印相交点和相交物体的名称
+                // Debug.Log("Intersection point: " + hit.point);
+                // Debug.Log("Intersected object: " + hit.collider.gameObject.name);
+                targetPosition = hit.point;
+                bombIsMoving = true;
+            }
+            else if (targetPosition == Vector3.zero)
             {
                   // 计算延长线上的点
                   Vector3 direction = (to.transform.position - from.transform.position).normalized;
                   Vector3 extendedPoint = to.transform.position + (direction * extendDistance);
                   targetPosition = extendedPoint;
-                  
             }
-            if(bombIsMoving)
+            if(!bombIsMoving)return;
+            Vector3 backPos = to.transform.position;
+            Vector3 targetPos = this.targetPosition;
+            //大炮发射表现
+            PuppetEffectDataStruct ped = new(PuppetEffectDataStruct.EffectType.ChainTransferTrail,targetPos,duration/2);
+            to.chainTransfer.OnPlayEffect?.Invoke(ped);
+            GameObject obj = new("TrailObject");
+            TrailRenderer trail = obj.AddComponent<TrailRenderer>();
+            trail.startColor = Color.red;
+            trail.endColor = Color.yellow;
+            trail.startWidth = 0.6f;
+            trail.endWidth = 0.6f;
+            trail.time = 2.0f;
+            Material trailMaterial = boonMat;
+            trail.material = trailMaterial;
+            obj.SetActive(false);
+            obj.transform.position = transform.position;
+            obj.SetActive(true);
+            trail.GetComponent<Renderer>().enabled = needRender; // 是否需要渲染
+            to.chainTransfer.ChainTransfering(originDuration);
+            float ortemp = originDuration;
+            // 发射
+            to.transform.DOMove(targetPos,to.chainTransfer.duration/2).onComplete = () =>
             {
-                  Vector3 backPos = to.transform.position;
-                  Vector3 targetPos = this.targetPosition;
-                  //大炮发射表现
-                  PuppetEffectDataStruct ped = new(PuppetEffectDataStruct.EffectType.ChainTransferTrail,targetPos,duration/2);
-                  to.chainTransfer.OnPlayEffect?.Invoke(ped);
-
-                        GameObject obj = new("TrailObject");
-                        TrailRenderer trail = obj.AddComponent<TrailRenderer>();
-                        trail.startColor = Color.red;
-                        trail.endColor = Color.yellow;
-                        trail.startWidth = 0.6f;
-                        trail.endWidth = 0.6f;
-                        trail.time = 2.0f;
-                        Material trailMaterial = boonMat;
-                        trail.material = trailMaterial;
-                        obj.SetActive(false);
-                        obj.transform.position = transform.position;
-                        obj.SetActive(true);
-
-                        trail.GetComponent<Renderer>().enabled = needRender; // 是否需要渲染
-
-                  to.chainTransfer.ChainTransfering(originDuration);
-
-                  float ortemp = originDuration;
-                  to.transform.DOMove(targetPos,to.chainTransfer.duration/2).onComplete = () =>
-                  { 
-                        obj.transform.position = targetPos;
-                        
-                        // 使用DOTween.To方法来改变颜色
-                        Color targetColor = new(trail.endColor.r,trail.endColor.g,trail.endColor.b,0f);
-                        DOTween.To(() => trail.startColor, color => trail.startColor = color, targetColor, originDuration/2);
-                        DOTween.To(() => trail.endColor, color => trail.endColor = color, targetColor, originDuration/2);
-                        GameObject boonEffect = Instantiate(boonEffectPrefab.gameObject);
-                        boonEffect.GetComponent<ParticleSystem>().GetComponent<Renderer>().enabled = needRender; // 是否需要渲染
-                        boonEffect.transform.position = targetPos;
-                        boonEffect.GetComponent<ParticleSystem>().Play();
-                        PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.ChainTransferBoom,targetPos,ortemp);
-                        to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
-                        Destroy(obj,originDuration);
-                        Destroy(boonEffect,originDuration);
-                        to.transform.DOMove(targetPos,to.chainTransfer.originDuration/2).onComplete = () =>
-                        {
-                              to.transform.DOMove(backPos,to.chainTransfer.originDuration).onComplete = () =>
-                              {
-                                    // 公告
-                                    mechanismInPut.warningSystem.inText1 = (soldiers.Count+1).ToString();
-                                    mechanismInPut.warningSystem.inText2 = self.morale.soldierType.ToString();
-                                    mechanismInPut.warningSystem.inText3 = chainDamageTotal.ToString();
-                                    mechanismInPut.warningSystem.changeWarningTypes = WarningSystem.WarningType.ChainTransfer;
-                                    //复原
-                                    foreach(Soldier soldier in GetSameTypeSoldier())
-                                    {
-                                          soldier.chainTransfer.counted = false;
-                                          soldier.chainTransfer.theFirst = false;
-                                          soldier.chainTransfer.gloableIndex = 0;
-                                          soldier.chainTransfer.duration = originDuration;
-                                          // soldier.chainTransfer.bombIsMoving = false;
-                                          soldier.chainTransfer.preview = false;
-                                          skillCooldown.NotActive(true);
-                                    }
-                                    
-                                    
-                                    
-                              };
-                                    
-                              
-                              
-                        };
-                        
-                  };
+            obj.transform.position = targetPos;
+            // 使用DOTween.To方法来改变颜色
+            Color targetColor = new(trail.endColor.r,trail.endColor.g,trail.endColor.b,0f);
+            DOTween.To(() => trail.startColor, color => trail.startColor = color, targetColor, originDuration/2);
+            DOTween.To(() => trail.endColor, color => trail.endColor = color, targetColor, originDuration/2);
+            GameObject boonEffect = Instantiate(boonEffectPrefab.gameObject);
+            boonEffect.GetComponent<ParticleSystem>().GetComponent<Renderer>().enabled = needRender; // 是否需要渲染
+            boonEffect.transform.position = targetPos;
+            boonEffect.GetComponent<ParticleSystem>().Play();
+            // PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.ChainTransferBoom,targetPos,ortemp);
+            // to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
+            Destroy(obj,originDuration);
+            Destroy(boonEffect,originDuration);
+            to.transform.DOMove(targetPos,to.chainTransfer.originDuration/2).onComplete = () =>
+            {
+            to.transform.DOMove(backPos,to.chainTransfer.originDuration).onComplete = () =>
+            {   
+            //复原
+            AllSoldiers();
+            foreach(SoldierBehaviors soldier in soldiers)
+            {
+                  
+                  if(!soldier)continue;
+                  soldier.chainTransfer.counted = false;
+                  soldier.chainTransfer.theFirst = false;
+                  soldier.chainTransfer.gloableIndex = 0;
+                  soldier.chainTransfer.duration = originDuration;
+                  soldier.chainTransfer.bombIsMoving = false;
+                  soldier.chainTransfer.preview = false;
+                  // 允许砖块移动
+                  soldier.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Move();
+                  // skillCooldown.NotActive(true);
             }
+            // 公告
+            if(!mechanismInPut)return;
+            if(!mechanismInPut.warningSystem)return;
+            mechanismInPut.warningSystem.inText1 = (soldiers.Count+1).ToString();
+            mechanismInPut.warningSystem.inText2 = self.morale.soldierType.ToString();
+            mechanismInPut.warningSystem.inText3 = chainDamageTotal.ToString();
+            mechanismInPut.warningSystem.changeWarningTypes = WarningSystem.WarningType.ChainTransfer;
+            };
+            };
+                  
+            };
+            
       }
       void UnitBaseCollected(Unit u)
       {
@@ -338,66 +342,50 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       }
       public void ChainTransfering(float duration)
       {
-          float colliderRadiusTemp = capsuleCollider.radius;
-          chainTransfering = true;
-	    selectionCircle.gameObject.SetActive(chainTransfering);
-          // 碰撞扣血
-          capsuleCollider.radius = 3.9f;
-          
-	    DOVirtual.DelayedCall(duration, () =>
-          {
-            chainTransfering = false;
-	  	selectionCircle.gameObject.SetActive(chainTransfering);
-            
-            foreach(Soldier ss in dealAttackSoldiers)
+            float colliderRadiusTemp = capsuleCollider.radius;
+            chainTransfering = true;
+            // if(!selectionCircle)selectionCircle = self.unitBase.selectionCircle; 
+	      // selectionCircle.gameObject.SetActive(chainTransfering);
+            // capsuleCollider.enabled = chainTransfering;
+            // 碰撞扣血
+            capsuleCollider.radius = 3.9f;
+	      DOVirtual.DelayedCall(duration, () =>
             {
-                 
-                 if(ss.chainTransfer.boonEffectPrefab)
-                 {
-                     
-                     if(!self.unitBase.IsDeadOrNull(ss.unitBase))
-                     {
+                  chainTransfering = false;
+	            // selectionCircle.gameObject.SetActive(chainTransfering);
+                  // capsuleCollider.enabled = chainTransfering;
+                  foreach(SoldierBehaviors ss in dealAttackSoldiers)
+                  {
+                        if(!ss.chainTransfer.boonEffectPrefab)continue;     
+                        if(self.unitBase.IsDeadOrNull(ss.unitBase))continue;  
                         GameObject boonEffect = Instantiate(ss.chainTransfer.boonEffectPrefab.gameObject);
                         boonEffect.transform.position = ss.transform.position;
-                        ss.unitBase.SufferAttack(chainDamageTotal);
-                        
-                        
+                        // ss.unitBase.SufferAttack(chainDamageTotal);
+                        ss.unitBase.SufferAttackSimple(150);
                         StartCoroutine(WaitParticleDestory(ss,boonEffect.GetComponent<ParticleSystem>()));
-                     }
-                     
-                 }
-                 
-            }
-            capsuleCollider.radius = colliderRadiusTemp;
-            dealAttackSoldiers.Clear();
-            
-          });
+                  }
+                  capsuleCollider.radius = colliderRadiusTemp;
+                  dealAttackSoldiers.Clear();
+
+            });
       }
       void OnTriggerEnter(Collider other)
       {
-           
-            if(chainTransfering)
+            if(!chainTransfering)return;
+            // 判断进入碰撞的物体
+            if (other.transform.TryGetComponent(out SoldierBehaviors soldierAttack))
             {
-                  // 判断进入碰撞的物体
-                  if (other.transform.TryGetComponent(out Soldier soldierAttack))
+                  if(self.unitBase.unitTemplate.GetOtherPlayerType() != soldierAttack.unitBase.unitTemplate.player)return;
+                  // 在此处编写碰撞逻辑
+                  if(!dealAttackSoldiers.Contains(soldierAttack)) 
                   {
-                        
-
-                        if(self.unitBase.unitTemplate.GetOtherUnitType() == soldierAttack.unitBase.unitTemplate.unitType)
-                        {
-                              // 在此处编写碰撞逻辑
-                              
-                              if(!dealAttackSoldiers.Contains(soldierAttack)) 
-                              {
-                                    dealAttackSoldiers.Add(soldierAttack);
-                              }
-                              
-                        }
-                  } 
-            }
+                        dealAttackSoldiers.Add(soldierAttack);
+                  }  
+            } 
+            
            
       }
-      private IEnumerator WaitParticleDestory(Soldier soldier,ParticleSystem particleSystem)
+      private IEnumerator WaitParticleDestory(SoldierBehaviors soldier,ParticleSystem particleSystem)
       {
             // 等待粒子特效开始播放
             particleSystem.Play();
@@ -410,13 +398,15 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             Destroy(particleSystem.gameObject);
             
       }
-      public Soldier GetClosestSoldier()
+      public SoldierBehaviors GetClosestSoldier()
       {
-            Soldier closest = null;
+            if(soldiers.Count == 0) AllSoldiers();
+
+            SoldierBehaviors closest = null;
             float closestDistanceSqr = Mathf.Infinity;
             Vector3 currentPosition = transform.position;
             
-            foreach (Soldier soldier in soldiers)
+            foreach (SoldierBehaviors soldier in soldiers)
             {
                   if(soldier.chainTransfer.collected) continue;
                   if(soldier.chainTransfer.counted) continue;
@@ -435,20 +425,21 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
 
             return closest;
       }
-      public List<Soldier> GetSameTypeSoldier()
+      public List<SoldierBehaviors> GetSameTypeSoldier()
       {
-            List<Soldier> tempSoldiers = new();
+            List<SoldierBehaviors> tempSoldiers = new();
             
-            foreach(Soldier soldier in FindObjectsOfType<Soldier>())
+            foreach(SoldierBehaviors soldier in FindObjectsOfType<SoldierBehaviors>())
             {
                 if(soldier.morale.soldierType != self.morale.soldierType) continue;
-                if(soldier.unitBase.unitTemplate.unitType == UnitTemplate.UnitType.Virus)continue;
+            //     if(soldier.unitBase.unitTemplate.unitType == UnitTemplate.UnitType.Virus)continue;
+                if(soldier.UnitSimple.unitTemplate.player != self.UnitSimple.unitTemplate.player) continue;
                 tempSoldiers.Add(soldier);
             }
 
-            List<Soldier> tempS = new(tempSoldiers);
+            List<SoldierBehaviors> tempS = new(tempSoldiers);
             
-            foreach(Soldier s in tempS)
+            foreach(SoldierBehaviors s in tempS)
             {
                   if(s.chainTransfer.collected == true || s.fourDirectionsLinks.forceBreakLink == true)
                   {
@@ -458,15 +449,15 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             
             return tempSoldiers;
       }
-      List<Soldier> GetSameTypeSoldier(Soldier firstSoldier)
+      List<SoldierBehaviors> GetSameTypeSoldier(SoldierBehaviors firstSoldier)
       {
             soldiers = GetSameTypeSoldier();
-            List<Soldier> tempSoldiers = new List<Soldier>();
+            List<SoldierBehaviors> tempSoldiers = new List<SoldierBehaviors>();
 
             firstSoldier.chainTransfer.counted = true;
             tempSoldiers.Add(firstSoldier);
 
-            Soldier nextSoldier = null;
+            SoldierBehaviors nextSoldier = null;
 
             for(int i = 0; i < this.soldiers.Count-1; i++)
             {
@@ -490,16 +481,17 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                   }
                   
             }
-            foreach(Soldier s in tempSoldiers)
+            foreach(SoldierBehaviors s in tempSoldiers)
             {
                 s.chainTransfer.counted = false;
             }
 
             return tempSoldiers;
       }
-      void SetSkine()
+      void Display_setSkine()
       {
-            
+            // if(!skillCooldown) skillCooldown = FindObjectOfType<SkillCooldown>();
+            // if(!skillCooldownTimer) skillCooldownTimer = FindObjectOfType<SkillCooldownTimer>();
             if(self.skinName!="")
             {
                   switch(self.morale.soldierType)
@@ -507,26 +499,26 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                         case MoraleTemplate.SoldierType.Red:
                              boonMat = boonMats.Find(x=>x.name == "FourDirLinkEffect_red");
                              boonEffectPrefab = boonEffectPrefabs.Find(x=>x.name == "BoomEffect_red");
-                             skillCooldown = skillCooldownTimer.countersRedUI;
-                             skillCooldown.CooldownReady += x =>{if(x == self.morale.soldierType)bombIsMoving = false;};
+                             // skillCooldown = skillCooldownTimer.countersRedUI;
+                             // skillCooldown.CooldownReady += x =>{if(x == self.morale.soldierType)bombIsMoving = false;};
                         break;
                         case MoraleTemplate.SoldierType.Blue:
                               boonMat = boonMats.Find(x=>x.name == "FourDirLinkEffect_blue");
                               boonEffectPrefab = boonEffectPrefabs.Find(x=>x.name == "BoomEffect_blue");
-                              skillCooldown = skillCooldownTimer.counterBlueUI;
-                              skillCooldown.CooldownReady += x =>{if(x == self.morale.soldierType)bombIsMoving = false;};
+                              // skillCooldown = skillCooldownTimer.counterBlueUI;
+                              // skillCooldown.CooldownReady += x =>{if(x == self.morale.soldierType)bombIsMoving = false;};
                         break;
                         case MoraleTemplate.SoldierType.Green:
                               boonMat = boonMats.Find(x=>x.name == "FourDirLinkEffect_green");
                               boonEffectPrefab = boonEffectPrefabs.Find(x=>x.name == "BoomEffect_green");
-                              skillCooldown = skillCooldownTimer.countersGreenUI;
-                              skillCooldown.CooldownReady += x =>{if(x == self.morale.soldierType)bombIsMoving = false;};
+                              // skillCooldown = skillCooldownTimer.countersGreenUI;
+                              // skillCooldown.CooldownReady += x =>{if(x == self.morale.soldierType)bombIsMoving = false;};
                         break;
                         case MoraleTemplate.SoldierType.Purple:
                               boonMat = boonMats.Find(x=>x.name == "FourDirLinkEffect_purple");
                               boonEffectPrefab = boonEffectPrefabs.Find(x=>x.name == "BoomEffect_purple");
-                              skillCooldown = skillCooldownTimer.counterPurpleUI;
-                              skillCooldown.CooldownReady += x =>{if(x == self.morale.soldierType)bombIsMoving = false;};
+                              // skillCooldown = skillCooldownTimer.counterPurpleUI;
+                              // skillCooldown.CooldownReady += x =>{if(x == self.morale.soldierType)bombIsMoving = false;};
                         break;
                   }
             }     
@@ -534,19 +526,13 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       }
       void Init()
       {
-            self = transform.GetComponent<Soldier>();
+            self = transform.GetComponent<SoldierBehaviors>();
             if(self.unitBase!=null)
             {
                   self.unitBase.OnStartCollect += UnitBaseCollected;
                   self.unitBase.OnDie += UnitBaseCollected;
             }
-            mechanismInPut = FindObjectOfType<MechanismInPut>();
-            mechanismInPut.modeChangeAction += ModeChangedAction;
-            mechanismInPut.allSoldiers += AllSoldiers;
-            
-            skillCooldownTimer = FindObjectOfType<SkillCooldownTimer>();
-            
-
+            // skillCooldownTimer = FindObjectOfType<SkillCooldownTimer>();
             next = null;
             duration = 1.0f;
             extendDistance = 6f;
@@ -558,10 +544,14 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             bombIsMoving = false;
             preview = false;
             collected = false;
-            this.self.morale.soldierType =  transform.GetComponent<Soldier>().morale.soldierType;
+            this.self.morale.soldierType =  transform.GetComponent<SoldierBehaviors>().morale.soldierType;
             capsuleCollider = GetComponent<CapsuleCollider>();
-            Invoke(nameof(SetSkine), 0.1f);
-            selectionCircle = self.unitBase.selectionCircle; 
+            Invoke(nameof(Display_setSkine), 0.1f);
+            // selectionCircle = self.unitBase.selectionCircle; 
+            mechanismInPut = FindObjectOfType<MechanismInPut>();
+            if(!mechanismInPut)return;
+            // mechanismInPut.modeChangeAction += ModeChangedAction;
+            // mechanismInPut.allSoldiers += AllSoldiers;
             
       }
       void ReflashMechanismStart()
@@ -575,10 +565,8 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       }
       private void OnDrawGizmos()
       {
-            if (capsuleCollider != null)
-            {
-                  Gizmos.color = Color.red;
-                  Gizmos.DrawWireSphere(transform.position + capsuleCollider.center, capsuleCollider.radius * Mathf.Max(transform.localScale.x, transform.localScale.y, transform.localScale.z));
-            }
+            if (capsuleCollider == null)return;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position + capsuleCollider.center, capsuleCollider.radius * Mathf.Max(transform.localScale.x, transform.localScale.y, transform.localScale.z));
       }
 }

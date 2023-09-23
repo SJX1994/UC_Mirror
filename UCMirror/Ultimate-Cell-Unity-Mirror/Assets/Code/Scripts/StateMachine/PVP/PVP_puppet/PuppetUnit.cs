@@ -196,7 +196,7 @@ public class PuppetUnit : MonoBehaviour
         shooter.SetActive(isShooting);
         if (isShooting)
         {
-            weapon.Shoot(targetPosition);
+            // weapon.Shoot(targetPosition);
         }
     }
 

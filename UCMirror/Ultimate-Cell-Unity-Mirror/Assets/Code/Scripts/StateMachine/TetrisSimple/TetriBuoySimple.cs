@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 public class TetriBuoySimple : MonoBehaviour
 {
     public Vector2 posId;
@@ -13,8 +12,7 @@ public class TetriBuoySimple : MonoBehaviour
     
     void Start()
     {
-        Invoke(nameof(LateStart),0.1f);
-        
+        Invoke(nameof(LateStart),0.1f); 
     }
     void LateStart()
     {
@@ -37,6 +35,7 @@ public class TetriBuoySimple : MonoBehaviour
         // 发射射线向下进行检测
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
+        if(!tetriBlockSimple)return false;
         bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, tetriBlockSimple.blockTargetMask);
         if (!hitBlock)return false;
         // 进一步的处理
@@ -55,7 +54,7 @@ public class TetriBuoySimple : MonoBehaviour
         {
             return false;
         }
-        if(block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace)
+        if((block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace) || (tetriBlockSimple.player == UC_PlayerData.Player.Player1 && block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace_Player1) || (tetriBlockSimple.player == UC_PlayerData.Player.Player2 && block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace_Player2))
         {
             return true;
         }
@@ -71,15 +70,19 @@ public class TetriBuoySimple : MonoBehaviour
     }
     public bool DoDropCanPutCheck()
     {
+        
         // 发射射线向下进行检测
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
+        if(!tetriBlockSimple)return false;
         bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, tetriBlockSimple.blockTargetMask);
         if (!hitBlock)return false;
         // 进一步的处理
         BlockBuoyHandler block;
         hit.collider.transform.TryGetComponent(out block);
         if(!block)return false;
+        if(!tetrisBuoySimple.tetrisBuoyDragged)return false;
+        if(tetrisBuoySimple.tetrisBuoyDragged.childTetris.Count == 0)tetrisBuoySimple.tetrisBuoyDragged.Init();
         if(tetrisBuoySimple.tetrisBuoyDragged.childTetris.Contains(block.tetriBuoySimple))
         {
             return true;
@@ -92,15 +95,15 @@ public class TetriBuoySimple : MonoBehaviour
         {
             return false;
         }
-        if(block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace)
+        if((block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace) || (tetriBlockSimple.player == UC_PlayerData.Player.Player1 && block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace_Player1) || (tetriBlockSimple.player == UC_PlayerData.Player.Player2 && block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace_Player2))
         {
             return true;
         }
-        if(tetriBlockSimple.player == UC_PlayerData.Player.Player1 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player1)
+        if((tetriBlockSimple.player == UC_PlayerData.Player.Player1 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player1))
         {
             return false;
         }
-        else if(tetriBlockSimple.player == UC_PlayerData.Player.Player2 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player2)
+        else if((tetriBlockSimple.player == UC_PlayerData.Player.Player2 && block.blockTetriHandler.State != BlockTetriHandler.BlockTetriState.Occupied_Player2))
         {
             return false;   
         }
@@ -118,6 +121,7 @@ public class TetriBuoySimple : MonoBehaviour
     }
     public void Display_Evaluate()
     {
+        if(!tetriDisplayRange)return;
         BlocksCreator blocksCreator = tetrisBuoySimple.tetrisBlockSimple.blocksCreator;
         var blockUp = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x,posId.y + 1));
         if(blockUp && blockUp.GetComponent<BlockBuoyHandler>().tetriBuoySimple && blockUp.GetComponent<BlockBuoyHandler>().tetriBuoySimple.player == player)
@@ -152,5 +156,9 @@ public class TetriBuoySimple : MonoBehaviour
             tetriDisplayRange.Right.gameObject.SetActive(true);
         }
 
+    }
+    public void Reset()
+    {
+        blockBuoyHandler = null;
     }
 }

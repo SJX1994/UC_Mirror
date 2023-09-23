@@ -9,12 +9,8 @@ public class CloneToMainScene : MonoBehaviour
     void Start()
     {
         if(!CheckLocal())return;
-        
         foreach (var obj in cloneObjects)
         {
-            if(obj.transform.TryGetComponent(out NetworkIdentity networkIdentity))DestroyImmediate(networkIdentity);
-            if(obj.transform.TryGetComponent(out NetworkTransformBase networkTransformBase))DestroyImmediate(networkTransformBase);
-            
             GameObject o = Instantiate(obj);
             o.SetActive(true);
         }
@@ -27,6 +23,7 @@ public class CloneToMainScene : MonoBehaviour
     {
         if(RunModeData.CurrentRunMode == RunMode.Host)
         {
+            
             for(int i = 0;i<cloneObjects.Count;i++)
             {
                 if(!cloneObjects[i].transform.TryGetComponent(out NetworkIdentity networkIdentity))continue;
@@ -35,10 +32,16 @@ public class CloneToMainScene : MonoBehaviour
                 DestroyImmediate(cloneObjects[i]);
             }
             return false;
-        }else
+        }else if(RunModeData.CurrentRunMode == RunMode.Local)
         {
+            foreach (var obj in cloneObjects)
+            {
+                if(obj.transform.TryGetComponent(out NetworkIdentity networkIdentity))DestroyImmediate(networkIdentity);
+                if(obj.transform.TryGetComponent(out NetworkTransformBase networkTransformBase))networkTransformBase.enabled = false;
+            }
             return true;
         }
+        return false;
     }
    
 }

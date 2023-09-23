@@ -9,7 +9,6 @@ public class BuoyTurnHandle : NetworkBehaviour
 {
     BuoyInfo buoyInfo;
     BlocksCreator blocksCreator;
-    public LayerMask blockTargetMask;
     float zoomSpeed = 0.5f;
     float minValue = 1f;
     float maxValue = 5f;
@@ -22,7 +21,7 @@ public class BuoyTurnHandle : NetworkBehaviour
             centerOfControl = value; 
         }
     }
-    private float currentValue = 1f; // 初始值
+    public float currentValue = 1f; // 初始值
     public bool actived = false;
     List<TetrisBuoySimple> tetrisBuoysControled = new();
     List<BlockBuoyHandler> blocksScanned = new(); 
@@ -39,6 +38,11 @@ public class BuoyTurnHandle : NetworkBehaviour
                     CountScanning();
                 }else
                 {
+                    if(isServer)
+                    {
+                        colliderDraw.size = new Vector3(currentValue,1,currentValue);
+                        CountScanning();
+                    }
                     if(!isLocalPlayer)return;
                     colliderDraw.size = new Vector3(currentValue,1,currentValue);
                     CountScanning();
@@ -70,6 +74,7 @@ public class BuoyTurnHandle : NetworkBehaviour
             InitRender();
         }else
         {
+            if(isServer)InitRender();
             if(!isLocalPlayer)return;
             InitRender();
         }
@@ -89,6 +94,10 @@ public class BuoyTurnHandle : NetworkBehaviour
             Dispaly_PaintColliderBox();
         }else
         {
+            if(isServer)
+            {
+                Dispaly_PaintColliderBox();
+            }   
             if(!isLocalPlayer)return;
             ScrollSize();
             Dispaly_PaintColliderBox();
@@ -96,7 +105,7 @@ public class BuoyTurnHandle : NetworkBehaviour
     }
     void InitRender()
     {
-        pointsToDraw = new Vector3[5];
+        pointsToDraw = new Vector3[10];
         buoyInfo.OnBuoyPosIDChange += (posId) =>
         {
             centerOfControl = posId;
@@ -133,33 +142,37 @@ public class BuoyTurnHandle : NetworkBehaviour
         float scrollInput = Input.GetAxis("Mouse ScrollWheel");
         CurrentValue += scrollInput * zoomSpeed;
         CurrentValue = Mathf.Clamp(currentValue, minValue, maxValue);
+        if(buoyInfo.Local())return;
+        Cmd_ScrollSize(CurrentValue);
+    }
+    [Command(requiresAuthority = true)]
+    void Cmd_ScrollSize(float newValue)
+    {
+        CurrentValue = Mathf.Clamp(newValue, minValue, maxValue);
     }
     public void CountScanning(bool showWarning = true)
     {
+        
         int currentValueInt = Mathf.RoundToInt(currentValue);
         if(currentValueInt>0 && currentValueInt<3)
         {
             // Debug.Log("控制1格");
             turnHandleControlState = TurnHandleControlState.Scaning_1;
-            if(!isWarningSystem || !showWarning)return;
-            MechanismInPut.Instance.warningSystem.inText1 = "1";
-            MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuoyInfo;
+            Warning("1",showWarning);
         }
         else if(currentValueInt>=3 && currentValueInt<5)
         {   
             // Debug.Log("控制9格");
             turnHandleControlState = TurnHandleControlState.Scaning_9;
-            if(!isWarningSystem || !showWarning)return;
-            MechanismInPut.Instance.warningSystem.inText1 = "9";
-            MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuoyInfo;
+            Warning("9",showWarning);
+            
         }
         else if(currentValueInt>=5)
         {   
             // Debug.Log("控制25格");
             turnHandleControlState = TurnHandleControlState.Scaning_25;
-            if(!isWarningSystem || !showWarning)return;
-            MechanismInPut.Instance.warningSystem.inText1 = "25";
-            MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuoyInfo;
+            Warning("25",showWarning);
+            
         }
         // 圈 + 1
         Vector2 Up,Down,Left,Right,UpRight,DownRight,DownLeft,UpLeft;
@@ -255,6 +268,12 @@ public class BuoyTurnHandle : NetworkBehaviour
         pointsToDraw[2] = new Vector3(maxPoint.x, maxPoint.y, maxPoint.z);
         pointsToDraw[3] = new Vector3(maxPoint.x, maxPoint.y, minPoint.z);
         pointsToDraw[4] = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
+        maxPoint.y += 0.6f;
+        pointsToDraw[5] = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
+        pointsToDraw[6] = new Vector3(minPoint.x, maxPoint.y, maxPoint.z);
+        pointsToDraw[7] = new Vector3(maxPoint.x, maxPoint.y, maxPoint.z);
+        pointsToDraw[8] = new Vector3(maxPoint.x, maxPoint.y, minPoint.z);
+        pointsToDraw[9] = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
         
         lineRenderer.positionCount = pointsToDraw.Length;
         for (int i = 0; i < pointsToDraw.Length; i++)
@@ -262,6 +281,7 @@ public class BuoyTurnHandle : NetworkBehaviour
             Vector3 point =  pointsToDraw[i];
             lineRenderer.SetPosition(i, point);
         }
+        
     }
     void Dispaly_TurnHandleTurning(float value)
     {
@@ -278,9 +298,7 @@ public class BuoyTurnHandle : NetworkBehaviour
     }
     void CountScannedBlocksAndTetris(List<Vector2> posIds)
     {
-        
         if(!actived)return;
-        
         blocksScanned.Clear();
         foreach (var posId in posIds)
         {
@@ -316,11 +334,18 @@ public class BuoyTurnHandle : NetworkBehaviour
     }
     public void Display_InFlow()
     {
-        lineRenderer.sortingOrder = Dispaly.FlowOrder+10;
+       // lineRenderer.sortingOrder = Dispaly.FlowOrder+10;
     }
     public void Display_OutFlow()
     {
-        lineRenderer.sortingOrder = Dispaly.NotFlowOrder+1;
+       //  lineRenderer.sortingOrder = Dispaly.NotFlowOrder+1;
     }
-   
+    void Warning(string showText,bool showWarning = true)
+    {
+        if(!isWarningSystem || !showWarning)return;
+        if(!MechanismInPut.Instance.warningSystem)return;
+        MechanismInPut.Instance.warningSystem.inText1 = showText;
+        MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuoyInfo;
+        
+    }
 }

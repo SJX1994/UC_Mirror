@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
-public class ChangeLiquid : MonoBehaviour
+using Mirror;
+using UC_PlayerData;
+public class ChangeLiquid : NetworkBehaviour
 {
     /// <summary>
     /// 液体
@@ -55,10 +57,43 @@ public class ChangeLiquid : MonoBehaviour
         };
         
     }
+    [Client]
+    public void Client_DoCount()
+    {
+        top.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
+        ready.SetActive(false);
+        ideaBox.Idel.SetActive(false);
+        top.GetComponent<RectTransform>().DOAnchorPos(new Vector3(0f,0f,0f),6f);
+        DOVirtual.Float(0, 1, 6.3f, (float value) =>
+        {
+            fade = value;
+            buttom.GetComponent<Image>().fillAmount = value;
+            foreach(var tetris in FindObjectsOfType<TetrisBlockSimple>())
+            {
+                if(tetris.player != Player.NotReady)return;
+                // 是否需要在 客户端idelBox 还没获取的时候 隐藏 俄罗斯方块组
+            }
+        }).onComplete=() =>
+        {
+             ready.SetActive(true);
+             ideaBox.Idel.SetActive(true);
+             ideaBox.ClientGetTetrisGroupID();
+        };
+        
+    }
     public void ChangeColor(Color color)
     {
-        buttom.GetComponent<Image>().DOColor(color,0.5f);
-        top.GetComponent<Image>().DOColor(color,0.5f);
+        if(!ideaBox.idelUI.hiden)
+        {
+            buttom.GetComponent<Image>().DOColor(color,0.5f);
+            top.GetComponent<Image>().DOColor(color,0.5f);
+        }else
+        {
+            Color colorHiden = new(color.r,color.g,color.b,Dispaly.HidenAlpha);
+            buttom.GetComponent<Image>().DOColor(colorHiden,0.5f);
+            top.GetComponent<Image>().DOColor(colorHiden,0.5f);
+        }
+        
     }
     
 

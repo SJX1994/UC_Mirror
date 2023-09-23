@@ -52,5 +52,6 @@
         "temp/":true,
         "Temp/":true
     },
-    "dotnet.defaultSolution": "Ultimate-Cell-Unity.sln"
+    "dotnet.defaultSolution": "Ultimate-Cell-Unity.sln",
+    "git.ignoreLimitWarning": true
 }

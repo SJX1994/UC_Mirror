@@ -8,6 +8,7 @@ public class FindCamera : MonoBehaviour
     private void Start()
     {
         //这里需要把UI设定为3DUI
+        if(!GameObject.FindGameObjectWithTag("UICamera"))return;
         Camera uiCam = GameObject.FindGameObjectWithTag("UICamera").GetComponent<Camera>();
         Canvas canvas = this.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;

@@ -308,7 +308,8 @@ namespace Mirror
             if (GetComponent<NetworkIdentity>() == null &&
                 GetComponentInParent<NetworkIdentity>(true) == null)
             {
-                Debug.LogError($"{GetType()} on {name} requires a NetworkIdentity. Please add a NetworkIdentity component to {name} or it's parents.");
+                // TODO 本地模式
+                // Debug.LogError($"{GetType()} on {name} requires a NetworkIdentity. Please add a NetworkIdentity component to {name} or it's parents.");
             }
 #elif UNITY_2020_3_OR_NEWER // 2020 only has GetComponentsInParents(active), we can use this too
             NetworkIdentity[] parentsIds = GetComponentsInParent<NetworkIdentity>(true);

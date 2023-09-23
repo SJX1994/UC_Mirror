@@ -27,7 +27,7 @@ public class PawnLine : MonoBehaviour
         StartCoroutine(SmoothChange(0, 0.5f, 2f));
         StartCoroutine(SmoothChange(pawnLine.transform, 0, 0.5f, 2f));
         if (GameObject.Find("LanNetWorkManager") == null) return;
-        // TODO 暂时获取方式
+        // 暂时获取方式
         sceneLoader = GameObject.Find("LanNetWorkManager").gameObject;
         // 全局通信方法管理
         communicationManager = sceneLoader.GetComponent<CommunicationInteractionManager>();

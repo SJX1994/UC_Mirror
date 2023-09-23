@@ -95,7 +95,9 @@ GameObject:
   m_Component:
   - component: {fileID: 470015492767617464}
   - component: {fileID: 470015492767617479}
-  - component: {fileID: -1840520245121953496}
+  - component: {fileID: 4011021362593910907}
+  - component: {fileID: 833412939492246666}
+  - component: {fileID: 4677444136600216642}
   m_Layer: 0
   m_Name: BlocksManager
   m_TagString: Untagged
@@ -131,12 +133,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f459f81f22058c140bf4dadcf664db3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0.1
   FlowMask: {fileID: 470015492654241586}
   block: {fileID: 7486268708185842489, guid: 7df7815a73bc9664599e37fbd76d0f60, type: 3}
   x: 10
   z: 20
   blocks: []
---- !u!114 &-1840520245121953496
+--- !u!114 &4011021362593910907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 470015492767617478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f336ace02e8b7e4a93c14283a14c452, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &833412939492246666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 470015492767617478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5d175520a1c91941ab0ff9fc436d03c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4677444136600216642
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

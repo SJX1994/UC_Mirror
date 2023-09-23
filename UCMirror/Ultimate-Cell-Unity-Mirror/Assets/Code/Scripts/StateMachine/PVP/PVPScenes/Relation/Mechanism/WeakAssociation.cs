@@ -18,8 +18,8 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       public UnityAction<PuppetEffectDataStruct> OnPlayEffect;
 
       MechanismInPut mechanismInPut;
-      List<Soldier> soldiers = new();
-      Soldier self;
+      List<SoldierBehaviors> soldiers = new();
+      SoldierBehaviors self;
       MechanismInPut.ModeTest modeTest;
       // 弱势关联表现
       
@@ -33,8 +33,8 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       public List<Material> weakAssociationMats;
      
       public LineRenderer lineRenderer; // 组件
-      public Soldier associationTarget; // 终点
-      public Soldier associationSource; // 起点
+      public SoldierBehaviors associationTarget; // 终点
+      public SoldierBehaviors associationSource; // 起点
       public int numberOfPoints = 21; // 抛物线上的点数
       
       private Vector3[] points; // 抛物线上的所有点
@@ -42,16 +42,18 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       
       void Start()
       {
-            mechanismInPut = FindObjectOfType<MechanismInPut>();
-            mechanismInPut.modeChangeAction += ModeChangedAction;
-            mechanismInPut.allSoldiers += AllSoldiers;
-            self = transform.GetComponent<Soldier>();
+            
+            self = transform.GetComponent<SoldierBehaviors>();
             if(self.unitBase!=null)
             {
                   self.unitBase.OnStartCollect += UnitBaseCollected;
                   self.unitBase.OnDie += UnitBaseCollected;
             }
             Invoke(nameof(SetSkine), 0.1f);
+            mechanismInPut = FindObjectOfType<MechanismInPut>();
+            if(!mechanismInPut)return;
+            mechanismInPut.modeChangeAction += ModeChangedAction;
+            mechanismInPut.allSoldiers += AllSoldiers;
            
       }
       void Update()
@@ -75,12 +77,12 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
                   
             }else
             {
-                  Soldier to =  GetClosestSoldier();
+                  SoldierBehaviors to =  GetClosestSoldier();
                   SoldiersStartRelation(self,to);
             }
       }
 
-      public void SoldiersStartRelation(Soldier from, Soldier to)
+      public void SoldiersStartRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             
             if(from == null || to == null) return;
@@ -123,7 +125,7 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
             
       }
 
-      public void SoldiersUpdateRelation(Soldier from, Soldier to)
+      public void SoldiersUpdateRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             if(from == null || to == null) return;
             // 每当位置改变，更新抛物线
@@ -133,7 +135,7 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
             }
             
       }
-      public void SoldiersEndRelation(Soldier from, Soldier to)
+      public void SoldiersEndRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             to.morale.AddMorale(to, 0.1f, true);
             to.morale.EffectByMorale(to,ref to.strength);
@@ -181,17 +183,17 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
 
             return new Vector3(x, y, z);
       }
-      void AllSoldiers(List<Soldier> soldiers)
+      void AllSoldiers(List<SoldierBehaviors> soldiers)
       {
             this.soldiers = soldiers;
       }
-      Soldier GetClosestSoldier()
+      SoldierBehaviors GetClosestSoldier()
       {
-            Soldier closest = null;
+            SoldierBehaviors closest = null;
             float closestDistanceSqr = Mathf.Infinity;
             Vector3 currentPosition = transform.position;
 
-            foreach (Soldier soldier in soldiers)
+            foreach (SoldierBehaviors soldier in soldiers)
             {
                   if(soldier.weakAssociation.associationTarget!=null) continue;
                   if(soldier == self) continue;

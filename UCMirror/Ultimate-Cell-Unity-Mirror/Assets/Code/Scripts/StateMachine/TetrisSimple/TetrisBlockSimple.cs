@@ -5,8 +5,10 @@ using UC_PlayerData;
 using System.Linq;
 using UnityEngine.Events;
 using Mirror;
+using DG.Tweening;
 public class TetrisBlockSimple : NetworkBehaviour
 {
+    [SyncVar]
     public Vector2 posId;
     public float occupyingTime = 3f;
     public Player player = Player.NotReady;
@@ -18,10 +20,26 @@ public class TetrisBlockSimple : NetworkBehaviour
         }
         set
         {
-            if(!isClient)return;
+            // if(!isClient)return;
             if(player == value)return;
             player = value;
             Client_Reflash();
+        }
+    }
+    [SyncVar(hook = nameof(GoOnTheBlocksCreator))]
+    public bool onTheBlocksCreator;
+    public bool OnTheBlocksCreator
+    {
+        get
+        {
+            return onTheBlocksCreator;
+        }
+        set
+        {
+            if(onTheBlocksCreator == value)return;
+            GoOnTheBlocksCreator(onTheBlocksCreator,value);
+            onTheBlocksCreator = value;
+            
         }
     }
     public Vector3 rotationPoint;
@@ -32,11 +50,11 @@ public class TetrisBlockSimple : NetworkBehaviour
     public Dictionary<TetriBlockSimple,BlockTetriHandler> TB_cache = new();
     public UnityAction<Dictionary<TetriBuoySimple,BlockBuoyHandler>> OnCacheUpdateForBuoyMarkers;
     public UnityAction OnUpdatDisplay;
+    public UnityAction OnStartMove;
+    public UnityAction<bool> OnRotate;
     private Stack<Vector3> positionStack;
     int moveStep = 1;
     public IdelBox idelBox;
-    [SyncVar]
-    public int serverID = -1;
     public enum TetrisCheckMode
     {
         Create,
@@ -47,10 +65,60 @@ public class TetrisBlockSimple : NetworkBehaviour
     public TetrisCheckMode tetrisCheckMode = TetrisCheckMode.Null;
     [HideInInspector]
     public Color color;
+    public Sequence sequence;
+    [Header("UC_PVP:")]
+    [SyncVar]
+    public int serverID = -1;
+    public int ServerID
+    {
+        get
+        {
+            return serverID;
+        }
+        set
+        {
+            if(serverID == value)return;
+            SyncOtherTetrisComponent(value);
+            serverID = value;
+        }
+    }
+    TetrisBuoySimple tetrisBuoySimple;
+    private TetrisUnitSimple tetrisUnitSimple;
+    public TetrisUnitSimple TetrisUnitSimple
+    {
+        get
+        {
+            if(!tetrisUnitSimple)tetrisUnitSimple = transform.GetComponent<TetrisUnitSimple>();
+            return tetrisUnitSimple;
+        }
+    }
+    [SyncVar]
+    public int rotateTimes;
+    public int RotateTimes
+    {
+        get
+        {
+            return rotateTimes;
+        }
+        set
+        {
+            // Debug.Log($"rotateTimes:{rotateTimes}");
+            if(rotateTimes == value)return;
+            if(!tetrisBuoySimple)tetrisBuoySimple = transform.GetComponent<TetrisBuoySimple>();
+            tetrisBuoySimple.rotateTimes = value;
+            rotateTimes = value;
+            if(rotateTimes!=4)return;
+            rotateTimes = 0;
+        }
+    }
+    public string type;
+    public bool autoID = true;
     void Awake()
     {
        color = transform.GetChild(0).GetComponent<SpriteRenderer>().color;
        color = new Color(color.r,color.g,color.b,1f);
+       onTheBlocksCreator = false;
+       blocksCreator = FindObjectOfType<BlocksCreator>();
     }
     void Start()
     {
@@ -64,8 +132,28 @@ public class TetrisBlockSimple : NetworkBehaviour
        TB_cache = new();
        if(Local())return;
        if(!isServer)return;
+       if(!autoID)return;
        serverID = ServerLogic.GetTetrisGroupID();
        // Debug.Log($"serverID:{serverID}");
+    }
+    public void Init()
+    {
+       color = transform.GetChild(0).GetComponent<SpriteRenderer>().color;
+       color = new Color(color.r,color.g,color.b,1f);
+       onTheBlocksCreator = false;
+       blocksCreator = FindObjectOfType<BlocksCreator>();
+       foreach (Transform child in transform)
+       {
+           childTetris.Add(child.GetComponent<TetriBlockSimple>());
+           child.GetComponent<TetriBlockSimple>().CantPutCallback += CantPutAction;
+           child.GetComponent<TetriBlockSimple>().player = player;
+       }
+       positionStack = new Stack<Vector3>();
+       TB_cache = new();
+       if(Local())return;
+       if(!isServer)return;
+       if(!autoID)return;
+       serverID = ServerLogic.GetTetrisGroupID();
     }
     public bool Active()
     {
@@ -73,6 +161,7 @@ public class TetrisBlockSimple : NetworkBehaviour
         blocksCreator = transform.parent.GetComponent<BlocksCreator>();
         foreach (TetriBlockSimple child in childTetris)
         {
+            if(child == null)continue;
             child.player = player;
             child.Active();
             child.DoGroupMoveCheck();
@@ -162,7 +251,7 @@ public class TetrisBlockSimple : NetworkBehaviour
         foreach (TetriBlockSimple tetriBlock in childTetris)
         {
             BlockTetriHandler blockCurrent = null;
-            blockCurrent = blocksCreator.blocks.Find((block) => block.posId == new Vector2(tetriBlock.posId.x,tetriBlock.posId.y)).GetComponent<BlockTetriHandler>();
+            blockCurrent = blocksCreator.blocks.Find((block) => block.posId == new Vector2(tetriBlock.PosId.x,tetriBlock.PosId.y)).GetComponent<BlockTetriHandler>();
             if(!blockCurrent)continue;
             blockCurrent.tetriBlockSimpleHolder = tetriBlock;
             tetriBlock.currentBlockTetriHandler = blockCurrent;
@@ -172,7 +261,7 @@ public class TetrisBlockSimple : NetworkBehaviour
             if (TB_cache.ContainsKey(tetriBlock))continue;
             TB_cache.Add(tetriBlock,blockCurrent);
             TetriBuoySimple t = tetriBlock.GetComponent<TetriBuoySimple>();
-            t.posId = tetriBlock.posId;
+            t.posId = tetriBlock.PosId;
             BlockBuoyHandler b = blockCurrent.GetComponent<BlockBuoyHandler>();
             b.posId = blockCurrent.posId;
             buoyMarkersTemp.Add(t,b);
@@ -181,23 +270,22 @@ public class TetrisBlockSimple : NetworkBehaviour
         OnCacheUpdateForBuoyMarkers?.Invoke(buoyMarkersTemp);
         OnUpdatDisplay?.Invoke();
     }
-    void EvaluatePioneers()
+    public void EvaluatePioneers()
     {
         // 取前方没有砖块的砖块
         if(player == Player.Player1)
         {
             foreach(var childTetri in childTetris)
             {
-                bool P1FrontObj = childTetris.FirstOrDefault(obj => obj.posId == new Vector2(childTetri.posId.x+1,childTetri.posId.y));
+                bool P1FrontObj = childTetris.FirstOrDefault(obj => obj.PosId == new Vector2(childTetri.PosId.x+1,childTetri.PosId.y));
                 if(P1FrontObj)continue;
                 pioneerTetris.Add(childTetri);
-                
             }
         }else if (player == Player.Player2)
         {
             foreach(var childTetri in childTetris)
             {
-                bool P2FrontObj = childTetris.FirstOrDefault(obj => obj.posId == new Vector2(childTetri.posId.x-1,childTetri.posId.y));
+                bool P2FrontObj = childTetris.FirstOrDefault(obj => obj.PosId == new Vector2(childTetri.PosId.x-1,childTetri.PosId.y));
                 if(P2FrontObj)continue;
                 pioneerTetris.Add(childTetri);
             }
@@ -205,6 +293,7 @@ public class TetrisBlockSimple : NetworkBehaviour
         // 可视化
         // foreach(var pioneerBlock in pioneerTetris)
         // {
+        //     if(!pioneerBlock)continue;
         //     pioneerBlock.transform.localScale += 0.2f * Vector3.one;
         // }
     }
@@ -221,9 +310,10 @@ public class TetrisBlockSimple : NetworkBehaviour
     void MoveActive()
     {
         if(!ValidMove())return;
-
+        OnStartMove?.Invoke();
         foreach (TetriBlockSimple child in childTetris)
         {
+            if(!child)continue;
             child.DoGroupMoveCheck();
         }
         if(player == Player.Player1)
@@ -240,11 +330,13 @@ public class TetrisBlockSimple : NetworkBehaviour
     }
     public void Rotate(Vector3 axis)
     {
-       transform.RotateAround(transform.TransformPoint(rotationPoint), axis, 90);
+        OnRotate?.Invoke(true);
+        transform.RotateAround(transform.TransformPoint(rotationPoint), axis, 90);
     }
     public void RotateReverse(Vector3 axis)
     {
-       transform.RotateAround(transform.TransformPoint(rotationPoint), axis, -90);
+        OnRotate?.Invoke(false);
+        transform.RotateAround(transform.TransformPoint(rotationPoint), axis, -90);
     }
     bool ValidMove()
     {
@@ -264,54 +356,73 @@ public class TetrisBlockSimple : NetworkBehaviour
     bool NormalValidMove()
     {
         moveStep = 1;
+        List<bool> condition = new();
         foreach(var pineer in pioneerTetris)
         {
+            if(!pineer)continue;
             BlockTetriHandler blockCurrent = pineer.CurrentBlock();
-            if(!blockCurrent) return false;
+            condition.Add(blockCurrent);
             BlockTetriHandler blockNext = pineer.NextBlock();
-            if(!blockNext)return false;
-            if(!pineer.CanMove)return false;
-            if(!pineer.BlockNextCheck(blockNext))return false;
+            condition.Add(blockNext);
+            condition.Add(pineer.CanMove);
+            condition.Add(pineer.BlockNextCheck(blockNext));
         }
-        
-        return true;
+        bool allTrue = condition.All(b => b);
+        return allTrue;
     }
     bool DropValidMove()
     {
+        OnStartMove?.Invoke();
         tetrisCheckMode = TetrisCheckMode.Normal;
         moveStep = 0;
         foreach(var child in childTetris)
         {
+            if(!child)continue;
             child.DropCheck();
         }
         return true;
     }
     bool CreateValidMove()
     {
+        OnStartMove?.Invoke();
         tetrisCheckMode = TetrisCheckMode.Normal;
+        List<bool> condition = new();
         foreach(var pineer in pioneerTetris)
         {
-            
+            if(!pineer)continue;
             BlockTetriHandler blockCurrent = pineer.CurrentBlock();
-            if(!blockCurrent) return false;
+            condition.Add(blockCurrent);
             BlockTetriHandler blockNext = pineer.NextBlock();
-            if(!blockNext)return false;
-            if(!pineer.CanMove)return false;
-            if(!pineer.BlockNextCheck(blockNext))return false;
+            condition.Add(blockNext);
+            condition.Add(pineer.CanMove);
+            condition.Add(pineer.BlockNextCheck(blockNext));
            
         }
         foreach (TetriBlockSimple child in childTetris)
         {
-            if(!child.CanMove)return false;
+            if(!child)continue;
+            condition.Add(child.CanMove);
         }
-        
-        return true;
+        bool allTrue = condition.All(b => b);
+        return allTrue;
     }
-    
+    /// <summary>
+    /// 在创建砖块后 创建一个 Dotween 动画
+    /// </summary>
+    public void Display_AfterCreate()
+    {
+        // 使用 DOTween.Sequence 创建一个序列
+        sequence = DOTween.Sequence();
+        // 在序列中添加需要执行的动画
+        sequence.Append(transform.DOLocalMoveY(0.2f, occupyingTime/4).SetEase(Ease.Linear));
+        sequence.Append(transform.DOLocalMoveY(0f, occupyingTime/4).SetEase(Ease.Linear));
+        // 设置循环模式为 PingPong
+        sequence.SetLoops(-1, LoopType.Yoyo);
+    }
     public bool OnBuoyDrop()
     {
+        if(childTetris.Count==0)Init();
         List<bool> buoyDrop = new();
-        
         // 所有未占领的砖块恢复和平状态
         foreach(var tetri in childTetris)
         {
@@ -344,13 +455,42 @@ public class TetrisBlockSimple : NetworkBehaviour
     }
     public void Client_Reflash()
     {
-        if(!isClient)return;
+        // if(!isClient)return;
         if(Local())return;
         foreach(var tetri in childTetris)
         {
             tetri.player = player;
             tetri.Display_playerColor();
         }
+        transform.GetComponent<TetrisBuoySimple>().player = player;
     }
+    public void GoOnTheBlocksCreator(bool oldValue,bool newValue)
+    {
+        if(Local())return;
+        if(!blocksCreator){blocksCreator = FindObjectOfType<BlocksCreator>();}
+        if(newValue)
+        {
+            transform.parent = blocksCreator.transform;
+        }else
+        {
+            transform.parent = null;
+        }
+    }
+    public void DisPlayOnline(bool isVisble)
+    {
+        if(!isClient)return;
+        if(Local())return;
+        foreach(var tetri in childTetris)
+        {
+            tetri.Display_playerColor(isVisble);
+        }
+    }
+    
+    void SyncOtherTetrisComponent(int sID)
+    {
+        if(Local())return;
+        transform.GetComponent<TetrisBuoySimple>().serverID = sID;
+    }
+    
 }
 

@@ -8,5 +8,9 @@ public class SkillCooldownTimer : MonoBehaviour
     public SkillCooldown countersRedUI,countersGreenUI,counterBlueUI,counterPurpleUI;
     public Sprite outerActiveSprite;
     public Sprite outerNotActiveSprite;
+    void Start()
+    {
+        // Debug.Log("SkillCooldownTimer Start:" + transform.name);
+    }
   
 }

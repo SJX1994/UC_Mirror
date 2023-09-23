@@ -618,10 +618,9 @@ MonoBehaviour:
   syncInterval: 0
   idelUI: {fileID: 4043450735434708475}
   playerPVP: 0
+  playerPVP_local: 0
   player: 0
   IdelHolderId: -1
-  RamdomNumb: 0
-  NumberTemp: 0
 --- !u!114 &8587562395218946524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1616,6 +1615,7 @@ MonoBehaviour:
   - {fileID: 6614984479057062885}
   - {fileID: 5926197158308559770}
   - {fileID: 4728639023078985229}
+  hiden: 0
 --- !u!114 &1641306028750022867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2220,7 +2220,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4728639022896798907}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -2261,7 +2261,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4728639023078985230
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2309,6 +2309,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef98fe2d1c21c7148b88cfbd319ead57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   buttom: {fileID: 1011458982971444131}
   top: {fileID: 7514103012526895114}
   ready: {fileID: 3688778046708131312}
@@ -2324,8 +2327,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216dd835d5a39ab4d9e3f22f0a9aa224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   idelId: 3
   idelHolder: {fileID: 0}
+  idelUI: {fileID: 0}
   player: 0
   blockTargetMask:
     serializedVersion: 2
@@ -2344,6 +2351,7 @@ MonoBehaviour:
   - {fileID: 1362843011396018076, guid: 6699892b141fd74488410a521baa605d, type: 3}
   - {fileID: -188459318321879550, guid: 75e033c3058aee24894606586660cb3e, type: 3}
   - {fileID: 8806408156037567742, guid: cab159e8b1b7cbb45b367a42c1d2f056, type: 3}
+  tetrominoe: {fileID: 0}
 --- !u!1 &5053200739629266850
 GameObject:
   m_ObjectHideFlags: 0
@@ -2757,6 +2765,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef98fe2d1c21c7148b88cfbd319ead57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   buttom: {fileID: 2137231112653602356}
   top: {fileID: 8928069779938264477}
   ready: {fileID: 2346578675807899751}
@@ -2772,8 +2783,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216dd835d5a39ab4d9e3f22f0a9aa224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   idelId: 2
   idelHolder: {fileID: 0}
+  idelUI: {fileID: 0}
   player: 0
   blockTargetMask:
     serializedVersion: 2
@@ -2792,6 +2807,7 @@ MonoBehaviour:
   - {fileID: 1362843011396018076, guid: 6699892b141fd74488410a521baa605d, type: 3}
   - {fileID: -188459318321879550, guid: 75e033c3058aee24894606586660cb3e, type: 3}
   - {fileID: 8806408156037567742, guid: cab159e8b1b7cbb45b367a42c1d2f056, type: 3}
+  tetrominoe: {fileID: 0}
 --- !u!1 &5926197158655371564
 GameObject:
   m_ObjectHideFlags: 0
@@ -2890,7 +2906,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5926197158655371564}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -3150,7 +3166,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6614984479057062886
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3198,6 +3214,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef98fe2d1c21c7148b88cfbd319ead57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   buttom: {fileID: 1466988081870761547}
   top: {fileID: 8220707135904601570}
   ready: {fileID: 2982378439564804120}
@@ -3213,8 +3232,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 216dd835d5a39ab4d9e3f22f0a9aa224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   idelId: 1
   idelHolder: {fileID: 0}
+  idelUI: {fileID: 0}
   player: 0
   blockTargetMask:
     serializedVersion: 2
@@ -3233,6 +3256,7 @@ MonoBehaviour:
   - {fileID: 1362843011396018076, guid: 6699892b141fd74488410a521baa605d, type: 3}
   - {fileID: -188459318321879550, guid: 75e033c3058aee24894606586660cb3e, type: 3}
   - {fileID: 8806408156037567742, guid: cab159e8b1b7cbb45b367a42c1d2f056, type: 3}
+  tetrominoe: {fileID: 0}
 --- !u!1 &6614984479303219539
 GameObject:
   m_ObjectHideFlags: 0
@@ -3331,7 +3355,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6614984479303219539}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -3873,7 +3897,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7657812841323873574}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 

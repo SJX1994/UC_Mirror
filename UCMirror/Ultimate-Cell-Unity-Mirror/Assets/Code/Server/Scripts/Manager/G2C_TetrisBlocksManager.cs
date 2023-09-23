@@ -63,7 +63,7 @@ public class G2C_TetrisBlocksManager : MonoBehaviour
 
     private void Start()
     {
-        // TODO 暂时获取方式
+        // 暂时获取方式
         if (GameObject.Find("LanNetWorkManager") == null)
         {
             return;

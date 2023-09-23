@@ -10,8 +10,7 @@ public class BuoyInfo : NetworkBehaviour
     // BlocksCreator blocksCreator;
     [SyncVar]
     public Player player;
-    [HideInInspector]
-    public int palyerId;
+    public Player player_local;
     public LayerMask blockTargetMask;
     public BuoyTurnHandle buoyTurnHandle;
     public BuoyBehavior buoyBehavior;
@@ -34,6 +33,25 @@ public class BuoyInfo : NetworkBehaviour
     public UnityAction<Vector2> OnBuoyPosIDChange;
     public UnityAction OnBuoyDrag;
     public UnityAction OnBuoyEndDrag;
+    // 在线模式：
+    Vector3 mousePos_Temp;
+    public BlocksCreator blocksCreator;
+    [SyncVar(hook = nameof(GoOnTheBlocksCreator))]
+    public bool onTheBlocksCreator;
+    public bool OnTheBlocksCreator
+    {
+        get
+        {
+            return onTheBlocksCreator;
+        }
+        set
+        {
+            if(onTheBlocksCreator == value)return;
+            GoOnTheBlocksCreator(onTheBlocksCreator,value);
+            onTheBlocksCreator = value;
+            
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -59,30 +77,92 @@ public class BuoyInfo : NetworkBehaviour
         }else
         {
             if(!isLocalPlayer)return;
-            MouseButtonDown();
+            Client_MouseButtonDown();
+            
         }
     }
-    void MouseButtonDown()
+    public bool MouseButtonDown(bool updateCheck = true)
     {
-        if (!Input.GetMouseButtonDown(0))return;
+        if (!Input.GetMouseButtonDown(0) && updateCheck)return false;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
-        if(!hitBlock)return;
+        if(!hitBlock)return false;
         BlockBuoyHandler block;
         hit.collider.transform.TryGetComponent(out block);
-        if(!block)return;
+        if(!block)return false;
         transform.parent = hit.collider.transform.parent;
         transform.localPosition = Vector3.zero;
         transform.localScale = Vector3.one;
         transform.localPosition = new Vector3( block.posId.x, 0f, block.posId.y);
         transform.localRotation = Quaternion.Euler(Vector3.zero);
         blockBuoyHandler = block; // 尝试移动
+        if(!blockBuoyHandler)return false;
         CurrentPosID = block.posId;
         if(!buoyTurnHandle.actived){buoyTurnHandle.Active();}
         buoyTurnHandle.CenterOfControl = block.posId;
         buoyTurnHandle.CountScanning(false);
-        
+        return true;
+    }
+    [Server]
+    public bool Server_MouseButtonDown(Vector3 mousePos_Temp)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(mousePos_Temp);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if(!hitBlock)return false;
+        BlockBuoyHandler block;
+        hit.collider.transform.TryGetComponent(out block);
+        if(!block)return false;
+        transform.parent = hit.collider.transform.parent;
+        transform.localPosition = Vector3.zero;
+        transform.localScale = Vector3.one;
+        transform.localPosition = new Vector3( block.posId.x, 0f, block.posId.y);
+        transform.localRotation = Quaternion.Euler(Vector3.zero);
+        blockBuoyHandler = block; // 尝试移动
+        if(!blockBuoyHandler)return false;
+        CurrentPosID = block.posId;
+        if(!buoyTurnHandle.actived){buoyTurnHandle.Active();}
+        buoyTurnHandle.CenterOfControl = block.posId;
+        buoyTurnHandle.CountScanning(false);
+        return true;
+    }
+    [Client]
+    void Client_MouseButtonDown()
+    {
+        if (!Input.GetMouseButtonDown(0))return;
+        mousePos_Temp = Input.mousePosition;
+        Ray ray = Camera.main.ScreenPointToRay(mousePos_Temp);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if(!hitBlock)return;
+        BlockBuoyHandler block;
+        hit.collider.transform.TryGetComponent(out block);
+        if(!block)return;
+        OnTheBlocksCreator = true;
+        transform.localScale = Vector3.one;
+        transform.localRotation = Quaternion.Euler(Vector3.zero);
+        Cmd_MouseButtonDown(mousePos_Temp);
+    }
+    [Command(requiresAuthority = false)]
+    void Cmd_MouseButtonDown(Vector3 mousePos_Temp)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(mousePos_Temp);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if(!hitBlock)return;
+        BlockBuoyHandler block;
+        hit.collider.transform.TryGetComponent(out block);
+        if(!block)return;
+        OnTheBlocksCreator = true;
+        transform.localScale = Vector3.one;
+        transform.localRotation = Quaternion.Euler(Vector3.zero);
+        transform.localPosition = new Vector3( block.posId.x, 0f, block.posId.y);
+        blockBuoyHandler = block; // 尝试移动
+        CurrentPosID = block.posId;
+        if(!buoyTurnHandle.actived){buoyTurnHandle.Active();}
+        buoyTurnHandle.CenterOfControl = block.posId;
+        buoyTurnHandle.CountScanning(false);
     }
     /// <summary>
     /// 检查是否是本地模式
@@ -97,21 +177,27 @@ public class BuoyInfo : NetworkBehaviour
     {
         if(player == Player.Player1)
         {
-            palyerId = 0;
+            player_local = player;
             if(Local())return;
             if(!isLocalPlayer)return;
             CmdChangePlayerSkin(true);
         }else
         {
-            palyerId = 1;
+            player_local = player;
             if(Local())return;
             if(!isLocalPlayer)return;
             CmdChangePlayerSkin(false);
         }
     }
-    [Command]
+    /// <summary>
+    /// 改变玩家皮肤
+    /// </summary>
+    /// <param name="isPlayer1"></param>
+    [Command(requiresAuthority = false)]
     void CmdChangePlayerSkin(bool isPlayer1)
     {
+        blocksCreator = FindObjectOfType<BlocksCreator>();
+        OnTheBlocksCreator = false;
         buoyTurnHandle = transform.Find("TurnHandles_P2").GetComponent<BuoyTurnHandle>();
         buoyBehavior = transform.Find("Behavior_P2").GetComponent<BuoyBehavior>();
         buoyTurnHandle.gameObject.SetActive(!isPlayer1);
@@ -120,11 +206,22 @@ public class BuoyInfo : NetworkBehaviour
         buoyBehavior = transform.Find("Behavior").GetComponent<BuoyBehavior>();
         buoyTurnHandle.gameObject.SetActive(isPlayer1);
         buoyBehavior.gameObject.SetActive(isPlayer1);
+        if(isPlayer1)
+        {
+            buoyTurnHandle = transform.Find("TurnHandles").GetComponent<BuoyTurnHandle>();
+            buoyBehavior = transform.Find("Behavior").GetComponent<BuoyBehavior>();
+        }else
+        {
+            buoyTurnHandle = transform.Find("TurnHandles_P2").GetComponent<BuoyTurnHandle>();
+            buoyBehavior = transform.Find("Behavior_P2").GetComponent<BuoyBehavior>();
+        }
         ChangePlayerSkin(isPlayer1);
     }
     [ClientRpc]
     void ChangePlayerSkin(bool isPlayer1)
     {
+        blocksCreator = FindObjectOfType<BlocksCreator>();
+        OnTheBlocksCreator = false;
         buoyTurnHandle = transform.Find("TurnHandles_P2").GetComponent<BuoyTurnHandle>();
         buoyBehavior = transform.Find("Behavior_P2").GetComponent<BuoyBehavior>();
         buoyTurnHandle.gameObject.SetActive(!isPlayer1);
@@ -133,6 +230,29 @@ public class BuoyInfo : NetworkBehaviour
         buoyBehavior = transform.Find("Behavior").GetComponent<BuoyBehavior>();
         buoyTurnHandle.gameObject.SetActive(isPlayer1);
         buoyBehavior.gameObject.SetActive(isPlayer1);
+        if(isPlayer1)
+        {
+            buoyTurnHandle = transform.Find("TurnHandles").GetComponent<BuoyTurnHandle>();
+            buoyBehavior = transform.Find("Behavior").GetComponent<BuoyBehavior>();
+        }else
+        {
+            buoyTurnHandle = transform.Find("TurnHandles_P2").GetComponent<BuoyTurnHandle>();
+            buoyBehavior = transform.Find("Behavior_P2").GetComponent<BuoyBehavior>();
+        }
+    }
+    public void GoOnTheBlocksCreator(bool oldValue,bool newValue)
+    {
+        if(Local())return;
+        if(!blocksCreator){blocksCreator = FindObjectOfType<BlocksCreator>();}
+        if(newValue)
+        {
+            transform.parent = blocksCreator.transform;
+            transform.localScale = Vector3.one;
+            transform.localRotation = Quaternion.Euler(Vector3.zero);
+        }else
+        {
+            transform.parent = null;
+        }
     }
     
 }

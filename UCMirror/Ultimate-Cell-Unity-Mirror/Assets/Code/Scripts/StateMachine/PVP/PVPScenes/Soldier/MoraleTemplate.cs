@@ -27,20 +27,25 @@ public class MoraleTemplate : ScriptableObject{
       public Color affectedRangeColor;
       public bool isAffectedRangeVisible = true;
       // 每个单位自身的基础属性都要乘以这个系数
-      public void EffectByMorale( Soldier soldier,ref float value )
+      public void EffectByMorale( SoldierBehaviors soldier,ref float value )
       {
             value = soldier.maxStrength * soldier.morale.morale;
       }
       // 基于心理学的 自我赋能感
-      public void AddMorale(Soldier soldier, float value, bool source = false)
+      public void AddMorale(SoldierBehaviors soldier, float value, bool source = false)
       {
+            if(soldier.morale.morale + value > soldier.morale.maxMorale)
+            {
+                  soldier.morale.morale = soldier.morale.maxMorale;
+                  return;
+            }
             if(source)
             {
-                  Soldier[] soldiers = FindObjectsOfType<Soldier>();
+                  SoldierBehaviors[] soldiers = FindObjectsOfType<SoldierBehaviors>();
                   Transform circleCenter = soldier.transform;
                   float circleRadius = soldier.morale.affectedRange;
                   int soldiersInCircleCount = 0;
-                  foreach (Soldier s in soldiers)
+                  foreach (SoldierBehaviors s in soldiers)
                   {
                         if(s==soldier)continue;
                         // 获取单位的坐标
@@ -65,7 +70,7 @@ public class MoraleTemplate : ScriptableObject{
             soldier.morale.morale += value;
             
       }
-      public void ReduceMorale(Soldier soldier, float value, bool source = false)
+      public void ReduceMorale(SoldierBehaviors soldier, float value, bool source = false)
       {
             
             if(soldier.morale.morale>0.6f)
@@ -94,24 +99,48 @@ public class MoraleTemplate : ScriptableObject{
                         #if UNITY_EDITOR
                               Handles.color = color;
                               Handles.DrawLine(prevPoint, currPoint);
-                        #else
-                              Debug.DrawLine(prevPoint, currPoint, color, duration);
                         #endif
+                        Debug.DrawLine(prevPoint, currPoint, color, duration);
+                        
                   }
 
                   prevPoint = currPoint;
             }
       }
-      public void ModifyBaseMinMorale(Soldier soldier,float value)
+      public static void DrawMoraleRange(Vector3 center, float radius, LineRenderer lineRenderer)
+      {
+            // #if UNITY_EDITOR
+            //       Handles.color = color;
+            //       Handles.DrawWireCube(center, Vector3.one * radius * 2);
+            // #endif
+            Vector3 prevPoint = Vector3.zero;
+            float segmentAngle = 10; // 控制圆形的分段数
+            lineRenderer.positionCount = (int)(360 + segmentAngle);
+            for (float angle = 0; angle <= 360; angle += segmentAngle)
+            {
+                  float x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius + center.x;
+                  float z = Mathf.Cos(Mathf.Deg2Rad * angle) * radius + center.z;
+                  Vector3 currPoint = new Vector3(x, center.y, z);
+
+                  if (prevPoint != Vector3.zero)
+                  {
+                        lineRenderer.SetPosition((int)(angle / segmentAngle), currPoint);
+                        // Debug.DrawLine(prevPoint, currPoint);
+                  }
+
+                  prevPoint = currPoint;
+            }
+      }
+      public void ModifyBaseMinMorale(SoldierBehaviors soldier,float value)
       {
             soldier.morale.minMorale += value;
       }
 }
 #if UNITY_EDITOR
-[CustomEditor(typeof(Soldier))]
+[CustomEditor(typeof(SoldierBehaviors))]
 public class SoldierEditor : Editor
 {
-    Soldier myScript;
+    SoldierBehaviors myScript;
     SoldierEditor()
     {
         // 注册场景视图回调函数
@@ -123,7 +152,7 @@ public class SoldierEditor : Editor
         {
             return;
         }
-        myScript = (Soldier)target;
+        myScript = (SoldierBehaviors)target;
         if(myScript.morale.isAffectedRangeVisible == false)
         {
             return;
@@ -139,7 +168,7 @@ public class SoldierEditor : Editor
         {
             return;
         }
-        myScript = (Soldier)target;
+        myScript = (SoldierBehaviors)target;
         MoraleTemplate.DrawMoraleRange(myScript.transform.position, myScript.morale.affectedRange, myScript.morale.affectedRangeColor);
     }
 }

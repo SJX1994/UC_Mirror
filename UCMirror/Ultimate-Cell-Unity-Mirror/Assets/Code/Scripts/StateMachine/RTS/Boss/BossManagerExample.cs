@@ -28,7 +28,7 @@ public class BossManagerExample : MonoBehaviour
          finishBossDisplay = true;
 
         // 通信获取
-        // TODO 暂时获取方式
+        // 暂时获取方式
         // CommunicationManager = GameObject.Find("LanNetWorkManager").gameObject.GetComponent<CommunicationInteractionManager>();
         // broadcastClass = CommunicationManager.GetComponent<BroadcastClass>();
 

@@ -63,7 +63,7 @@ public class Fruit : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// <summary>
     /// 单位濒死触发
     /// </summary>
-    void OnUnitDying(Soldier soldierDying,int lastPower)
+    void OnUnitDying(SoldierBehaviors soldierDying,int lastPower)
     {
         attr = null;
         if(!fruitDataStructureTemplate)return;
@@ -80,7 +80,7 @@ public class Fruit : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// <summary>
     /// 单位死亡触发
     /// </summary>
-    void OnUnitDied(Soldier soldierDied)
+    void OnUnitDied(SoldierBehaviors soldierDied)
     {
         attr = null;
         if(!fruitDataStructureTemplate)return;
@@ -98,7 +98,7 @@ public class Fruit : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// 单位创建触发
     /// </summary>
     /// <param name="soldier">创建的单位</param> 
-    void OnUnitCreat(Soldier soldier)
+    void OnUnitCreat(SoldierBehaviors soldier)
     {
         attr = null;
         if(!fruitDataStructureTemplate)return;
@@ -117,7 +117,7 @@ public class Fruit : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// 合成触发
     /// </summary>
     /// <param name="soldier">合成出的单位</param>
-    void OnSyntheticFired(Soldier soldier)
+    void OnSyntheticFired(SoldierBehaviors soldier)
     {
         attr = null;
         if(!fruitDataStructureTemplate)return;

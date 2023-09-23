@@ -23,7 +23,6 @@ public class ParticlesController: MonoBehaviour{
 
     void OnParticleCollision(GameObject other) {
         int numCollisionEvents = part.GetCollisionEvents(other, collisionEvents);
-
         Paintable p = other.GetComponent<Paintable>();
         if(p != null){
             for  (int i = 0; i< numCollisionEvents; i++){

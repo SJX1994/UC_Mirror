@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8379409832826951482}
   - component: {fileID: 6244999778364618226}
   - component: {fileID: 4181308807344310089}
+  - component: {fileID: 4397956563767258808}
   m_Layer: 0
   m_Name: PlaneButton
   m_TagString: Untagged
@@ -98,6 +99,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!210 &4397956563767258808
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93699829476606330}
+  m_Enabled: 1
+  m_SortingLayerID: 215277933
+  m_SortingLayer: 1
+  m_SortingOrder: 1111
 --- !u!1 &1790991129233035983
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,6 +162,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  tetrisBuoySimpleList:
+  - {fileID: -9191233341851686491, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
+  - {fileID: 1484010802450416445, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
+  - {fileID: 2143654664506366798, guid: 73ededeb6b0e29e488cf2bde27d9bb12, type: 3}
+  - {fileID: 1978388877576031328, guid: ef8ed35d014b56b44b8c8a7a3a70e683, type: 3}
+  - {fileID: -1348666853554130341, guid: 6699892b141fd74488410a521baa605d, type: 3}
+  - {fileID: -8238031156067317923, guid: 75e033c3058aee24894606586660cb3e, type: 3}
+  - {fileID: 8443460946131847425, guid: cab159e8b1b7cbb45b367a42c1d2f056, type: 3}
+  tsBuoyControledId: -1
+  tetrisBuoySimpleIdTemp: -1
 --- !u!33 &2867032545603976373
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -211,8 +233,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3, y: 1, z: 3}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 3, y: 0.37645268, z: 3}
+  m_Center: {x: 0, y: -0.31177446, z: 0}
 --- !u!210 &5562091348843167754
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -223,7 +245,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
 --- !u!1 &2503343721725648001
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +355,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
 --- !u!1 &2503343721998121875
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +465,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
 --- !u!1 &2503343722386750294
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,7 +575,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
 --- !u!1 &2503343722538251678
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,6 +628,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  tetrisBuoySimpleList:
+  - {fileID: -9191233341851686491, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
+  - {fileID: 1484010802450416445, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
+  - {fileID: 2143654664506366798, guid: 73ededeb6b0e29e488cf2bde27d9bb12, type: 3}
+  - {fileID: 1978388877576031328, guid: ef8ed35d014b56b44b8c8a7a3a70e683, type: 3}
+  - {fileID: -1348666853554130341, guid: 6699892b141fd74488410a521baa605d, type: 3}
+  - {fileID: -8238031156067317923, guid: 75e033c3058aee24894606586660cb3e, type: 3}
+  - {fileID: 8443460946131847425, guid: cab159e8b1b7cbb45b367a42c1d2f056, type: 3}
+  tsBuoyControledId: -1
+  tetrisBuoySimpleIdTemp: -1
 --- !u!33 &2503343722538251362
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -667,8 +699,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3, y: 1, z: 3}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 3, y: 0.37534094, z: 3}
+  m_Center: {x: 0, y: -0.31233034, z: 0}
 --- !u!210 &2503343722538251361
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -679,7 +711,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
 --- !u!1 &2503343722860509012
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,6 +724,7 @@ GameObject:
   - component: {fileID: 2503343722860509016}
   - component: {fileID: 2503343722860509017}
   - component: {fileID: 2503343722860509018}
+  - component: {fileID: 3681018403566610108}
   m_Layer: 0
   m_Name: PlaneButton
   m_TagString: Untagged
@@ -778,6 +811,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!210 &3681018403566610108
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2503343722860509012}
+  m_Enabled: 1
+  m_SortingLayerID: 215277933
+  m_SortingLayer: 1
+  m_SortingOrder: 1111
 --- !u!1 &2503343722908431220
 GameObject:
   m_ObjectHideFlags: 0
@@ -887,7 +931,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
 --- !u!1 &2503343723301077255
 GameObject:
   m_ObjectHideFlags: 0
@@ -938,12 +982,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0482245129c77ed45ab5102e52a7a43e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
-  blockTargetMask:
-    serializedVersion: 2
-    m_Bits: 0
+  currentValue: 1
   actived: 0
 --- !u!65 &2503343723301077252
 BoxCollider:
@@ -998,7 +1040,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
@@ -1109,13 +1151,15 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   player: 0
-  palyerId: 0
+  player_local: 0
   blockTargetMask:
     serializedVersion: 2
     m_Bits: 512
   buoyTurnHandle: {fileID: 0}
   buoyBehavior: {fileID: 0}
   blockBuoyHandler: {fileID: 0}
+  blocksCreator: {fileID: 0}
+  onTheBlocksCreator: 0
 --- !u!114 &5885205868437661808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1145,7 +1189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
   target: {fileID: 2503343723517980851}
@@ -1156,7 +1200,7 @@ MonoBehaviour:
   interpolatePosition: 1
   interpolateRotation: 1
   interpolateScale: 1
-  coordinateSpace: 1
+  coordinateSpace: 0
   sendIntervalMultiplier: 1
   timelineOffset: 0
   showGizmos: 0
@@ -1277,7 +1321,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
 --- !u!1 &4875851221328883183
 GameObject:
   m_ObjectHideFlags: 0
@@ -1387,7 +1431,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
 --- !u!1 &6651452463489080533
 GameObject:
   m_ObjectHideFlags: 0
@@ -1497,7 +1541,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
 --- !u!1 &7334472511797287060
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,12 +1592,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0482245129c77ed45ab5102e52a7a43e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
-  blockTargetMask:
-    serializedVersion: 2
-    m_Bits: 0
+  currentValue: 1
   actived: 0
 --- !u!65 &3006999852533032597
 BoxCollider:
@@ -1608,7 +1650,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
@@ -1774,4 +1816,4 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 14
+  m_SortingOrder: 1111

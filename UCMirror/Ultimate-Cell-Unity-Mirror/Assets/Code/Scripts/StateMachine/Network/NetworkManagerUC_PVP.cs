@@ -83,20 +83,18 @@ public class NetworkManagerUC_PVP : NetworkManager
         {
             // 玩家1赋值的 浮标表现
             buoyPlayer.player = Player.Player1;
-            buoyPlayer.palyerId = 0;
             buoyPlayer.Active();
             // 不看对方的培养皿
             SetPVPplayer(numPlayers);
-            // // 生成战场方格测试用
-            // blocksCreator = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "BlocksManager")).GetComponent<BlocksCreator>();
-            // NetworkServer.Spawn(blocksCreator.gameObject);
+            // 生成战场方格测试用
+            blocksCreator = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "BlocksManager")).GetComponent<BlocksCreator>();
+            NetworkServer.Spawn(blocksCreator.gameObject);
         }
         else if (numPlayers == 2)
         {
             
             // 玩家2赋值的 浮标表现
             buoyPlayer.player = Player.Player2;
-            buoyPlayer.palyerId = 1;
             buoyPlayer.Active();
             // 生成战场方格
             blocksCreator = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "BlocksManager")).GetComponent<BlocksCreator>();
@@ -112,7 +110,6 @@ public class NetworkManagerUC_PVP : NetworkManager
     } 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
-        
         if(blocksCreator) NetworkServer.Destroy(blocksCreator.gameObject);
         if(canvasManager_StayMachine) NetworkServer.Destroy(canvasManager_StayMachine.gameObject);
         // call base functionality (actually destroys the player)

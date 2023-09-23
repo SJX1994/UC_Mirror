@@ -61,7 +61,7 @@ public class UnitFear : Unit,IBossUnit
             // BossMove();
             targetCell = GetNearestHostileUnit();
             // 通讯
-            // TODO 暂时获取方式
+            // 暂时获取方式
             if (GameObject.Find("LanNetWorkManager") == null)
             {
                   return;

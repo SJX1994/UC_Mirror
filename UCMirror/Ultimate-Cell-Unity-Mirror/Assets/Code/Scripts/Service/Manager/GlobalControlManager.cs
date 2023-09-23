@@ -25,7 +25,7 @@ public class GlobalControlManager : MonoBehaviour
 
     private void Start()
     {
-        // TODO 暂时获取方式
+        // 暂时获取方式
         sceneLoader = GameObject.Find("LanNetWorkManager").gameObject;
 
         // 全局通信方法管理

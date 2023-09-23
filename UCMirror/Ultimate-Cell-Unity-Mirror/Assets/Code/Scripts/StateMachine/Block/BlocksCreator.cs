@@ -6,8 +6,17 @@ using static ResManager;
 using DG.Tweening;
 using UnityEngine.Events;
 using System.Linq;
-public class BlocksCreator : Singleton<BlocksCreator>
+using Mirror;
+using UC_PlayerData;
+public struct Server_BockChanged
 {
+    public Vector2 PosId;
+    public int State;
+}
+public class BlocksCreator : SingletonNetwork<BlocksCreator>
+{
+
+#region 数据对象
     // 通讯对象
     // private GameObject sceneLoader;
     // private CommunicationInteractionManager CommunicationManager;
@@ -32,39 +41,66 @@ public class BlocksCreator : Singleton<BlocksCreator>
     Vector2 pos = new Vector2(0,3);
     public List<BlockDisplay> blocks = new();
     Vector3 originPos = Vector3.zero;
-    // 点亮方块位置暂存区
-    List<Vector2> lastPosList = new List<Vector2>();
-
-    // 销毁方块位置暂存区
-    List<Vector2> lastDestoryPosList;
-
-    // 销毁方块位置
     private Tweener inflowTweener;
     private Tweener outflowTweener;
-    
+    BlocksUI blocksUI;
+    BlocksCounter blocksCounter;
+    BlocksProps blocksProps;
+    [Header("联网")]
+    [SyncVar(hook = nameof(OnBlockNeedChange))]
+    public Server_BockChanged sync_blockChanged;
+    Server_BockChanged server_blockChanged;
+    private Stack<Server_BockChanged> dataStack;
+#endregion 数据对象
+#region 数据关系
     private void Start()
     {   
         FlowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);
-
+        dataStack = new Stack<Server_BockChanged>();
         CreateBlocks();
 
         Invoke(nameof(LateStart),0.1f);
         OnBlocksInitEnd += () =>
         {
-            foreach(var blockTemp in blocks)
+            // 初始化可放置区域
+            InitPutzone();
+            ReflashPlayerOBlocksOccupied();
+            // 监听砖块变化事件
+            if(RunModeData.CurrentRunMode == RunMode.Local)
             {
-                float i = blockTemp.posId.x;
-                // 初始放置区域
-                if(i>=0 && i<=9)
-                {
-                    blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player1;
-                }else if(i>=10 && i<=20)
-                {
-                    blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player2;
-                }
+                blocks.ForEach((block) => {
+                    block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += ReflashPlayerOBlocksOccupied;
+                });
+                blocks.ForEach((block) => {
+                    block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += CheckFullRows;
+                });
+                // 道具生成
+                if(!blocksProps) blocksProps = transform.GetComponent<BlocksProps>();
+                blocksProps.Generate(PropsData.PropsState.ChainBall);
+            }else
+            {
+                if(!isServer)return;
+                blocks.ForEach((block) => {
+                    block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += Server_OnBlockTetriStateChanged;
+                });
+                InvokeRepeating(nameof(ProcessDataFromStack),0.1f,0.1f);
             }
-            
         };
+    }
+#endregion 数据关系
+#region 数据操作
+    public void CheckFullRows(Vector2 posId = default(Vector2), int state = 0)
+    {
+        if(!blocksCounter)blocksCounter = transform.GetComponent<BlocksCounter>();
+        blocksCounter.CheckFullRows();
+    }
+    public void ReflashPlayerOBlocksOccupied(Vector2 posId = default(Vector2), int state = 0)
+    {
+        BlocksData.Peace_numb = blocks.Where((block) => block.GetComponent<BlockTetriHandler>().State == BlockTetriHandler.BlockTetriState.Peace).Count();
+        BlocksData.Player1_numb = blocks.Where((block) => block.GetComponent<BlockTetriHandler>().State == BlockTetriHandler.BlockTetriState.Occupied_Player1).Count();
+        BlocksData.Player2_numb = blocks.Where((block) => block.GetComponent<BlockTetriHandler>().State == BlockTetriHandler.BlockTetriState.Occupied_Player2).Count();
+        if(!blocksUI)blocksUI = FindObjectOfType<BlocksUI>();
+        blocksUI.Display_Process();
     }
     void LateStart()
     {
@@ -112,103 +148,6 @@ public class BlocksCreator : Singleton<BlocksCreator>
        
         outflowTweener = transform.DOMoveY(originPos.y,0.5f).SetEase(Ease.OutBounce);
     }
-    
-
-    /// <summary>
-    /// 砖块销毁监听事件（运行中砖块）
-    /// </summary>
-    /// <param name="info"></param>
-    private void OnlistenBlockDestoryLight(List<Vector2> info)
-    {
-        foreach (Vector2 lastPos in info)
-        {
-            // blocks.Find((block) => block.posId == lastPos).GetComponent<BlockDisplay>().NotBright();
-            NotBrightBlock(lastPos);
-        }
-
-    }
-
-    /// <summary>
-    /// 砖块更新监听事件
-    /// </summary>
-    /// <param name="info"></param>
-    private void OnlistenTetrisUpdateLight(List<UnitInfoClass> info)
-    {
-        if (!info[0].CreateUnit) 
-        {
-            OnlistenBlockDestoryLight(lastPosList);
-        }
-
-        lastPosList = new();
-
-        foreach (UnitInfoClass unitInfo in info)
-        {
-            lastPosList.Add(unitInfo.UnitPos);
-
-            BrightBlock(unitInfo);
-        }
-    }
-
-    /// <summary>
-    /// 砖块销毁监听方法（触底砖块）
-    /// </summary>
-    /// <param name="info"></param>
-    private void OnListenBlocksDestoryLight(List<UnitInfoClass> info)
-    {
-        foreach (UnitInfoClass unitInfo in info)
-        {
-            // blocks.Find((block) => block.posId == unitInfo.UnitPos).GetComponent<BlockDisplay>().NotBright();
-            NotBrightBlock(unitInfo.UnitPos);
-        }
-    }
-
-    /// <summary>
-    /// 砖块整体移动监听
-    /// </summary>
-    /// <param name="info"></param>
-    private void OnListenBlocksUpdateLight(List<UnitInfoClass> info)
-    {
-        foreach (UnitInfoClass unitInfo in info)
-        {
-            // blocks.Find((block) => block.posId == unitInfo.UnitPos).GetComponent<BlockDisplay>().Bright();
-            BrightBlock(unitInfo);
-        }
-    }
-
-    /// <summary>
-    /// 点亮砖块
-    /// </summary>
-    /// <param name="unitInfo">砖块通讯信息</param>
-    void BrightBlock(UnitInfoClass unitInfo) 
-    {
-        if (blocks.Count == 0)
-        {
-            CreateBlocks();
-        }
-
-        var block = blocks.Find((block) => block.posId == unitInfo.UnitPos);
-
-        if (block != null)
-        {
-            block.GetComponent<BlockDisplay>().Bright(unitInfo.color);
-
-        }
-    }
-
-    /// <summary>
-    /// 晚安砖块
-    /// </summary>
-    /// <param name="Pos"></param>
-    void NotBrightBlock(Vector2 Pos) 
-    {
-        var block = blocks.Find((block) => block.posId == Pos);
-
-        if (block != null)
-        {
-            block.GetComponent<BlockDisplay>().NotBright();
-        }
-    }
-
 
     void BrightBlock()
     {
@@ -244,11 +183,6 @@ public class BlocksCreator : Singleton<BlocksCreator>
 
             }
         }
-        // transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-        // transform.localPosition = new Vector3(-15f, 15f, -8f);
-        
-        // transform.localScale = new Vector3(1.5f, 1.5f, 1.29f);
-        // transform.localPosition = new Vector3(-14f, 12.87f, -7.32f);
         Invoke(nameof(SetPosition),0.1f);
     }
     void SetPosition()
@@ -261,17 +195,7 @@ public class BlocksCreator : Singleton<BlocksCreator>
         };
         transform.DOScale(scale,0.1f);
         transform.DORotate(rot,0.1f).onComplete = () => {
-            foreach(BlockDisplay block in blocks)
-            {
-                if(block.transform.TryGetComponent<BuildingSlot>(out BuildingSlot slot))
-                {
-                    slot.slotPos = block.transform.position;
-                    OnBlocksInitEnd?.Invoke();
-                    
-                }
-                
-            }
-            
+            OnBlocksInitEnd?.Invoke();
         };
     }
     void DestoryBlocks()
@@ -291,8 +215,52 @@ public class BlocksCreator : Singleton<BlocksCreator>
         blockTemp.posId = new Vector2(i, j);
         blockTemp.finalHigh = 0.15f;
         blocks.Add(blockTemp);
-        
     }
-
-    
+    void InitPutzone()
+    {
+        foreach(var blockTemp in blocks)
+        {
+            float i = blockTemp.posId.x;
+            // 和平但不可以被对方放置
+            if(i>=0 && i<=9)
+            {
+                blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Peace_Player1;
+            }else if(i>=10 && i<=20)
+            {
+                blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Peace_Player2;
+            }
+            // 初始放置区域 中线是 9 和 10 列
+            if(i>=0 && i<=1)
+            {
+                blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player1;
+            }else if(i>=18 && i<=20)
+            {
+                blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player2;
+            }
+        }
+    }
+    // ------------------联网------------------
+    [Client]
+    void OnBlockNeedChange(Server_BockChanged previousData, Server_BockChanged newData)
+    {
+        blocks.Find((block) => block.posId == newData.PosId).GetComponent<BlockTetriHandler>().state = (BlockTetriHandler.BlockTetriState)newData.State;
+    }
+    [Server]
+    void Server_OnBlockTetriStateChanged(Vector2 posId, int state)
+    {
+        server_blockChanged = new Server_BockChanged()
+        {
+            PosId = posId,
+            State = state,
+        };
+        // 将收到的数据存入栈中
+        dataStack.Push(server_blockChanged);
+    }
+    [Server]
+    public void ProcessDataFromStack()
+    {
+        if(dataStack.Count == 0) return;
+        sync_blockChanged = dataStack.Pop();
+    }
+#endregion 数据操作
 }

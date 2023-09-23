@@ -22,6 +22,7 @@ public class IdelBox : NetworkBehaviour,
     #region 数据对象
     public int idelId;
     public IdelHolder idelHolder;
+    public IdelUI idelUI;
     public Player player = Player.NotReady;
     public LayerMask blockTargetMask;
     /// <summary>
@@ -64,7 +65,6 @@ public class IdelBox : NetworkBehaviour,
     
     public TetrisBlockSimple[] tetrominoes;
     public TetrisBlockSimple tetrominoe;
-
     public UnityAction OnTetriBeginDrag;
     public UnityAction OnTetriEndDrag;
     Transform root;
@@ -101,7 +101,7 @@ public class IdelBox : NetworkBehaviour,
         
         
     }
-    Sequence sequence;
+    // Sequence sequence;
     Vector2 pointerDownPosition; // 放置短暂下落的位置
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -112,7 +112,6 @@ public class IdelBox : NetworkBehaviour,
             Invoke(nameof(DoRotate),0.3f);
         }else
         {
-            Debug.Log("OnPointerDown"+ player + "PVP" + idelHolder.playerPVP_local);
             if(player!=idelHolder.playerPVP_local)return;
             Invoke(nameof(Cmd_DoRotate),0.3f);
         }
@@ -145,7 +144,8 @@ public class IdelBox : NetworkBehaviour,
             if (!hitBlock)return;
             hitBlock = hit.collider.transform.TryGetComponent(out BlockTetriHandler block);
             if (!hitBlock)return;
-            tetrominoe.transform.parent = hit.collider.transform.parent;
+            // tetrominoe.transform.parent = hit.collider.transform.parent;
+            // tetrominoe.OnTheBlocksCreator = true;
             tetrominoe.transform.localPosition = Vector3.zero;
             tetrominoe.transform.localScale = Vector3.one;
             // tetrominoe.transform.localPosition = new Vector3( block.posId.x, 0.3f, block.posId.y);
@@ -163,18 +163,12 @@ public class IdelBox : NetworkBehaviour,
             if(!tetrominoe)return;
             if(!isClient)return;
             mousePos_Temp = Input.mousePosition;
-            Cmd_OnEndDrag(mousePos_Temp);
+            Online_OnEndDrag(mousePos_Temp);
         }
     }
-    [Command(requiresAuthority = false)]
-    void Cmd_OnEndDrag(Vector3 mousePos_Temp)
+    void Online_OnEndDrag(Vector3 mousePos_Temp)
     {
-        Ray ray = Camera.main.ScreenPointToRay(mousePos_Temp);
-        RaycastHit hit;
-        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
-        if(!hitBlock){Rpc_FailToCreat();Server_FailToCreat();return;}
-        if(!tetrominoe.ColliderCheck()){Rpc_FailToCreat();Server_FailToCreat();return;}
-        SuccessToCreat(); //TODO: 客户端的砖块生成
+        Cmd_SuccessToCreat(mousePos_Temp);
     }
     void Local_OnEndDrag()
     {
@@ -195,7 +189,6 @@ public class IdelBox : NetworkBehaviour,
     [Command(requiresAuthority = false)]
     void Cmd_OnDrag(Vector3 mousePos_Temp)
     {
-        
         //传输鼠标当前位置
         Ray ray = Camera.main.ScreenPointToRay(mousePos_Temp);
         RaycastHit hit;
@@ -203,7 +196,8 @@ public class IdelBox : NetworkBehaviour,
         if (!hitBlock)return;
         hitBlock = hit.collider.transform.TryGetComponent(out BlockTetriHandler block);
         if (!hitBlock)return;
-        tetrominoe.transform.parent = hit.collider.transform.parent;
+        // tetrominoe.transform.parent = hit.collider.transform.parent;
+        tetrominoe.OnTheBlocksCreator = true;
         tetrominoe.transform.localPosition = Vector3.zero;
         tetrominoe.transform.localScale = Vector3.one;
         tetrominoe.transform.localPosition = new Vector3( block.posId.x, 0.3f, block.posId.y);
@@ -216,7 +210,6 @@ public class IdelBox : NetworkBehaviour,
             tetrominoe.transform.localPosition = new Vector3( block.posId.x, 0.3f, block.posId.y);
             return;
         }
-        mousePos_Temp = tetrominoe.transform.localPosition;
         
         
     }
@@ -259,44 +252,69 @@ public class IdelBox : NetworkBehaviour,
         if(!tetrominoe.Active()){ FailToCreat(); return;};
         if(!tetrominoe.ColliderCheckOnEndDrag()){ FailToCreat(); return;}
         tetrominoe.posId = new Vector2(tetrominoe.transform.localPosition.x,tetrominoe.transform.localPosition.z);
-        // 使用 DOTween.Sequence 创建一个序列
-        sequence = DOTween.Sequence();
-        // 在序列中添加需要执行的动画
-        sequence.Append(tetrominoe.transform.DOLocalMoveY(0.2f, tetrominoe.occupyingTime/4).SetEase(Ease.Linear));
-        sequence.Append(tetrominoe.transform.DOLocalMoveY(0f, tetrominoe.occupyingTime/4).SetEase(Ease.Linear));
-        // 设置循环模式为 PingPong
-        sequence.SetLoops(-1, LoopType.Yoyo);
+        tetrominoe.Display_AfterCreate();
+        changeLiquid.DoCount();
+        // 链式球检测
+        tetrominoe.TetrisUnitSimple.UnitActionInit();
+        // 置空
+        tetrominoe = null;
+    }
+    [Command(requiresAuthority = false)]
+    void Cmd_SuccessToCreat(Vector3 mousePos_Temp)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(mousePos_Temp);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        if(!hitBlock){Server_FailToCreat();return;}
+        if(!tetrominoe.ColliderCheck()){Server_FailToCreat();return;}
+        tetrominoe.SuccessToCreat();
+        tetrominoe.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Create;
+        if(!tetrominoe.Active()){ Server_FailToCreat();return;};
+        if(!tetrominoe.ColliderCheckOnEndDrag()){ Server_FailToCreat(); return;}
+        tetrominoe.posId = new Vector2(tetrominoe.transform.localPosition.x,tetrominoe.transform.localPosition.z);
+        tetrominoe.Display_AfterCreate();
         // 开始计时
         changeLiquid.DoCount();
+        tetrominoe = null;
+        Rpc_Client_SuccessToCreat();
+    }
+    [ClientRpc]
+    void Rpc_Client_SuccessToCreat()
+    {
+        tetrominoe.SuccessToCreat();
+        tetrominoe.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Create;
+        tetrominoe.DisPlayOnline(true);
+        changeLiquid.Client_DoCount();
         tetrominoe = null;
     }
     void FailToCreat()
     {
-        if(sequence!=null)sequence.Kill();
-        TetrisBlockSimple tetrominoeTemp = Instantiate(tetrominoe.gameObject, IdelWorldSpace.transform.position,IdelWorldSpace.transform.rotation).GetComponent<TetrisBlockSimple>();
+        tetrominoe.sequence?.Kill();
+        tetrominoe.transform.parent = null;
+        tetrominoe.transform.SetPositionAndRotation(IdelWorldSpace.transform.position,IdelWorldSpace.transform.rotation);
+        tetrominoe.transform.localScale = Vector3.one;
         tetrominoe.FailToCreat();
-        DestroyImmediate(tetrominoe.gameObject);
-        tetrominoe = tetrominoeTemp;
+        // Unit
+        tetrominoe.transform.GetComponent<TetrisUnitSimple>().FailToCreat();
+        // DestroyImmediate(tetrominoe.gameObject);
+        // tetrominoe = tetrominoeTemp;
+        if(!MechanismInPut.Instance.warningSystem)return;
         MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.CancelOperation;
     }
     void Server_FailToCreat()
     {
-        tetrominoe.transform.parent = null;
+        if(!isServer)return;
+        //tetrominoe.transform.parent = null;
+        tetrominoe.OnTheBlocksCreator = false;
         tetrominoe.transform.SetPositionAndRotation(IdelWorldSpace.transform.position,IdelWorldSpace.transform.rotation);
         tetrominoe.transform.localScale = Vector3.one;
+        
     }
-    [ClientRpc]
-    void Rpc_FailToCreat()
-    {
-        Debug.Log("Rpc_FailToCreat"+IdelWorldSpace.transform.position);
-        tetrominoe.transform.parent = null;
-    }
-    
+  
     Tween flowScaleTween;
     Tween flowAnchorPosTween;
     void InFlow()
     {
-        
         // 心流模式
         OnTetriBeginDrag?.Invoke();
         Canvas idelCanvas = Idel.GetComponent<Canvas>();
@@ -311,6 +329,9 @@ public class IdelBox : NetworkBehaviour,
         // 播放动画
         flowScaleTween = idelRT.DOScale(2.0f, 0.5f);
         flowAnchorPosTween = idelRT.DOAnchorPos3D(new Vector3(idelAnchoredPos.x+20.0f,idelAnchoredPos.y,idelAnchoredPos.z),0.5f);
+        // 不可以战斗
+        if(!tetrominoe)return;
+        tetrominoe.transform.GetComponent<TetrisUnitSimple>().CheckUnitTag(false);
         // 机制事件
         if(!idelHolder.Local())return;
         MechanismInPut.Instance.modeTest = MechanismInPut.ModeTest.Reflash;
@@ -325,11 +346,15 @@ public class IdelBox : NetworkBehaviour,
         RectTransform idelRT = Idel.GetComponent<RectTransform>();
         idelRT.DOScale(originScale, 0.5f).SetEase(Ease.OutBounce);
         idelRT.DOAnchorPos3D(idelAnchoredPos,0.5f).SetEase(Ease.OutBounce);
+        // 可以战斗
+        if(!tetrominoe)return;
+        tetrominoe.transform.GetComponent<TetrisUnitSimple>().CheckUnitTag();
         // 机制事件
         Invoke(nameof(ReflashMechanism),0.2f);
     }
     void ReflashMechanism()
     {
+        if(!MechanismInPut.Instance)return;
         MechanismInPut.Instance.modeTest = MechanismInPut.ModeTest.FourDirectionsLinks;
         MechanismInPut.Instance.modeTest = MechanismInPut.ModeTest.ChainTransfer;
     }
@@ -342,11 +367,11 @@ public class IdelBox : NetworkBehaviour,
         originScale = rt.localScale;
         if(idelHolder.Local())
         {
-            LocalRemoveNetworkID();
+            LocalDo();
             OnGameObjCreate();
         }else
         {
-            ServerAddNetworkID();
+            ServerDo();
             ServerToClient_OnGameObjCreate();
         }
         
@@ -356,24 +381,31 @@ public class IdelBox : NetworkBehaviour,
         if(tetrominoe)return;
         if(savedTetrisGroupID!=-1)
         {
-            
-            ClientGetNetworkID();
+            ClientGetTetrisGroupID();
         }else
         {
             if(!isServer)return;
             OnGameObjCreate();
         }
     }
-    void ClientGetNetworkID()
+    public void ClientGetTetrisGroupID()
     {   
         if(!isClient)return;
         tetrominoe = FindObjectsOfType<TetrisBlockSimple>().Where(x=>x.serverID==savedTetrisGroupID).FirstOrDefault();
         if(!tetrominoe)return;
         tetrominoe.Player = player; // 刷新砖块表现
         tetrominoe.idelBox = this;
+        if(player != idelHolder.playerPVP_local)
+        {
+            tetrominoe.DisPlayOnline(false);
+            return;
+        }
         changeLiquid.ChangeColor(tetrominoe.color);
     }
-    void ServerAddNetworkID()
+    /// <summary>
+    /// 本地/网络 移除/加载 NetworkID
+    /// </summary>
+    void ServerDo()
     {
         if(!isServer)return;
         foreach (var child in tetrominoes)
@@ -388,7 +420,7 @@ public class IdelBox : NetworkBehaviour,
             
         }
     }
-    void LocalRemoveNetworkID()
+    void LocalDo()
     {
         foreach (var child in tetrominoes)
         {
@@ -413,8 +445,6 @@ public class IdelBox : NetworkBehaviour,
         if(idelHolder.Local())return;
         NetworkServer.Spawn(tetrominoe.gameObject);
         Invoke(nameof(ServerLate_OnGameObjCreate),0.1f);
-        
-        
     }
     void ServerLate_OnGameObjCreate()
     {
@@ -448,8 +478,26 @@ public class IdelBox : NetworkBehaviour,
     public void RefreshGameObj()
     {
         if(!tetrominoe)return;
-        DestroyImmediate(tetrominoe.gameObject);
+        if(idelHolder.Local())
+        {
+            DestroyImmediate(tetrominoe.gameObject);
+            changeLiquid.DoCount();
+        }else
+        {
+            if(!isClient)return;
+            Cmd_RefreshGameObj();
+        }
+        
+        
+    }
+    [Command(requiresAuthority = false)]
+    public void Cmd_RefreshGameObj()
+    {
+        if(!tetrominoe)return;
+        NetworkServer.Destroy(tetrominoe.gameObject);
         changeLiquid.DoCount();
+        tetrominoe = null;
+        Rpc_Client_SuccessToCreat();
     }
 
     /// <summary>
@@ -509,8 +557,7 @@ public class IdelBox : NetworkBehaviour,
         bool reverse = false;
         if(!tetrominoe)return;
         if(!reverse){tetrominoe.Rotate(tetrominoe.transform.forward);}
-        else{tetrominoe.RotateReverse(tetrominoe.transform.forward);}
-        
+        else{tetrominoe.RotateReverse(tetrominoe.transform.forward);}  
     }
     [Command(requiresAuthority = false)]
     public void Cmd_DoRotate()
@@ -519,7 +566,7 @@ public class IdelBox : NetworkBehaviour,
         if(!tetrominoe)return;
         if(!reverse){tetrominoe.Rotate(tetrominoe.transform.forward);}
         else{tetrominoe.RotateReverse(tetrominoe.transform.forward);}
-        
+        tetrominoe.RotateTimes++;
     }
     #endregion
 

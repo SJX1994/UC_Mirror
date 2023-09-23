@@ -28,7 +28,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       /// W + E
       ///   S
       /// </summary>
-      public Soldier North,East,South,West;
+      public SoldierBehaviors North,East,South,West;
       public enum Direction
       {
             North,
@@ -36,11 +36,11 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
             South,
             West
       }
-      private readonly Dictionary< Soldier,Direction> direction_Soldier_dir = new();
+      private readonly Dictionary< SoldierBehaviors,Direction> direction_Soldier_dir = new();
      
 
       [HideInInspector]
-      public Soldier self;
+      public SoldierBehaviors self;
       [HideInInspector]
       public float range = 3f;
       [HideInInspector]
@@ -58,7 +58,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       public Material fourDirectionsLinkLinkMat;
       public List<Material> fourDirectionsLinkLinkMats;
 
-      readonly Dictionary<Soldier,LineRenderer> lineRenderers = new();  // Line Renderer组件
+      readonly Dictionary<SoldierBehaviors,LineRenderer> lineRenderers = new();  // Line Renderer组件
       [HideInInspector]
       public List<SpriteRenderer> levelSpriteRenders;
       public bool forceBreakLink;
@@ -68,20 +68,10 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
     void Start()
       {
             linkMinStrengthIncrease = 0.2f;
-            self = transform.GetComponent<Soldier>();
-            mechanismInPut = FindObjectOfType<MechanismInPut>();
-            mechanismInPut.modeChangeAction += ModeChangedAction;
+            self = transform.GetComponent<SoldierBehaviors>();
             forceBreakLink = false;
             // 联结表现
-            Transform spine = transform.Find("Spine"); 
-            if(self.unitBase.unitTemplate.levelSprite)
-            {
-                  for(int i = 1; i < self.unitBase.level+1; i++)
-                  {
-                        levelSpriteRenders.Add(spine.Find("Level_"+i).GetComponent<SpriteRenderer>());
-                  }
-                  
-            }
+            Transform spine = transform.Find("Spine");             
             foreach(SpriteRenderer spriteRender in levelSpriteRenders)
             {
                   if(spriteRender!=null)
@@ -96,7 +86,15 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
                   self.unitBase.OnDie += UnitBaseCollected;
             }
             Invoke(nameof(SetSkine), 0.1f);
-            
+            mechanismInPut = FindObjectOfType<MechanismInPut>();
+            if(!self.unitBase)return;
+            if(!self.unitBase.unitTemplate.levelSprite)return;
+            for(int i = 1; i < self.unitBase.level+1; i++)
+            {
+                  levelSpriteRenders.Add(spine.Find("Level_"+i).GetComponent<SpriteRenderer>());
+            }
+            if(!mechanismInPut)return;
+            mechanismInPut.modeChangeAction += ModeChangedAction;
             
       }
       void ModeChangedAction(MechanismInPut.ModeTest modeTest)
@@ -107,8 +105,8 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
                   StartLink();
             }else
             {
-                  Dictionary<Soldier, LineRenderer> tempDictionary = new(lineRenderers);
-                  foreach (KeyValuePair<Soldier,LineRenderer> kvp in tempDictionary)
+                  Dictionary<SoldierBehaviors, LineRenderer> tempDictionary = new(lineRenderers);
+                  foreach (KeyValuePair<SoldierBehaviors,LineRenderer> kvp in tempDictionary)
                   {
                         if(kvp.Value == null)continue;
                         kvp.Key.morale.minMorale = kvp.Key.morale.baseminMorale;
@@ -125,8 +123,8 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
             if(this.modeTest == MechanismInPut.ModeTest.FourDirectionsLinks || this.modeTest == MechanismInPut.ModeTest.ChainTransfer || modeTest == MechanismInPut.ModeTest.ChainTransferAndFourDirectionsLinks)
             {
                   // 持续 + 断开
-                  Dictionary<Soldier, LineRenderer> tempDictionary = new(lineRenderers);
-                  foreach (KeyValuePair<Soldier,LineRenderer> kvp in tempDictionary)
+                  Dictionary<SoldierBehaviors, LineRenderer> tempDictionary = new(lineRenderers);
+                  foreach (KeyValuePair<SoldierBehaviors,LineRenderer> kvp in tempDictionary)
                   {
                         if(kvp.Value == null)continue;
                         //if(self.transform.hasChanged || kvp.Key.transform.hasChanged)
@@ -142,7 +140,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       void StartLink()
       {
             if(forceBreakLink)return;
-            List<Soldier> soldiers = FindObjectsOfType<Soldier>().ToList();
+            List<SoldierBehaviors> soldiers = FindObjectsOfType<SoldierBehaviors>().ToList();
       
             foreach (var s in soldiers)
             {
@@ -228,7 +226,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       /// </summary>
       /// <param name="from"></param>
       /// <param name="to"></param>
-      public void SoldiersStartRelation(Soldier from,Soldier to)
+      public void SoldiersStartRelation(SoldierBehaviors from,SoldierBehaviors to)
       {
             if(forceBreakLink)return;
             if(!to)return;
@@ -293,8 +291,8 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
             Renderer lineRendererRenderer = lineRenderer.GetComponent<Renderer>();
             lineRendererRenderer.material = fourDirectionsLinkLinkMat;
             // 玩偶表现
-                  PuppetEffectDataStruct p2 = new(PuppetEffectDataStruct.EffectType.FourDirectionsLinkerStart,to.unitBase.id,sortingLayerName,direction_Soldier_dir[to]);
-                  from.fourDirectionsLinks.OnPlayEffect?.Invoke(p2); 
+                  // PuppetEffectDataStruct p2 = new(PuppetEffectDataStruct.EffectType.FourDirectionsLinkerStart,to.unitBase.id,sortingLayerName,direction_Soldier_dir[to]);
+                  // from.fourDirectionsLinks.OnPlayEffect?.Invoke(p2); 
 
             lineRendererRenderer.GetComponent<Renderer>().enabled = needRender;
             
@@ -306,7 +304,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       /// </summary>
       /// <param name="from"></param>
       /// <param name="to"></param>
-      public void SoldiersUpdateRelation(Soldier from, Soldier to)
+      public void SoldiersUpdateRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             if(!to)return;
         if(forceBreakLink)
@@ -316,7 +314,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
         }
             Vector3 startPosition = from.transform.position;
             Vector3 endPosition = to.transform.position;
-        foreach (KeyValuePair<Soldier,Direction> kvp in direction_Soldier_dir)
+        foreach (KeyValuePair<SoldierBehaviors,Direction> kvp in direction_Soldier_dir)
         {
             if(kvp.Key == to)
             {
@@ -357,7 +355,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       /// </summary>
       /// <param name="from"></param>
       /// <param name="to"></param>
-      public void SoldiersEndRelation(Soldier from, Soldier to)
+      public void SoldiersEndRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             if(to == null)return;
             if(forceBreakLink)
@@ -457,7 +455,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
 
             
       }
-      private IEnumerator WaitParticleAddMorale(Soldier soldier,ParticleSystem particleSystem)
+      private IEnumerator WaitParticleAddMorale(SoldierBehaviors soldier,ParticleSystem particleSystem)
       {
             // 等待粒子特效开始播放
             particleSystem.Play();
@@ -472,7 +470,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
             soldier.morale.EffectByMorale(soldier,ref soldier.strength);
             
       }
-      private IEnumerator WaitParticleReduceMorale(Soldier soldier,ParticleSystem particleSystem)
+      private IEnumerator WaitParticleReduceMorale(SoldierBehaviors soldier,ParticleSystem particleSystem)
       {
             // 等待粒子特效开始播放
             particleSystem.Play();
@@ -545,7 +543,7 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
     /// <summary>
     /// 比较两个队列
     /// </summary>
-    private bool ListEquals(List<Soldier> list1, List<Soldier> list2)
+    private bool ListEquals(List<SoldierBehaviors> list1, List<SoldierBehaviors> list2)
       {
             if (list1.Count != list2.Count)
             {

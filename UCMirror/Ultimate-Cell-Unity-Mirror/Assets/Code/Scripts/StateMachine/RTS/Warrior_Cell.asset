@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Warrior_Cell
   m_EditorClassIdentifier: 
   unitType: 0
-  health: 200
+  player: 2
+  health: 150
   attackPower: 3
-  attackSpeed: 2
+  attackSpeed: 0.1
   engageDistance: 1.37
   guardDistance: 2.17
   chaseDuration: 0.5

@@ -3,16 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
+using UC_PlayerData;
 
 public class TetriBlockSimple : MonoBehaviour
 {
     public TetrisBlockSimple tetrisBlockSimple;
     public UC_PlayerData.Player player = UC_PlayerData.Player.NotReady;
     public LayerMask blockTargetMask;
-    public Vector2 posId;
+    public UnityAction TetriPosIdChanged;
+    public Vector2 PosId
+    {
+        get
+        {
+            return posId;
+        }
+        set
+        {
+            if(posId == value)return;
+            TetriPosIdChanged?.Invoke();
+            posId = value;
+        }
+    }
+    private Vector2 posId;
     public BlockTetriHandler currentBlockTetriHandler;
     public UnityAction<TetriBlockSimple> CantPutCallback;
     private bool canMove = false;
+    Color spriteColor;
     public bool CanMove
     {
         get 
@@ -26,13 +42,33 @@ public class TetriBlockSimple : MonoBehaviour
             DoGroupMoveCheck();
         }
     }
-    bool canCreate = false;
+    public bool canCreate = false;
     bool canDrop = false;
-    BlockTetriHandler blockOccupying;
+    public BlockTetriHandler blockOccupying;
     SortingGroup cubeSortingGroup;
     Material sharedMaterial;
     TetriDisplayRange tetriDisplayRange;
+    TetriUnitSimple tetriUnitSimple;
+    public TetriUnitSimple TetriUnitSimple
+    {
+        get
+        {
+            if(!tetriUnitSimple)
+            {
+                tetriUnitSimple = transform.GetComponent<TetriUnitSimple>();
+            }
+            return tetriUnitSimple;
+        }
+        set
+        {
+            tetriUnitSimple = value;
+        }
+    }
     // Start is called before the first frame update
+    void Awake()
+    {
+        
+    }
     void Start()
     {
         tetrisBlockSimple = transform.parent.GetComponent<TetrisBlockSimple>();
@@ -42,11 +78,6 @@ public class TetriBlockSimple : MonoBehaviour
         Display_playerColor();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void FailToCreat()
     {
         canCreate = false;
@@ -63,6 +94,16 @@ public class TetriBlockSimple : MonoBehaviour
         CanMove = false;
         canDrop = false;
         canCreate = false;
+    }
+    public void Reset_OnDie()
+    {
+        bool lastOne = transform.parent.GetComponentsInChildren<TetriBlockSimple>().Length == 1;
+        currentBlockTetriHandler = null;
+        blockOccupying = null;
+        CanMove = true;
+        canDrop = true;
+        canCreate = false;
+        if(lastOne)Destroy(transform.parent.gameObject);
     }
     public bool CheckColliderOnEndDrag()
     {
@@ -85,42 +126,36 @@ public class TetriBlockSimple : MonoBehaviour
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
         bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
-        if(hitBlock)
+        List<bool> condition = new();
+        if(!hitBlock){CantPutCallback?.Invoke(this);return false;}
+        // 进一步的处理
+        BlockTetriHandler block;
+        hit.collider.transform.TryGetComponent(out block);
+        if(!block){CantPutCallback?.Invoke(this); return false;}
+        if(block.State == BlockTetriHandler.BlockTetriState.Occupying)
         {
-            // 进一步的处理
-            BlockTetriHandler block;
-            hit.collider.transform.TryGetComponent(out block);
-            if(!block)return false;
-            if(block.State == BlockTetriHandler.BlockTetriState.Occupying)
-            {
-                // 不能放置
-                CantPutCallback?.Invoke(this);
-                return false;
-            }
-            if(player == UC_PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2)
-            {
-                // 不能放置
-                CantPutCallback?.Invoke(this);
-                return false;
-            }
-            else if(player == UC_PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1)
-            {
-                // 不能放置
-                CantPutCallback?.Invoke(this);
-                return false;
-            }
-            if(!block.tetriBlockSimpleHolder)
-            {
-                // 可以放置
-                return true;
-            }
-            else
-            {
-                CantPutCallback?.Invoke(this);
-                return false;
-            }
-            
-        }else
+            // 不能放置
+            CantPutCallback?.Invoke(this);
+            return false;
+        }
+        if((player == UC_PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2) || (player == UC_PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Peace_Player2))
+        {
+            // 不能放置
+            CantPutCallback?.Invoke(this);
+            return false;
+        }
+        else if((player == UC_PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1) || (player == UC_PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Peace_Player1))
+        {
+            // 不能放置
+            CantPutCallback?.Invoke(this);
+            return false;
+        }
+        if(!block.tetriBlockSimpleHolder)
+        {
+            // 可以放置
+            return true;
+        }
+        else
         {
             CantPutCallback?.Invoke(this);
             return false;
@@ -138,7 +173,7 @@ public class TetriBlockSimple : MonoBehaviour
         hit.collider.transform.TryGetComponent(out block);
         if(!block)return;
         blockOccupying = block;
-        posId = block.posId;
+        PosId = block.posId;
     }
     public void DropCheck()
     {
@@ -153,7 +188,7 @@ public class TetriBlockSimple : MonoBehaviour
         hit.collider.transform.TryGetComponent(out block);
         if(!block)return;
         blockOccupying = block;
-        posId = block.posId;
+        PosId = block.posId;
         if(player == UC_PlayerData.Player.Player1 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
             block.State = BlockTetriHandler.BlockTetriState.Occupying;   
@@ -167,8 +202,8 @@ public class TetriBlockSimple : MonoBehaviour
     public BlockTetriHandler NextBlock()
     {
         BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
-        var blockP1 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x + 1,posId.y));
-        var blockP2 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x - 1,posId.y));
+        var blockP1 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x + 1,PosId.y));
+        var blockP2 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x - 1,PosId.y));
         if(player == UC_PlayerData.Player.Player1)
         {
             if(!blockP1)return null;
@@ -184,12 +219,13 @@ public class TetriBlockSimple : MonoBehaviour
     public BlockTetriHandler CurrentBlock()
     {
         BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
-        BlockTetriHandler currentBlock = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x,posId.y)).GetComponent<BlockTetriHandler>();
+        BlockTetriHandler currentBlock = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y)).GetComponent<BlockTetriHandler>();
         return currentBlock;
         
     }
     public bool BlockNextCheck(BlockTetriHandler block)
     {
+        if(!block)return false;
         if(block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2 && player == UC_PlayerData.Player.Player1 && block.tetriBlockSimpleHolder != null)
         {
             return false;
@@ -223,7 +259,7 @@ public class TetriBlockSimple : MonoBehaviour
         // 进一步的处理
         if(!block)return;
         blockOccupying = block;
-        posId = block.posId;
+        PosId = block.posId;
         if(player == UC_PlayerData.Player.Player1 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
             block.State = BlockTetriHandler.BlockTetriState.Occupying;
@@ -235,6 +271,7 @@ public class TetriBlockSimple : MonoBehaviour
         }
         else if(player == UC_PlayerData.Player.Player2 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player2)
         {
+            
             block.State = BlockTetriHandler.BlockTetriState.Occupying;
             Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.1f);
         }
@@ -245,16 +282,13 @@ public class TetriBlockSimple : MonoBehaviour
         
        
     }
-    
     public void CancleOccupied()
     {
         CancelInvoke(nameof(DoOccupied));
-
         if(!blockOccupying)
         {
-            blockOccupying = tetrisBlockSimple.blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x,posId.y)).transform.GetComponent<BlockTetriHandler>();
+            blockOccupying = tetrisBlockSimple.blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y)).transform.GetComponent<BlockTetriHandler>();
         }
-
         blockOccupying.State = BlockTetriHandler.BlockTetriState.Peace;
     }
     void DoOccupied()
@@ -262,7 +296,7 @@ public class TetriBlockSimple : MonoBehaviour
         if(!canCreate)return;
         if(!blockOccupying)
         {
-            blockOccupying = tetrisBlockSimple.blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x,posId.y)).transform.GetComponent<BlockTetriHandler>();
+            blockOccupying = tetrisBlockSimple.blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y)).transform.GetComponent<BlockTetriHandler>();
         }
         if(!blockOccupying)return;
         
@@ -297,21 +331,68 @@ public class TetriBlockSimple : MonoBehaviour
         Transform displayGo = transform.Find("Display_Range");
         if(!displayGo)return;
         tetriDisplayRange = displayGo.GetComponent<TetriDisplayRange>();
+        if(!cubeSortingGroup || !sharedMaterial){
+            cubeSortingGroup = transform.Find("Cube").GetComponent<SortingGroup>();
+            sharedMaterial = cubeSortingGroup.transform.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+        spriteColor = transform.GetComponent<SpriteRenderer>().color;
         Material materialP1 = new(sharedMaterial);
         Material materialP2 = new(sharedMaterial);
         // materialP1.color = PlayerData.Dispaly.Player1Color;
         // materialP2.color = PlayerData.Dispaly.Player2Color;
-        materialP1.color = transform.GetComponent<SpriteRenderer>().color;
-        materialP2.color = transform.GetComponent<SpriteRenderer>().color;
-        if(player == UC_PlayerData.Player.Player1)
+        materialP1.color = spriteColor;
+        materialP2.color = spriteColor;
+        if(player == Player.Player1)
         {
             cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP1;
             tetriDisplayRange.SetColor(Color.red + Color.white*0.3f);
-        }else if (player == UC_PlayerData.Player.Player2)
+        }else if (player == Player.Player2)
         {
             cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP2;
             tetriDisplayRange.SetColor(Color.blue + Color.white*0.3f);
         }
+    }
+    public void Display_playerColor(bool Visible)
+    {
+        Transform displayGo = transform.Find("Display_Range");
+        if(!displayGo)return;
+        tetriDisplayRange = displayGo.GetComponent<TetriDisplayRange>();
+        if(!cubeSortingGroup || !sharedMaterial){
+            cubeSortingGroup = transform.Find("Cube").GetComponent<SortingGroup>();
+            sharedMaterial = cubeSortingGroup.transform.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+        spriteColor = transform.GetComponent<SpriteRenderer>().color;
+        Material materialP1 = new(sharedMaterial);
+        Material materialP2 = new(sharedMaterial);
+        // materialP1.color = PlayerData.Dispaly.Player1Color;
+        // materialP2.color = PlayerData.Dispaly.Player2Color;
+        materialP1.color = spriteColor;
+        materialP2.color = spriteColor;
+        Color red = Color.red + Color.white*0.3f;
+        Color blue = Color.blue + Color.white*0.3f;
+        
+        if(player == Player.Player1)
+        {
+            cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP1;
+            tetriDisplayRange.SetColor(red);
+        }else if (player == Player.Player2)
+        {
+            cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP2;
+            tetriDisplayRange.SetColor(blue);
+        }
+        if(Visible)return;
+        materialP1.color = new(materialP1.color.r,materialP1.color.g,materialP1.color.b,Dispaly.HidenAlpha);
+        materialP2.color = new(materialP2.color.r,materialP2.color.g,materialP2.color.b,Dispaly.HidenAlpha);
+        if(player == Player.Player1)
+        {
+            cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP1;
+            tetriDisplayRange.SetColor(new(red.r,red.g,red.b,Dispaly.HidenAlpha));
+        }else if (player == Player.Player2)
+        {
+            cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP2;
+            tetriDisplayRange.SetColor(new(blue.r,blue.g,blue.b,Dispaly.HidenAlpha));
+        }
+        transform.GetComponent<SpriteRenderer>().color = new(spriteColor.r,spriteColor.g,spriteColor.b,Dispaly.HidenAlpha);
     }
     
 }

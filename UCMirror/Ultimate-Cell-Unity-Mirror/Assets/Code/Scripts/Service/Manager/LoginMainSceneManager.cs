@@ -103,7 +103,7 @@ public class LoginMainSceneManager : MonoBehaviour
         LoginButton.onClick.AddListener(() => { LoginButtonClick(); });
 
         // 通信获取
-        // TODO 暂时获取方式
+        // 暂时获取方式
         var obj = GameObject.Find("LanNetWorkManager").gameObject;
 
         CommunicationManager = obj.GetComponent<CommunicationInteractionManager>();

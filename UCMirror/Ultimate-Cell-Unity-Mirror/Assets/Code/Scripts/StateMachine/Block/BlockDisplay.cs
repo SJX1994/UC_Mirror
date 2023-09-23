@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UC_PlayerData;
-using I18N.West;
 
 public class BlockDisplay : MonoBehaviour
 {

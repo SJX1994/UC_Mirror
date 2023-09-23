@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Weapon_Needle
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 48bf7f43eabbe0f4a94242da6f6ba61a, type: 3}
-  attackPowerBonus: -1
+  attackPowerBonus: 2
   rangeBonus: 0
-  attackSpeedBonus: 2
+  attackSpeedBonus: 0.2
   healthBonus: 0
   weaponType: 1
   pos_weaponX: -1.3

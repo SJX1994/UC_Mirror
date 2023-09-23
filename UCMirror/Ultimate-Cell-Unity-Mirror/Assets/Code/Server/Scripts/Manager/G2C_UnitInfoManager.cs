@@ -49,7 +49,7 @@ public class G2C_UnitInfoManager : MonoBehaviour
     {
         playerRoom = this.GetComponent<G2C_PlayerRoom>();
 
-        // TODO 暂时获取方式
+        // 暂时获取方式
         if (GameObject.Find("LanNetWorkManager") == null)
         {
             return;

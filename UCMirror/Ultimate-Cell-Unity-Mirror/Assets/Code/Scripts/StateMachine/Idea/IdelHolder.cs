@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UC_PlayerData;
-using UnityEngine.Events;
+using DG.Tweening;
 public struct IdelBoxData
 {
     public string name;
@@ -19,9 +19,6 @@ public class IdelHolder : NetworkBehaviour
     public static HashSet<IdelHolder> ActiveIdelHolders = new();
     [SyncVar]
     public int IdelHolderId = -1;
-    [Header("UC_PVP_IdelBox:")]
-    [SyncVar]
-    public int RamdomNumb;
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -68,35 +65,19 @@ public class IdelHolder : NetworkBehaviour
         if(Local())return;
         if(isServer)return;
         playerPVP_local = playerPVP;
-        Debug.Log("OnStartClient"+playerPVP_local);
         Invoke(nameof(HideOther),0.1f);
     }
     void HideOther()
     {
         foreach(var idealHolder in FindObjectsOfType<IdelHolder>())
         {
-            if(idealHolder.player == playerPVP)continue;
+            if(idealHolder.player == playerPVP_local)continue;
             idealHolder.idelUI.Hide();
-            idealHolder.gameObject.SetActive(false);
-            // DestroyImmediate(idealHolder.gameObject);
         }
         foreach(var tetrominoe in FindObjectsOfType<TetrisBlockSimple>())
         {
-            if(!tetrominoe.idelBox)
-            {
-                tetrominoe.gameObject.SetActive(false);
-                continue;
-            }
-            if(!tetrominoe.idelBox.idelHolder)
-            {
-                tetrominoe.gameObject.SetActive(false);
-                continue;
-            }
-            if(tetrominoe.idelBox.idelHolder.player != playerPVP)
-            {
-                tetrominoe.gameObject.SetActive(false);
-                continue;
-            }
+            if(tetrominoe.player == playerPVP_local)continue;
+            tetrominoe.DisPlayOnline(false); 
             
         }
         

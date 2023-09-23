@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Weapon_Spear
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 30548f2b6bfb8454b81c83152ea5a75b, type: 3}
-  attackPowerBonus: 2
-  rangeBonus: 0
-  attackSpeedBonus: -1
+  attackPowerBonus: 1
+  rangeBonus: 2
+  attackSpeedBonus: 0.2
   healthBonus: 0
   weaponType: 2
   pos_weaponX: -1.3

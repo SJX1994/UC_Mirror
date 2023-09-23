@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UC_PlayerData;
 
 public class IdelUI : MonoBehaviour
@@ -15,12 +16,16 @@ public class IdelUI : MonoBehaviour
 
     public GameObject[] BoxInfo;
     MechanismInPut mechanismInPut;
+    public bool hiden = false;
     #endregion
 
     #region 数据关系
     void Start()
     {
-        // Active();
+        foreach (var Info in BoxInfo)
+        {
+            Info.GetComponent<IdelBox>().idelUI = this;
+        }
     }
     public void Active()
     {
@@ -38,12 +43,29 @@ public class IdelUI : MonoBehaviour
     {
         foreach (var Info in BoxInfo)
         {
-            Info.SetActive(false);
+            ChangeHideColorRecursive(Info.transform);
         }
+        hiden = true;
     }
     #endregion
 
     #region 数据方法
+    private void ChangeHideColorRecursive(Transform parent)
+    {
+        // 获取当前物体的Image组件
+        if (parent.TryGetComponent<Image>(out var image))
+        {
+            // 修改颜色
+            image.color = new Color(image.color.r, image.color.g, image.color.b, Dispaly.HidenAlpha);
+        }
+        
+        // 遍历所有子物体并递归调用ChangeColorRecursive方法
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform child = parent.GetChild(i);
+            ChangeHideColorRecursive(child);
+        }
+    }
     void Init()
     {
         //camera
@@ -66,7 +88,7 @@ public class IdelUI : MonoBehaviour
     /// </summary>
     public void RefreshButtonClick() 
     {
-        MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.Reflash;
+        // MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.Reflash;
 
         foreach (GameObject Info in BoxInfo) 
         {

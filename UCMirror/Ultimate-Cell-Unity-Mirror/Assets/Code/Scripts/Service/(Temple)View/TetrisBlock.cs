@@ -48,7 +48,7 @@ public class TetrisBlock : MonoBehaviour
         AddToBlocks();
 
 
-        // TODO 暂时获取方式
+        // 暂时获取方式
         CommunicationManager = GameObject.Find("SceneLoader").gameObject.GetComponent<CommunicationInteractionManager>();
 
         broadcastClass = CommunicationManager.GetComponent<BroadcastClass>();

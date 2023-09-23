@@ -46,7 +46,7 @@ public class BuildingManager : Singleton<BuildingManager>
         Invoke(nameof(LateStart), 0.1f);
 
         // 通信获取
-        // TODO 暂时获取方式
+        // 暂时获取方式
         // CommunicationManager = GameObject.Find(nameof(LanNetWorkManager)).gameObject.GetComponent<CommunicationInteractionManager>();
 
     }

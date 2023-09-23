@@ -7,8 +7,8 @@ public class MechanismInPut : Singleton<MechanismInPut>
 {
       public ModeTest modeTest;
       public UnityAction<ModeTest> modeChangeAction;
-      public UnityAction<List<Soldier>> allSoldiers;
-      public List<Soldier> soldiers = new();
+      public UnityAction<List<SoldierBehaviors>> allSoldiers;
+      public List<SoldierBehaviors> soldiers = new();
       public Text text;
       // 通讯
       public WarningSystem warningSystem;
@@ -40,10 +40,10 @@ public class MechanismInPut : Singleton<MechanismInPut>
       private void OnModeVariableChanged()
       {
             // 获取所有士兵
-            soldiers = new List<Soldier>(FindObjectsOfType<Soldier>());
-            List<Soldier> tempS = new(soldiers);
+            soldiers = new List<SoldierBehaviors>(FindObjectsOfType<SoldierBehaviors>());
+            List<SoldierBehaviors> tempS = new(soldiers);
             
-            foreach(Soldier s in tempS)
+            foreach(SoldierBehaviors s in tempS)
             {
                   if(!s)continue;
                   if(s.chainTransfer.collected == true || s.fourDirectionsLinks.forceBreakLink == true)
@@ -69,7 +69,7 @@ public class MechanismInPut : Singleton<MechanismInPut>
                         
                         int all0 = tempS.Count;
                         int links = 0;
-                        foreach(Soldier s in tempS)
+                        foreach(SoldierBehaviors s in tempS)
                         {
                               if(s.fourDirectionsLinks.North!=null || s.fourDirectionsLinks.East!=null || s.fourDirectionsLinks.West!=null || s.fourDirectionsLinks.South!=null)
                               {
@@ -85,7 +85,7 @@ public class MechanismInPut : Singleton<MechanismInPut>
                         int blue = 0;
                         int green = 0;
                         int purple = 0;
-                        foreach(Soldier s in tempS)
+                        foreach(SoldierBehaviors s in tempS)
                         {
                               switch(s.morale.soldierType)
                               {

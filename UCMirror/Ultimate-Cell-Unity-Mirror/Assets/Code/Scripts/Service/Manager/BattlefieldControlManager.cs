@@ -70,7 +70,7 @@ public class BattlefieldControlManager : MonoBehaviour
         // Debug.Log("程序启动：生成砖块");
 
         // 通信获取
-        // TODO 暂时获取方式
+        // 暂时获取方式
         sceneLoader = GameObject.Find("LanNetWorkManager").gameObject;
 
         CommunicationManager = GameObject.Find("LanNetWorkManager").gameObject.GetComponent<CommunicationInteractionManager>();

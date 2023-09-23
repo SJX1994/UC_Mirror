@@ -48,7 +48,7 @@ public class UnitSoul : Unit
             meshRenderer.sharedMaterial.color = new Color(m_color.r,m_color.g,m_color.b,1);
             InvokeRepeating("Wander", 0, 2);
             StartCoroutine(Dissipate(1,0,unitSoulTemplate.duration+ Random.Range(-2,2)));
-            // TODO 替代通讯
+            // 替代通讯
             if(GameObject.Find("CanvasManager_StayMachine(Clone)"))
             {
                   stateMachineManager = GameObject.Find("CanvasManager_StayMachine(Clone)").GetComponent<StateMachineManager>();

@@ -22,7 +22,7 @@ public class LanNetWorkManager : NetworkBehaviour
     {
         DontDestroyOnLoad(this);
         // 通信获取
-        // TODO 暂时获取方式
+        // 暂时获取方式
         CommunicationManager = this.GetComponent<CommunicationInteractionManager>();
 
         broadcastClass = this.GetComponent<BroadcastClass>();

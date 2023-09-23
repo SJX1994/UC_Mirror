@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Weapon_Bow
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: cbeda34d2219464469301f85c7b42afe, type: 3}
-  attackPowerBonus: -2
+  attackPowerBonus: 0
   rangeBonus: 6
-  attackSpeedBonus: -0.5
-  healthBonus: -50
+  attackSpeedBonus: 0.3
+  healthBonus: -15
   weaponType: 0
   pos_weaponX: -1
   pos_weaponY: 0

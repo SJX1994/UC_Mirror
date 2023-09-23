@@ -20,4 +20,9 @@ MonoBehaviour:
     type: 3}
   activeEffect: {fileID: 0}
   attackEffect: {fileID: 0}
+  deadParticle:
+  - {fileID: 3682596832703063083, guid: d06b06c9a020288479335a5ed97c26e3, type: 3}
+  - {fileID: 3682596832703063083, guid: 493c372e9eef041428be063b09e47d6c, type: 3}
+  - {fileID: 3682596832703063083, guid: e9c94920aa75d814a8862b4947065a21, type: 3}
+  - {fileID: 3682596832703063083, guid: 764d51a878b5be94f910e222dc7e7168, type: 3}
   effectType: 1

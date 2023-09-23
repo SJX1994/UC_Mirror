@@ -1,27 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 public class BlockTetriHandler : MonoBehaviour
 {
     public enum BlockTetriState
     {
         Peace,
-        Occupying,
+        Peace_Player1,
+        Peace_Player2,
         Occupied_Player1,
         Occupied_Player2,
+        Occupying,
     }
-    private BlockTetriState state = BlockTetriState.Peace;
+    public BlockTetriState state = BlockTetriState.Peace;
     public BlockTetriState State
     {
           get { return state; }
           set
           {
-                if (value != state)
-                {
-                    state = value;
-                    BlockTetriStateChanged();
-                }
+                if (value == state)return;
+                state = value;
+                BlockTetriStateChanged();
+                OnBlockTetriStateChanged?.Invoke(posId,(int)state);
           }
     }
     bool NotReady = true;
@@ -30,6 +31,9 @@ public class BlockTetriHandler : MonoBehaviour
     
     public Vector2 posId;
     public TetriBlockSimple tetriBlockSimpleHolder;
+    [Header("联网")]
+    public BlocksCreator blocksCreator;
+    public UnityAction<Vector2,int> OnBlockTetriStateChanged;
     // Start is called before the first frame update
     void Awake()
     {
@@ -46,9 +50,8 @@ public class BlockTetriHandler : MonoBehaviour
         NotReady = false;
         posId = blockDisplay.posId;
     }
-
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if(NotReady)return;
         // 状态机
@@ -56,15 +59,13 @@ public class BlockTetriHandler : MonoBehaviour
     }
     void BlockTetriStateChanged()
     {
-        blockDisplay.spriteRenderer_Bright.gameObject.SetActive(true);
+        if(!blockDisplay.spriteRenderer_Bright.gameObject.activeInHierarchy)blockDisplay.spriteRenderer_Bright.gameObject.SetActive(true);
         switch (State)
         {
             case BlockTetriState.Occupying:
-                
                 blockDisplay.spriteRenderer_Bright.color = Color.yellow;
                 break;
             case BlockTetriState.Occupied_Player1:
-                
                 blockDisplay.spriteRenderer_Bright.color = Color.red;
                 break;
             case BlockTetriState.Occupied_Player2:
@@ -73,10 +74,14 @@ public class BlockTetriHandler : MonoBehaviour
             case BlockTetriState.Peace:
                 blockDisplay.spriteRenderer_Bright.color = blockDisplay.blockColorDark;
                 break;
+            case BlockTetriState.Peace_Player1:
+                blockDisplay.spriteRenderer_Bright.color = Color.red * 0.6f;
+                break;
+            case BlockTetriState.Peace_Player2:
+                blockDisplay.spriteRenderer_Bright.color = Color.blue * 0.6f;
+                break;
             default:
                 break;
-
-            
         }
     }
     public void Reset()
@@ -84,4 +89,5 @@ public class BlockTetriHandler : MonoBehaviour
         State = BlockTetriState.Peace;
         tetriBlockSimpleHolder = null;
     }
+    // ----------------- 联网 -----------------
 }

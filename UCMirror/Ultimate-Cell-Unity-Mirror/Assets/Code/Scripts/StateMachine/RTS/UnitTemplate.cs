@@ -1,11 +1,12 @@
 
 using UnityEngine;
-
+using UC_PlayerData;
 [CreateAssetMenu(fileName = "SpecificUnit", menuName = "状态机/创建单位模板", order = 1)]
 
 public class UnitTemplate: ScriptableObject
 {
     public UnitType unitType = UnitType.Cell;
+	public Player player = Player.NotReady;
     [Tooltip("血量")]
 	public int health = 10;
     [Tooltip("攻击力")]
@@ -28,10 +29,21 @@ public class UnitTemplate: ScriptableObject
 		Virus,
 		NoType
 	}
-   
+	public Player GetOtherPlayerType()
+	{
+		if(player == Player.Player1)
+		{
+			return Player.Player2;
+		}else if(player == Player.Player2)
+		{
+			return Player.Player1;
+		}else	
+		{
+			return Player.NotReady;
+		}
+	}
     public UnitType GetOtherUnitType()
 	{
-		
 		if(unitType == UnitType.Cell)
 		{
 			return UnitType.Virus;
@@ -43,7 +55,5 @@ public class UnitTemplate: ScriptableObject
 		{
 			return UnitType.NoType;
 		}
-
-		
 	}
 }

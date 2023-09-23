@@ -22,7 +22,7 @@ public class PuppetLine : MonoBehaviour
     [HideInInspector]
     public Unit baseUnit;
     [HideInInspector]
-    public Soldier baseSoldier;
+    public SoldierBehaviors baseSoldier;
     [HideInInspector]
     public MechanismInPut mechanismInPut;
     [HideInInspector]
@@ -164,7 +164,7 @@ public class PuppetLine : MonoBehaviour
     void Start()
     {
         baseUnit =  transform.GetComponent<Unit>();
-        baseSoldier = transform.GetComponent<Soldier>();
+        baseSoldier = transform.GetComponent<SoldierBehaviors>();
         weakAssociation = transform.GetComponent<WeakAssociation>();
         fourDirectionsLinker = transform.GetComponent<FourDirectionsLink>();
         chainTransfer = transform.GetComponent<ChainTransfer>();
