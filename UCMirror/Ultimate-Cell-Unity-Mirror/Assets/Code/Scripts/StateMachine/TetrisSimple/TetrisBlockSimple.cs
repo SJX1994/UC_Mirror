@@ -53,7 +53,25 @@ public class TetrisBlockSimple : NetworkBehaviour
     public UnityAction OnStartMove;
     public UnityAction<bool> OnRotate;
     private Stack<Vector3> positionStack;
-    int moveStep = 1;
+    public int moveStepX = 1;
+    public int moveStepZ = 1;
+    private bool moveUp = false;
+    public bool MoveUp
+    {
+        get
+        {
+            return moveUp;
+        }
+        set
+        {
+            // Debug.Log($"移动方向改变：moveUp:{moveUp}");
+            // if(moveUp == value)return;
+            moveUp = value;
+            Stop_X();
+            Active_Z();
+            Move_Z();
+        }
+    }
     public IdelBox idelBox;
     public enum TetrisCheckMode
     {
@@ -155,7 +173,45 @@ public class TetrisBlockSimple : NetworkBehaviour
        if(!autoID)return;
        serverID = ServerLogic.GetTetrisGroupID();
     }
+    
     public bool Active()
+    {
+        Stop_X();
+        Stop_Z();
+        if(!transform.parent)return false;
+        blocksCreator = transform.parent.GetComponent<BlocksCreator>();
+        foreach (TetriBlockSimple child in childTetris)
+        {
+            if(child == null)continue;
+            child.player = player;
+            child.Active();
+            child.DoGroupMoveCheck();
+        }
+        EvaluateCollision();
+        // 道具检测
+        TetrisUnitSimple.InitPropDoing();
+        return true;
+    }
+    public bool Active_X()
+    {
+        
+        if(!transform.parent)return false;
+        blocksCreator = transform.parent.GetComponent<BlocksCreator>();
+        foreach (TetriBlockSimple child in childTetris)
+        {
+            if(child == null)continue;
+            child.player = player;
+            child.Active();
+            child.DoGroupMoveCheck();
+        }
+        Stop_Z();
+        EvaluatePioneers_X();
+        EvaluateCollision();
+        Move_X();
+        transform.GetComponent<TetrisBuoySimple>().Display_Active();
+        return true;
+    }
+    public bool Active_Z()
     {
         if(!transform.parent)return false;
         blocksCreator = transform.parent.GetComponent<BlocksCreator>();
@@ -166,9 +222,10 @@ public class TetrisBlockSimple : NetworkBehaviour
             child.Active();
             child.DoGroupMoveCheck();
         }
-        EvaluatePioneers();
+        Stop_X();
+        EvaluatePioneers_Z();
         EvaluateCollision();
-        Move();
+        Move_Z();
         transform.GetComponent<TetrisBuoySimple>().Display_Active();
         return true;
     }
@@ -270,8 +327,9 @@ public class TetrisBlockSimple : NetworkBehaviour
         OnCacheUpdateForBuoyMarkers?.Invoke(buoyMarkersTemp);
         OnUpdatDisplay?.Invoke();
     }
-    public void EvaluatePioneers()
+    public void EvaluatePioneers_X()
     {
+        pioneerTetris.Clear();
         // 取前方没有砖块的砖块
         if(player == Player.Player1)
         {
@@ -297,19 +355,66 @@ public class TetrisBlockSimple : NetworkBehaviour
         //     pioneerBlock.transform.localScale += 0.2f * Vector3.one;
         // }
     }
+    public void EvaluatePioneers_Z()
+    {
+        pioneerTetris.Clear();
+        // 取上下方没有砖块的砖块
+        if(MoveUp)
+        {
+            foreach(var childTetri in childTetris)
+            {
+                bool upFrontObj = childTetris.FirstOrDefault(obj => obj.PosId == new Vector2(childTetri.PosId.x,childTetri.PosId.y+1));
+                if(upFrontObj)continue;
+                pioneerTetris.Add(childTetri);
+            }
+        }else
+        {
+            foreach(var childTetri in childTetris)
+            {
+                bool downFrontObj = childTetris.FirstOrDefault(obj => obj.PosId == new Vector2(childTetri.PosId.x,childTetri.PosId.y-1));
+                if(downFrontObj)continue;
+                pioneerTetris.Add(childTetri);
+            }
+        }
+        // 可视化
+        // foreach(var pioneerBlock in pioneerTetris)
+        // {
+        //     if(!pioneerBlock)continue;
+        //     pioneerBlock.transform.localScale += 0.2f * Vector3.one;
+        // }
+    }
     public void Stop()
     {
-        moveStep = 0;
-        CancelInvoke(nameof(MoveActive));
+        Stop_X();
+        Stop_Z();
+    }
+    public void Stop_X()
+    {
+        moveStepX = 0;
+        CancelInvoke(nameof(MoveActive_X));
+    }
+    public void Stop_Z()
+    {
+        moveStepZ = 0;
+        CancelInvoke(nameof(MoveActive_Z));
     }
     public void Move()
     {
-        moveStep = 1;
-        InvokeRepeating(nameof(MoveActive),0,occupyingTime);
+        Move_X();
     }
-    void MoveActive()
+    public void Move_X()
     {
-        if(!ValidMove())return;
+        moveStepX = 1;
+        InvokeRepeating(nameof(MoveActive_X),0,occupyingTime);
+    }
+    public void Move_Z()
+    {
+        moveStepZ = MoveUp ? 1 : -1;
+        InvokeRepeating(nameof(MoveActive_Z),0,occupyingTime);
+    }
+    void MoveActive_X()
+    {
+        if(!ValidMove_X())return;
         OnStartMove?.Invoke();
         foreach (TetriBlockSimple child in childTetris)
         {
@@ -318,12 +423,27 @@ public class TetrisBlockSimple : NetworkBehaviour
         }
         if(player == Player.Player1)
         {
-            transform.localPosition += new Vector3(moveStep,0,0);
+            transform.localPosition += new Vector3(moveStepX,0,0);
         }
         else if(player == Player.Player2)
         {
-            transform.localPosition += new Vector3(-moveStep,0,0);
+            transform.localPosition += new Vector3(-moveStepX,0,0);
         }
+        posId = new Vector2(transform.localPosition.x,transform.localPosition.z);
+        OnTetrisMoveing?.Invoke();
+        EvaluateCollision();
+    }
+    void MoveActive_Z()
+    {
+        if(!ValidMove_Z())return;
+        // Debug.Log($"moveStepZ!!!:{moveStepZ}");
+        OnStartMove?.Invoke();
+        foreach (TetriBlockSimple child in childTetris)
+        {
+            if(!child)continue;
+            child.DoGroupMoveCheck();
+        }
+        transform.localPosition += new Vector3(0,0,moveStepZ);
         posId = new Vector2(transform.localPosition.x,transform.localPosition.z);
         OnTetrisMoveing?.Invoke();
         EvaluateCollision();
@@ -338,7 +458,7 @@ public class TetrisBlockSimple : NetworkBehaviour
         OnRotate?.Invoke(false);
         transform.RotateAround(transform.TransformPoint(rotationPoint), axis, -90);
     }
-    bool ValidMove()
+    bool ValidMove_X()
     {
         switch (tetrisCheckMode)
         {
@@ -347,34 +467,56 @@ public class TetrisBlockSimple : NetworkBehaviour
             case TetrisCheckMode.Drop:
                return DropValidMove();
             case TetrisCheckMode.Normal:
-               return NormalValidMove();
+               return NormalValidMove_X();
             default:
                 return false;
         }
         
     }
-    bool NormalValidMove()
+    bool ValidMove_Z()
     {
-        moveStep = 1;
+        if(tetrisCheckMode != TetrisCheckMode.Normal)
+        {
+            OnStartMove?.Invoke();
+            tetrisCheckMode = TetrisCheckMode.Normal;
+            return false;
+        }
         List<bool> condition = new();
         foreach(var pineer in pioneerTetris)
         {
             if(!pineer)continue;
             BlockTetriHandler blockCurrent = pineer.CurrentBlock();
             condition.Add(blockCurrent);
-            BlockTetriHandler blockNext = pineer.NextBlock();
+            BlockTetriHandler blockNext = pineer.NextBlock_Z(MoveUp);
             condition.Add(blockNext);
             condition.Add(pineer.CanMove);
-            condition.Add(pineer.BlockNextCheck(blockNext));
+            condition.Add(pineer.BlockNextCheckBuoy(blockNext));
+        }
+        bool allTrue = condition.All(b => b);
+        return allTrue;
+    }
+    bool NormalValidMove_X()
+    {
+        moveStepX = 1;
+        List<bool> condition = new();
+        foreach(var pineer in pioneerTetris)
+        {
+            if(!pineer)continue;
+            BlockTetriHandler blockCurrent = pineer.CurrentBlock();
+            condition.Add(blockCurrent);
+            BlockTetriHandler blockNext = pineer.NextBlock_X();
+            condition.Add(blockNext);
+            condition.Add(pineer.CanMove);
+            condition.Add(pineer.BlockNextCheckBuoy(blockNext));
         }
         bool allTrue = condition.All(b => b);
         return allTrue;
     }
     bool DropValidMove()
     {
+        moveStepX = 0;
         OnStartMove?.Invoke();
         tetrisCheckMode = TetrisCheckMode.Normal;
-        moveStep = 0;
         foreach(var child in childTetris)
         {
             if(!child)continue;
@@ -392,11 +534,10 @@ public class TetrisBlockSimple : NetworkBehaviour
             if(!pineer)continue;
             BlockTetriHandler blockCurrent = pineer.CurrentBlock();
             condition.Add(blockCurrent);
-            BlockTetriHandler blockNext = pineer.NextBlock();
+            BlockTetriHandler blockNext = moveStepZ == 1 ? pineer.NextBlock_Z(MoveUp):pineer.NextBlock_X();
             condition.Add(blockNext);
             condition.Add(pineer.CanMove);
-            condition.Add(pineer.BlockNextCheck(blockNext));
-           
+            condition.Add(pineer.BlockNextCheckBuoy(blockNext));
         }
         foreach (TetriBlockSimple child in childTetris)
         {

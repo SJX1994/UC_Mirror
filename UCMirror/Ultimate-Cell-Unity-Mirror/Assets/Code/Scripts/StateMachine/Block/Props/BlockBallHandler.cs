@@ -1,8 +1,29 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UC_PlayerData;
-public class BlockBallHandler : MonoBehaviour
+public class BlockBallHandler : MonoBehaviour,IBlockProp
 {
+    private bool moveCollect;
+    public bool MoveCollect{
+        get
+        {
+            return moveCollect;
+        }
+        set
+        {
+            moveCollect = value;
+            BlockPropsState.moveCollect = moveCollect;
+        }
+    }
+    private BlockDisplay blockDisplay;
+    public BlockDisplay BlockDisplay
+    {
+        get
+        {
+            if(!blockDisplay)blockDisplay = GetComponent<BlockDisplay>();
+            return blockDisplay;
+        }
+    }
     private BlockPropsState blockPropsState;
     public BlockPropsState BlockPropsState
     {

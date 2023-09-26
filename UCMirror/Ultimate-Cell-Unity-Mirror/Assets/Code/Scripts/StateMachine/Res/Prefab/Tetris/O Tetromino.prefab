@@ -1144,6 +1144,8 @@ MonoBehaviour:
   pioneerTetris: []
   childTetris: []
   blocksCreator: {fileID: 0}
+  moveStepX: 1
+  moveStepZ: 1
   idelBox: {fileID: 0}
   tetrisCheckMode: 3
   color: {r: 0, g: 0, b: 0, a: 0}
@@ -1234,6 +1236,7 @@ GameObject:
   - component: {fileID: 1184272362226417467}
   - component: {fileID: 4783881372640263782}
   - component: {fileID: 6700833234545315546}
+  - component: {fileID: 9138769085265604513}
   m_Layer: 6
   m_Name: Square (2)
   m_TagString: Untagged
@@ -1327,8 +1330,9 @@ MonoBehaviour:
   blockTargetMask:
     serializedVersion: 2
     m_Bits: 512
-  posId: {x: 0, y: 0}
   currentBlockTetriHandler: {fileID: 0}
+  canCreate: 0
+  blockOccupying: {fileID: 0}
 --- !u!114 &4783881372640263782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1360,9 +1364,22 @@ MonoBehaviour:
   tetriUnitIndex: 2
   tetriUnitTemplate: {fileID: 11400000, guid: 754c91c213d17074cad055da96cd0f8d, type: 2}
   haveUnit: {fileID: 0}
+  tetriTemp: {fileID: 0}
   tetrisUnitSimple: {fileID: 0}
   type: 0
   newTetriUnit: 1
+--- !u!114 &9138769085265604513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322768139187291671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f16e9fa27601ed44c9726e47080b3692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5322768139326537875
 GameObject:
   m_ObjectHideFlags: 0
@@ -1376,6 +1393,7 @@ GameObject:
   - component: {fileID: 9110995885095632962}
   - component: {fileID: 3209000259254543418}
   - component: {fileID: 3146543015454322076}
+  - component: {fileID: 3231607914234335525}
   m_Layer: 6
   m_Name: Square (3)
   m_TagString: Untagged
@@ -1469,8 +1487,9 @@ MonoBehaviour:
   blockTargetMask:
     serializedVersion: 2
     m_Bits: 512
-  posId: {x: 0, y: 0}
   currentBlockTetriHandler: {fileID: 0}
+  canCreate: 0
+  blockOccupying: {fileID: 0}
 --- !u!114 &3209000259254543418
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1502,9 +1521,22 @@ MonoBehaviour:
   tetriUnitIndex: 3
   tetriUnitTemplate: {fileID: 11400000, guid: d8c557ae685ab1748b54cb102ab71c8c, type: 2}
   haveUnit: {fileID: 0}
+  tetriTemp: {fileID: 0}
   tetrisUnitSimple: {fileID: 0}
   type: 0
   newTetriUnit: 1
+--- !u!114 &3231607914234335525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322768139326537875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f16e9fa27601ed44c9726e47080b3692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5322768139393834463
 GameObject:
   m_ObjectHideFlags: 0
@@ -1518,6 +1550,7 @@ GameObject:
   - component: {fileID: 2544756508658020617}
   - component: {fileID: 7637072947875419172}
   - component: {fileID: 7055411171325592337}
+  - component: {fileID: 3596647389613795408}
   m_Layer: 6
   m_Name: Square (1)
   m_TagString: Untagged
@@ -1611,8 +1644,9 @@ MonoBehaviour:
   blockTargetMask:
     serializedVersion: 2
     m_Bits: 512
-  posId: {x: 0, y: 0}
   currentBlockTetriHandler: {fileID: 0}
+  canCreate: 0
+  blockOccupying: {fileID: 0}
 --- !u!114 &7637072947875419172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1644,9 +1678,22 @@ MonoBehaviour:
   tetriUnitIndex: 1
   tetriUnitTemplate: {fileID: 11400000, guid: 1f70b18e56bebb54482b9960c723cf88, type: 2}
   haveUnit: {fileID: 0}
+  tetriTemp: {fileID: 0}
   tetrisUnitSimple: {fileID: 0}
   type: 0
   newTetriUnit: 1
+--- !u!114 &3596647389613795408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322768139393834463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f16e9fa27601ed44c9726e47080b3692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5322768139750934756
 GameObject:
   m_ObjectHideFlags: 0
@@ -1660,6 +1707,7 @@ GameObject:
   - component: {fileID: 3160456796569370943}
   - component: {fileID: 1011968925952433743}
   - component: {fileID: 3442457685328333749}
+  - component: {fileID: 8707640369777849112}
   m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
@@ -1753,8 +1801,9 @@ MonoBehaviour:
   blockTargetMask:
     serializedVersion: 2
     m_Bits: 512
-  posId: {x: 0, y: 0}
   currentBlockTetriHandler: {fileID: 0}
+  canCreate: 0
+  blockOccupying: {fileID: 0}
 --- !u!114 &1011968925952433743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1786,9 +1835,22 @@ MonoBehaviour:
   tetriUnitIndex: 0
   tetriUnitTemplate: {fileID: 11400000, guid: e81af44fe11465848b291627d27cf553, type: 2}
   haveUnit: {fileID: 0}
+  tetriTemp: {fileID: 0}
   tetrisUnitSimple: {fileID: 0}
   type: 0
   newTetriUnit: 1
+--- !u!114 &8707640369777849112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5322768139750934756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f16e9fa27601ed44c9726e47080b3692, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5459808939830554726
 GameObject:
   m_ObjectHideFlags: 0

@@ -4781,7 +4781,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 101
+  m_SortingOrder: 102
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 4
@@ -9593,7 +9593,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 215277933
   m_SortingLayer: 1
-  m_SortingOrder: 100
+  m_SortingOrder: 102
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 4
@@ -10151,7 +10151,7 @@ CapsuleCollider:
   m_Radius: 1.6484206
   m_Height: 3.2968411
   m_Direction: 1
-  m_Center: {x: -0.14558959, y: 1.2272232, z: 0.043070793}
+  m_Center: {x: -0.14558959, y: 1.2272232, z: -1}
 --- !u!114 &4974698271946264179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10241,13 +10241,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4859299981933158961}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e69831ab1d5737e4e946a04f8e8ac8bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soldiers: []
+  self: {fileID: 0}
   sortingLayerName: Flow
-  sortingOrder: 100
+  sortingOrder: 102
   weakAssociationMat: {fileID: 2100000, guid: d64f17b00ba09ef4c95323e8ec9e5246, type: 2}
   weakAssociationMats:
   - {fileID: 2100000, guid: a152a9a8366f1a6438e1fd341530102f, type: 2}
@@ -10258,6 +10260,7 @@ MonoBehaviour:
   associationTarget: {fileID: 0}
   associationSource: {fileID: 0}
   numberOfPoints: 21
+  active: 0
 --- !u!114 &5028588802474284766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10980,21 +10983,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2022863980795779966, guid: 14f77459dca2fa94594abec5e8bd3827,
-        type: 3}
-      propertyPath: paintColor.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2022863980795779966, guid: 14f77459dca2fa94594abec5e8bd3827,
-        type: 3}
-      propertyPath: paintColor.g
-      value: 0.4402876
-      objectReference: {fileID: 0}
-    - target: {fileID: 2022863980795779966, guid: 14f77459dca2fa94594abec5e8bd3827,
-        type: 3}
-      propertyPath: paintColor.r
-      value: 0.006289184
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 14f77459dca2fa94594abec5e8bd3827, type: 3}

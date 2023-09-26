@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UC_PlayerData;
 
 public class SoldierBehaviors : MonoBehaviour
 {
@@ -14,6 +15,17 @@ public class SoldierBehaviors : MonoBehaviour
                 }
             } 
     }
+    // 玩家信息
+    private Player player = Player.NotReady;
+    public Player Player
+    {
+        get
+        {
+            if(player == Player.NotReady)player = unitBase.unitTemplate.player;
+            return player;
+        }
+    }
+
     //士气
     public MoraleTemplate morale;
     // 强度
@@ -73,7 +85,7 @@ public class SoldierBehaviors : MonoBehaviour
     Vector3 offset;
 #endregion 数据对象
 #region 数据关系
-    void Start()
+    public void Start()
     {
         needRender = true;
         morale.baseminMorale =  morale.minMorale;
@@ -131,9 +143,9 @@ public class SoldierBehaviors : MonoBehaviour
         }
         
         // 输入测试
-        mechanismInPut = FindObjectOfType<MechanismInPut>();
-        if(!mechanismInPut)return;
-        mechanismInPut.modeChangeAction += ModeChangedAction;
+        // mechanismInPut = FindObjectOfType<MechanismInPut>();
+        // if(!mechanismInPut)return;
+        // mechanismInPut.modeChangeAction += ModeChangedAction;
         
     }
     void Update()
@@ -144,14 +156,22 @@ public class SoldierBehaviors : MonoBehaviour
         morale.ReduceMorale(this,decreaseRate*Time.deltaTime , false);
         morale.EffectByMorale(this,ref strength);
     }
-#endregion 数据关系
-#region 数据操作
-    public void OnFullRows()
+    public void Behaviors_OnFullRows()
     {
         morale.AddMorale(this, 0.2f, true);
         morale.EffectByMorale(this,ref strength);
         positiveEffect.Play();
     }
+    public void Behaviors_ChainTransfer()
+    {
+        if(transform.GetComponent<UnitSimple>().unitTemplate.player == UC_PlayerData.Player.NotReady)return;
+        if (!transform.TryGetComponent<ChainTransfer>(out ChainTransfer tempChainTransfer))return;
+        FirstChainTransfer();
+        if(!(tempChainTransfer.bombIsMoving == false && tempChainTransfer.CanDoChain()))return;
+        tempChainTransfer.FirstChain(false);
+    }
+#endregion 数据关系
+#region 数据操作
     void FirstChainTransfer()
     {
         morale.AddMorale(this, 1.5f, true);
@@ -162,33 +182,25 @@ public class SoldierBehaviors : MonoBehaviour
     {
         MoraleTemplate.DrawMoraleRange(transform.position,morale.affectedRange,lineRenderer);
     }
-    // 暂时的激活事件
-    void ModeChangedAction(MechanismInPut.ModeTest modeTest)
-    {
-        this.modeTest = modeTest;
-        switch(modeTest)
-        {
-            case MechanismInPut.ModeTest.Morale:
+    // 测试用的激活事件
+    // void ModeChangedAction(MechanismInPut.ModeTest modeTest)
+    // {
+    //     this.modeTest = modeTest;
+    //     switch(modeTest)
+    //     {
+    //         case MechanismInPut.ModeTest.Morale:
                 
-            break;
-            case MechanismInPut.ModeTest.FourDirectionsLinks:
+    //         break;
+    //         case MechanismInPut.ModeTest.FourDirectionsLinks:
                 
-            break;
-        }
-    }
+    //         break;
+    //     }
+    // }
     void OnEndCalculate(Unit u)
     {
         this.enabled = false;
     }
-    public void Behaviors_ChainTransfer()
-    {
-        if(transform.GetComponent<UnitSimple>().unitTemplate.player == UC_PlayerData.Player.NotReady)return;
-        if (!transform.TryGetComponent<ChainTransfer>(out ChainTransfer tempChainTransfer))return;
-        FirstChainTransfer();
-        // 鼠标抬起事件在物体的碰撞检测上
-        if(!(tempChainTransfer.bombIsMoving == false && tempChainTransfer.CanDoChain()))return;
-        tempChainTransfer.FirstChain(false);
-    }
+   
 # region 测试用 需要测试打开 碰撞检测
     private void OnMouseDown()
     {
@@ -226,6 +238,7 @@ public class SoldierBehaviors : MonoBehaviour
     }
     private void OnMouseEnter()
     {
+        // weakAssociation.Active();
         //OnMouseEnterDo();
     }
     public void OnMouseEnterDo()
@@ -348,7 +361,6 @@ public class SoldierBehaviors : MonoBehaviour
             }
         }
     }
-    
     IEnumerator DragAble()
     {
         //当前物体对应的屏幕坐标

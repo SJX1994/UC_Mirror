@@ -249,13 +249,14 @@ public class IdelBox : NetworkBehaviour,
     {
         tetrominoe.SuccessToCreat();
         tetrominoe.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Create;
+        // if(!tetrominoe.Active_X()){ FailToCreat(); return;};
         if(!tetrominoe.Active()){ FailToCreat(); return;};
         if(!tetrominoe.ColliderCheckOnEndDrag()){ FailToCreat(); return;}
         tetrominoe.posId = new Vector2(tetrominoe.transform.localPosition.x,tetrominoe.transform.localPosition.z);
         tetrominoe.Display_AfterCreate();
         changeLiquid.DoCount();
-        // 链式球检测
-        tetrominoe.TetrisUnitSimple.UnitActionInit();
+        // 道具检测
+        //tetrominoe.TetrisUnitSimple.UnitActionInit();
         // 置空
         tetrominoe = null;
     }

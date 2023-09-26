@@ -112,6 +112,7 @@ public class BuoyBehavior : NetworkBehaviour
             tetrisUnitControled.CheckUnitTag(false); // 不可以战斗
             // 俄罗斯方块组 预示
             tetrisBuoySimpleTemp = Instantiate(tsBuoyControled, transform.parent);
+            tetrisBuoySimpleTemp.name = tsBuoyControled.name.Replace("(Clone)",UnitData.Temp);
             tetrisBuoySimpleTemp.tetrisBuoyDragged = tsBuoyControled; // 自碰撞检测:自己可以被覆盖
             if(!tetrisBuoySimpleTemp.tetrisBuoyDragged)return;
             // Unit预示加载
@@ -119,7 +120,8 @@ public class BuoyBehavior : NetworkBehaviour
             // 转成Buoy坐标系
             tetrisBuoySimpleTemp.transform.localPosition = tsBuoyControled.transform.localPosition -transform.parent.localPosition;
             tetrisBuoySimpleTemp.Display_OnDragBuoy();
-            
+            // 监听Unit死亡事件
+            tsBuoyControled.TetrisBuoyTemp = tetrisBuoySimpleTemp; 
             // 进入心流状态
             buoyInfo.OnBuoyDrag?.Invoke();
             
@@ -221,17 +223,18 @@ public class BuoyBehavior : NetworkBehaviour
         {
             if(!tetrisBuoy)continue;
             if(!buoyInfo.Local() && tetrisBuoy.tetrisBlockSimple.player != buoyInfo.player)continue;
-            TetrisBuoySimple tetrisBlockSimple = tetrisBuoy;
-            if(tetrisBlockSimple.tetrisBlockSimple.tetrisCheckMode != TetrisBlockSimple.TetrisCheckMode.Normal)continue;
-            tetrisBlockSimple.tetrisBlockSimple.Stop();
+            TetrisBuoySimple tetrisBuoySimple = tetrisBuoy;
+            if(tetrisBuoySimple.tetrisBlockSimple.tetrisCheckMode != TetrisBlockSimple.TetrisCheckMode.Normal)continue;
+            tetrisBuoySimple.tetrisBlockSimple.Stop();
             // Unit预示暂存
             TetrisUnitSimple tetrisUnitControled = tetrisBuoy.transform.GetComponent<TetrisUnitSimple>();
             tetrisUnitControled.NewTetrisUnit = false;
             List<KeyValuePair<int, UnitData.Color>> indexPairColors = tetrisUnitControled.GetUnitsData();
             tetrisUnitControled.CheckUnitTag(false);// 不可以战斗
             // 俄罗斯方块组 预示
-            TetrisBuoySimple tetrisControledTemp = Instantiate(tetrisBlockSimple, transform.parent);
-            tetrisControledTemp.tetrisBuoyDragged = tetrisBlockSimple; // 自己可以被覆盖
+            TetrisBuoySimple tetrisControledTemp = Instantiate(tetrisBuoySimple, transform.parent);
+            tetrisControledTemp.tetrisBuoyDragged = tetrisBuoySimple; // 自己可以被覆盖
+            tetrisBuoySimple.TetrisBuoyTemp = tetrisControledTemp; // 监听Unit死亡事件
             if(!tetrisControledTemp.tetrisBuoyDragged)continue;
             // Unit预示加载
             tetrisControledTemp.transform.GetComponent<TetrisUnitSimple>().LoadUnits(indexPairColors);
@@ -239,7 +242,7 @@ public class BuoyBehavior : NetworkBehaviour
             if(tetrisBuoySimpleTemps.Contains(tetrisControledTemp))continue;
             tetrisBuoySimpleTemps.Add(tetrisControledTemp);
             // 转成Buoy坐标系
-            Vector2 idChanger = tetrisBlockSimple.tetrisBlockSimple.posId - buoyInfo.CurrentPosID;
+            Vector2 idChanger = tetrisBuoySimple.tetrisBlockSimple.posId - buoyInfo.CurrentPosID;
             tetrisControledTemp.transform.localPosition = new Vector3(idChanger.x,0,idChanger.y);
             tetrisControledTemp.Display_OnDragBuoy();
         }
@@ -667,7 +670,6 @@ public class BuoyBehavior : NetworkBehaviour
         
         if(buoyInfo.Local())
         {
-           
             DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
         }else
         {
@@ -687,6 +689,7 @@ public class BuoyBehavior : NetworkBehaviour
         bool putChecker = tetrisBuoySimpleTemp.DoDropCanPutCheck() && tsBuoyControled.tetrisBlockSimple.OnBuoyDrop();
         condition.Add(putChecker);
         bool allTrue = condition.All(b => b);
+        tsBuoyControled.TetrisBuoyTemp = null; // 释放死亡监听
         return allTrue;
     }
     bool CanPutChecker(List<TetriBuoySimple> checkSelfTetris)
@@ -699,6 +702,7 @@ public class BuoyBehavior : NetworkBehaviour
         bool putChecker = tetrisBuoySimpleTemp.DoDropCanPutCheck(checkSelfTetris) && tsBuoyControled.tetrisBlockSimple.OnBuoyDrop();
         condition.Add(putChecker);
         bool allTrue = condition.All(b => b);
+        tsBuoyControled.TetrisBuoyTemp = null; // 释放死亡监听
         return allTrue;
     }
 #endregion 数据操作

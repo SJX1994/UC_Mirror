@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine.Events;
+using System.Linq;
+using UC_PlayerData;
 public class WeakAssociation : MonoBehaviour, ISoldierRelation
 {
       private bool needRender;
@@ -18,8 +20,8 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       public UnityAction<PuppetEffectDataStruct> OnPlayEffect;
 
       MechanismInPut mechanismInPut;
-      List<SoldierBehaviors> soldiers = new();
-      SoldierBehaviors self;
+      public List<SoldierBehaviors> soldiers = new();
+      public SoldierBehaviors self;
       MechanismInPut.ModeTest modeTest;
       // 弱势关联表现
       
@@ -38,11 +40,10 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       public int numberOfPoints = 21; // 抛物线上的点数
       
       private Vector3[] points; // 抛物线上的所有点
-      
-      
-      void Start()
+      public bool active = false;
+      public UnityAction<BlocksData.BlocksMechanismType> WeakAssociationActive;
+      public void Start()
       {
-            
             self = transform.GetComponent<SoldierBehaviors>();
             if(self.unitBase!=null)
             {
@@ -52,48 +53,58 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
             Invoke(nameof(SetSkine), 0.1f);
             mechanismInPut = FindObjectOfType<MechanismInPut>();
             if(!mechanismInPut)return;
-            mechanismInPut.modeChangeAction += ModeChangedAction;
-            mechanismInPut.allSoldiers += AllSoldiers;
-           
+            // mechanismInPut.modeChangeAction += ModeChangedAction;
+            // mechanismInPut.allSoldiers += AllSoldiers;
       }
       void Update()
       {
-            if(modeTest == MechanismInPut.ModeTest.WeakAssociation) 
-            {
-                  SoldiersUpdateRelation(associationSource,associationTarget);
-            }
-            
+            if(active)SoldiersUpdateRelation(associationSource,associationTarget);
       }
-      void ModeChangedAction(MechanismInPut.ModeTest modeTest)
+      public void Active()
       {
-            this.modeTest = modeTest;
-            
-            if(modeTest != MechanismInPut.ModeTest.WeakAssociation)
-            {
-                  if(lineRenderer!=null)
-                  {
-                        SoldiersEndRelation(associationSource,associationTarget);
-                  }
-                  
-            }else
-            {
-                  SoldierBehaviors to =  GetClosestSoldier();
-                  SoldiersStartRelation(self,to);
-            }
+            SoldierBehaviors to =  GetClosestSoldier();
+            SoldiersStartRelation(self,to);
+            active = true;
       }
+      public void Stop()
+      {
+            active = false;
+            if(lineRenderer ==null)return;
+            SoldiersEndRelation(associationSource,associationTarget);
+      }
+      // void ModeChangedAction(MechanismInPut.ModeTest modeTest)
+      // {
+      //       this.modeTest = modeTest;
+            
+      //       if(modeTest != MechanismInPut.ModeTest.WeakAssociation)
+      //       {
+      //             if(lineRenderer!=null)
+      //             {
+      //                   SoldiersEndRelation(associationSource,associationTarget);
+      //             }
+                  
+      //       }else
+      //       {
+      //             SoldierBehaviors to =  GetClosestSoldier();
+      //             SoldiersStartRelation(self,to);
+      //       }
+      // }
 
       public void SoldiersStartRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
-            
+            needRender = true;
             if(from == null || to == null) return;
             to.positiveEffect.Play();
             from.positiveEffect.Play();
             associationSource = from;
             associationTarget = to;
+            // UnitSimple 需要处理的事情
+            // to.weakAssociation.WeakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
+            // from.weakAssociation.WeakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
             // 玩偶表现
-            PuppetEffectDataStruct p = new (PuppetEffectDataStruct.EffectType.Positive);
-            from.weakAssociation.OnPlayEffect?.Invoke(p);
-            to.weakAssociation.OnPlayEffect?.Invoke(p);
+            // PuppetEffectDataStruct p = new (PuppetEffectDataStruct.EffectType.Positive);
+            // from.weakAssociation.OnPlayEffect?.Invoke(p);
+            // to.weakAssociation.OnPlayEffect?.Invoke(p);
             
             // Line表现
             GameObject lineObject = new("LineRenderer");
@@ -101,10 +112,10 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
             lineRenderer.positionCount = 2; // 设置线段的顶点数
             lineRenderer.SetPosition(0, from.transform.position); // 设置起点坐标
             lineRenderer.SetPosition(1, to.transform.position); // 设置终点坐标
-            lineRenderer.startColor = Color.red; // 设置线段起点颜色
-            lineRenderer.endColor = Color.blue; // 设置线段终点颜色
-            lineRenderer.startWidth = 0.1f; // 设置线段起点宽度
-            lineRenderer.endWidth = 0.1f; // 设置线段终点宽度
+            lineRenderer.startColor = Color.clear + Color.red * 0.9f; // 设置线段起点颜色
+            lineRenderer.endColor =  Color.clear + Color.blue* 0.9f; // 设置线段终点颜色
+            lineRenderer.startWidth = 0.3f; // 设置线段起点宽度
+            lineRenderer.endWidth = 0.3f; // 设置线段终点宽度
             lineRenderer.numCapVertices = 6; // 设置线段端点的圆滑度
             if(SortingLayer.NameToID(sortingLayerName)!=0)
             {
@@ -117,11 +128,11 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
             lineRendererRenderer.material = weakAssociationMat;
             lineRendererRenderer.enabled = needRender;
             this.lineRenderer = lineRenderer;
-             DOTween.Sequence().AppendInterval(0.1f).AppendCallback(() =>
-            {
-                  PuppetEffectDataStruct p2 = new (PuppetEffectDataStruct.EffectType.WeakAssociationStart,to.transform.position,sortingLayerName);
-                  from.weakAssociation.OnPlayEffect?.Invoke(p2);
-            });
+            // DOTween.Sequence().AppendInterval(0.1f).AppendCallback(() =>
+            // {
+            //       PuppetEffectDataStruct p2 = new (PuppetEffectDataStruct.EffectType.WeakAssociationStart,to.transform.position,sortingLayerName);
+            //       from.weakAssociation.OnPlayEffect?.Invoke(p2);
+            // });
             
       }
 
@@ -137,8 +148,16 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       }
       public void SoldiersEndRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
-            to.morale.AddMorale(to, 0.1f, true);
+            to.positiveEffect.Play();
+            from.positiveEffect.Play();
+            // SoldierBehaviors 需要处理的事情
+            to.morale.AddMorale(to, 0.6f, true);
             to.morale.EffectByMorale(to,ref to.strength);
+            from.morale.AddMorale(to, 0.6f, true);
+            from.morale.EffectByMorale(to,ref to.strength);
+            // UnitSimple 需要处理的事情
+            to.weakAssociation.WeakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
+            from.weakAssociation.WeakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
             Destroy(lineRenderer.gameObject);
       }
 #region 数据操作
@@ -148,15 +167,15 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
             {
                   SoldiersEndRelation(associationSource,associationTarget);
             }
-            mechanismInPut.modeChangeAction -= ModeChangedAction;
-            mechanismInPut.allSoldiers -= AllSoldiers;
+            // mechanismInPut.modeChangeAction -= ModeChangedAction;
+            // mechanismInPut.allSoldiers -= AllSoldiers;
       }
       private void CreatePoints()
       {
             if(lineRenderer == null) return;
 
-            PuppetEffectDataStruct p = new (PuppetEffectDataStruct.EffectType.WeakAssociationUpdate);
-            self.weakAssociation.OnPlayEffect?.Invoke(p);
+            // PuppetEffectDataStruct p = new (PuppetEffectDataStruct.EffectType.WeakAssociationUpdate);
+            // self.weakAssociation.OnPlayEffect?.Invoke(p);
 
             // 创建抛物线上的所有点
             points = new Vector3[numberOfPoints];
@@ -187,12 +206,34 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       {
             this.soldiers = soldiers;
       }
+      // void AllSoldiers()
+      // {
+      //       this.soldiers = new(FindObjectsOfType<SoldierBehaviors>().Where(x=>AllSoldiersChecker(x)).ToList());
+      // }
+      // bool AllSoldiersChecker(SoldierBehaviors soldier)
+      // {
+      //       List<bool> condition = new();
+      //       if(!soldier)return false;
+      //       if(!self)Start();
+      //       if(soldier.UnitSimple.IsDeadOrNull(soldier.UnitSimple))return false;
+      //       // 不包含培养皿中的砖块
+      //       Transform p = soldier.UnitSimple.tetriUnitSimple.TetrisBlockSimple.transform.parent;
+      //       if(p==null)return false;
+      //       // 不包含同类玩家
+      //       bool player = soldier.Player==self.Player;
+      //       condition.Add(player);
+      //       // 不包含拖拽的临时士兵
+      //       bool draging = !soldier.UnitSimple.tetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp);
+      //       condition.Add(draging);
+      //       bool allTrue = condition.All(b => b);
+      //       return allTrue;
+      // }
       SoldierBehaviors GetClosestSoldier()
-      {
+      {     
+            // AllSoldiers();
             SoldierBehaviors closest = null;
             float closestDistanceSqr = Mathf.Infinity;
             Vector3 currentPosition = transform.position;
-
             foreach (SoldierBehaviors soldier in soldiers)
             {
                   if(soldier.weakAssociation.associationTarget!=null) continue;
@@ -212,24 +253,23 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       }
       void SetSkine()
       {
-            if(self.skinName!="")
+            if(self.skinName=="")return;
+            switch(self.morale.soldierType)
             {
-                  switch(self.morale.soldierType)
-                  {
-                        case MoraleTemplate.SoldierType.Red:
-                             weakAssociationMat = weakAssociationMats.Find(x=>x.name == "FourDirLinkEffect_red");
-                        break;
-                        case MoraleTemplate.SoldierType.Blue:
-                              weakAssociationMat = weakAssociationMats.Find(x=>x.name == "FourDirLinkEffect_blue");
-                        break;
-                        case MoraleTemplate.SoldierType.Green:
-                              weakAssociationMat = weakAssociationMats.Find(x=>x.name == "FourDirLinkEffect_green");
-                        break;
-                        case MoraleTemplate.SoldierType.Purple:
-                              weakAssociationMat = weakAssociationMats.Find(x=>x.name == "FourDirLinkEffect_purple");
-                        break;
-                  }
-            }     
+                  case MoraleTemplate.SoldierType.Red:
+                       weakAssociationMat = weakAssociationMats.Find(x=>x.name == "FourDirLinkEffect_red");
+                  break;
+                  case MoraleTemplate.SoldierType.Blue:
+                        weakAssociationMat = weakAssociationMats.Find(x=>x.name == "FourDirLinkEffect_blue");
+                  break;
+                  case MoraleTemplate.SoldierType.Green:
+                        weakAssociationMat = weakAssociationMats.Find(x=>x.name == "FourDirLinkEffect_green");
+                  break;
+                  case MoraleTemplate.SoldierType.Purple:
+                        weakAssociationMat = weakAssociationMats.Find(x=>x.name == "FourDirLinkEffect_purple");
+                  break;
+            }
+                 
             
       }
 #endregion 数据操作

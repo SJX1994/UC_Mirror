@@ -4,6 +4,7 @@ using UnityEngine;
 using UC_PlayerData;
 using System;
 using DG.Tweening;
+using System.Linq;
 public class TetriUnitSimple : MonoBehaviour
 {
     [SerializeField]
@@ -16,10 +17,12 @@ public class TetriUnitSimple : MonoBehaviour
     {
         get
         {
+            if(!tetriBlock)tetriBlock = GetComponent<TetriBlockSimple>();
             return tetriBlock.tetrisBlockSimple;
         }
     }
     TetriBuoySimple tetriBuoy;
+    public TetriBuoySimple tetriTemp;
     public TetrisUnitSimple tetrisUnitSimple;
     public UnitData.Color type = UnitData.Color.notReady;
     // 创建键值对
@@ -27,6 +30,19 @@ public class TetriUnitSimple : MonoBehaviour
     [HideInInspector]
     public bool newTetriUnit = true;
     public KeyValuePair<int, UnitData.Color> loadIndexPairColor = new();
+    // 道具变量暂存
+    private PropsData.MoveDirection moveDirectionCatch = PropsData.MoveDirection.NotReady;
+    public PropsData.MoveDirection MoveDirectionCatch
+    {
+        get
+        {
+            return moveDirectionCatch;
+        }
+        set
+        {
+            moveDirectionCatch = value;
+        }
+    }
     void Start()
     {
         if(!loadUnit){loadUnit = Resources.Load<UnitSimple>("UnitSimple");}
@@ -69,6 +85,7 @@ public class TetriUnitSimple : MonoBehaviour
         tetriBlock.tetrisBlockSimple.OnStartMove += unitSimple.Display_StartRunning;
         tetriBlock.tetrisBlockSimple.OnTetrisMoveing += unitSimple.OnTetrisMoveing;
         tetriBlock.TetriPosIdChanged += unitSimple.OnTetriPosIdChanged;
+        tetriBuoy.OnTetriTempChange += GetTetriTemp;
         // 武器
         Weapon weapon;
         if (!unit.skeletonRenderer.transform.TryGetComponent(out weapon))return null;
@@ -99,12 +116,18 @@ public class TetriUnitSimple : MonoBehaviour
         tetriBlock.tetrisBlockSimple.OnStartMove += unitSimple.Display_StartRunning;
         tetriBlock.tetrisBlockSimple.OnTetrisMoveing += unitSimple.OnTetrisMoveing;
         tetriBlock.TetriPosIdChanged += unitSimple.OnTetriPosIdChanged;
+        tetriBuoy.OnTetriTempChange += GetTetriTemp;
         // 武器
         Weapon weapon;
         if (!unit.skeletonRenderer.transform.TryGetComponent(out weapon))return null;
         weapon.SetWeapon(type);
         tetrisUnitSimple.InitProcess++;
         return unit;
+    }
+    void GetTetriTemp(TetriBuoySimple temp)
+    {
+        if(temp==null)return;
+        tetriTemp = temp;
     }
     void UnitDie(Unit whoDie)
     {
@@ -123,8 +146,9 @@ public class TetriUnitSimple : MonoBehaviour
         tetrisUnitSimple.GetComponent<TetrisBlockSimple>().childTetris.Remove(this.GetComponent<TetriBlockSimple>());
         tetrisUnitSimple.GetComponent<TetrisBuoySimple>().childTetris.Remove(this.GetComponent<TetriBuoySimple>());
         tetriBlock.tetrisBlockSimple.pioneerTetris.Remove(this.GetComponent<TetriBlockSimple>());
-        tetriBlock.tetrisBlockSimple.EvaluatePioneers();
+        tetriBlock.tetrisBlockSimple.EvaluatePioneers_X();
         // 取消事件监听
+        tetriBuoy.OnTetriTempChange -= GetTetriTemp;
         tetriBlock.tetrisBlockSimple.OnRotate -= unitSimple.OnRotate;
         tetriBlock.tetrisBlockSimple.OnStartMove -= unitSimple.Display_StartRunning;
         tetriBlock.tetrisBlockSimple.OnTetrisMoveing -= unitSimple.OnTetrisMoveing;
@@ -132,7 +156,7 @@ public class TetriUnitSimple : MonoBehaviour
         tetriBlock.tetrisBlockSimple.sequence?.Kill();
         tetriBlock.Reset_OnDie();
         tetriBuoy.Reset();
-        Destroy(gameObject);
+        Destroy(gameObject,1.0f);
     }
     public void FailToCreat()
     {
@@ -174,6 +198,14 @@ public class TetriUnitSimple : MonoBehaviour
         {
             case PropsData.PropsState.ChainBall:
                 block.BlockBallHandler.Collect();
+            break;
+            case PropsData.PropsState.MoveDirectionChanger:
+                if(block.BlockMoveDirection.BlockPairTetri.Value != null)
+                {
+                    
+                    moveDirectionCatch = block.BlockMoveDirection.BlockPairTetri.Value.moveDirection;
+                }
+                block.BlockMoveDirection.Collect();
             break;
         }   
         return block.propsState;

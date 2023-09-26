@@ -35,6 +35,26 @@ public class TetrisBuoySimple : NetworkBehaviour
         
     }
     public TetrisBuoySimple tetrisBuoyDragged;
+    private TetrisBuoySimple tetrisBuoyTemp;
+    public TetrisBuoySimple TetrisBuoyTemp
+    {
+        get
+        {
+            return tetrisBuoyTemp;
+        }
+        set
+        {
+            if(value == null)return;
+            tetrisBuoyTemp = value;
+            if(tetrisBuoyTemp.childTetris.Count == 0)return;
+            // ID 关联
+            foreach(var tetri in tetrisBuoyTemp.childTetris)
+            {
+                if(!tetri)continue;
+                tetri.TetriTemp = tetrisBuoyTemp.childTetris.Where(t => t.GetComponent<TetriUnitSimple>().tetriUnitTemplate.index == tetri.GetComponent<TetriUnitSimple>().tetriUnitTemplate.index).FirstOrDefault();
+            }
+        }
+    }
     public List<TetriBuoySimple> childTetris;
     public Tweener cantDropTweener;
     // 联网：
@@ -175,6 +195,18 @@ public class TetrisBuoySimple : NetworkBehaviour
             if (TB_cache.ContainsKey(tetriBuoy))return;
             TB_cache.Add(tetriBuoy,buoyMarkers[tetriBuoy]);
         }
+    }
+    public TetriBuoySimple GetTetriTemp(int id)
+    {
+        foreach(var child in childTetris)
+        {
+            if(child.GetComponent<TetriUnitSimple>().tetriUnitTemplate.index == id)
+            {
+                Debug.Log("Found!!" + child.TetriTemp);
+                return child.TetriTemp;
+            }
+        }
+        return null;
     }
     public void Display_OnDragBuoy()
     {

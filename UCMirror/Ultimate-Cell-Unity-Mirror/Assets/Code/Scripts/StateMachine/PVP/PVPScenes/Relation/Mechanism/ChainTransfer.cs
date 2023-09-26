@@ -78,9 +78,19 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       {
             List<bool> condition = new();
             if(!soldierBehavior)return false;
-            if(soldierBehavior.unitBase.IsDeadOrNull(soldierBehavior.unitBase))return false;
+            if(!self)Init();
+            if(soldierBehavior.UnitSimple.IsDeadOrNull(soldierBehavior.UnitSimple))return false;
+            // 不包含培养皿中的砖块
+            Transform p = soldierBehavior.UnitSimple.tetriUnitSimple.TetrisBlockSimple.transform.parent;
+            if(p==null)return false;
+            condition.Add(p);
+            if(p)condition.Add(p.TryGetComponent<BlocksCreator>(out BlocksCreator bc));
+            // 不包含不同类型的砖块
             condition.Add(soldierBehavior.morale.soldierType == self.morale.soldierType);
+            // 不包含不同玩家的砖块
             condition.Add(soldierBehavior.UnitSimple.unitTemplate.player == self.UnitSimple.unitTemplate.player);
+            // 不包含拖拽的临时砖块
+            condition.Add(!soldierBehavior.UnitSimple.tetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp));
             bool allTrue = condition.All(b => b);
             return allTrue;
       }
@@ -115,7 +125,6 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       }
       public IEnumerator LastChain(SoldierBehaviors[] soldiers, int tempIndex)
       {
-            
             for(int i = soldiers.Length-1; i >= 0; i--)
             {
                   tempIndex += 1;
@@ -200,15 +209,16 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                   // from.unitBase.controled = true;
             }
             
+
             from.transform.DOMove(targetPosition, from.chainTransfer.duration/2).onComplete = () =>
             {
-                  to.positiveEffect.Play();
+                  if(to.positiveEffect)to.positiveEffect.Play();
                   // PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.Positive);
                   // to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
-
                   from.transform.DOLocalMove(Vector3.zero, from.chainTransfer.duration/2).onComplete = () =>
                   {  
                         transform.localPosition = Vector3.zero;
+                        Invoke(nameof(ResetPos),0.5f);
                   };
             };
             
@@ -231,11 +241,12 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             {
                   
                   to.positiveEffect.Play();
-                  PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.Positive);
-                  to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
+                  // PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.Positive);
+                  // to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
                   from.transform.DOLocalMove(Vector3.zero, from.chainTransfer.duration/2).onComplete = () =>
                   {  
                         // 允许状态机的移动
+                        Invoke(nameof(ResetPos),0.5f);
                         NavMeshAgent agent;
                         agent = from.transform.TryGetComponent<NavMeshAgent>(out agent) ? agent : null;
                         if(agent != null)
@@ -305,9 +316,10 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             Destroy(boonEffect,originDuration);
             to.transform.DOMove(targetPos,to.chainTransfer.originDuration/2).onComplete = () =>
             {
-            to.transform.DOMove(backPos,to.chainTransfer.originDuration).onComplete = () =>
+            to.transform.DOLocalMove(Vector3.zero,to.chainTransfer.originDuration).onComplete = () =>
             {   
             //复原
+            Invoke(nameof(ResetPos),0.5f);
             AllSoldiers();
             foreach(SoldierBehaviors soldier in soldiers)
             {
@@ -376,6 +388,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             if (other.transform.TryGetComponent(out SoldierBehaviors soldierAttack))
             {
                   if(self.unitBase.unitTemplate.GetOtherPlayerType() != soldierAttack.unitBase.unitTemplate.player)return;
+                  if(soldierAttack.UnitSimple.tetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp))return;
                   // 在此处编写碰撞逻辑
                   if(!dealAttackSoldiers.Contains(soldierAttack)) 
                   {
@@ -400,7 +413,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       }
       public SoldierBehaviors GetClosestSoldier()
       {
-            if(soldiers.Count == 0) AllSoldiers();
+            AllSoldiers();
 
             SoldierBehaviors closest = null;
             float closestDistanceSqr = Mathf.Infinity;

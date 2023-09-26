@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 public class TetriBuoySimple : MonoBehaviour
 {
     public Vector2 posId;
@@ -8,8 +9,25 @@ public class TetriBuoySimple : MonoBehaviour
     UC_PlayerData.Player player;
     public TetriBlockSimple tetriBlockSimple;
     public TetrisBuoySimple tetrisBuoySimple;
+    private TetriBuoySimple tetriTemp;
+    public TetriBuoySimple TetriTemp
+    {
+        get
+        {
+            return tetriTemp;
+        }
+        set
+        {
+            tetriTemp = value;
+            if(value == null)return;
+            OnTetriTempChange?.Invoke(tetriTemp);
+            tetriTemp.TryGetComponent(out TetriUnitSimple tetriUnitSimple);
+            if(!tetriUnitSimple.haveUnit)return;
+            tetriUnitSimple.haveUnit.targetOfAttack = null;
+        }
+    }
+    public UnityAction<TetriBuoySimple> OnTetriTempChange;
     TetriDisplayRange tetriDisplayRange;
-    
     void Start()
     {
         Invoke(nameof(LateStart),0.1f); 
@@ -45,6 +63,11 @@ public class TetriBuoySimple : MonoBehaviour
         if(BuoyTetriBuoys.Contains(block.tetriBuoySimple))
         {
             return true;
+        }
+        if(block.GetComponent<BlockPropsState>().moveCollect == true)
+        {
+            // 只能靠砖块移动收集的砖块不能放置
+            return false;
         }
         if(block.tetriBuoySimple)
         {
@@ -86,6 +109,11 @@ public class TetriBuoySimple : MonoBehaviour
         if(tetrisBuoySimple.tetrisBuoyDragged.childTetris.Contains(block.tetriBuoySimple))
         {
             return true;
+        }
+        if(block.GetComponent<BlockPropsState>().moveCollect == true)
+        {
+            // 只能靠砖块移动收集的砖块不能放置
+            return false;
         }
         if(block.tetriBuoySimple)
         {

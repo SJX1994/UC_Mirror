@@ -8,9 +8,23 @@ using UC_PlayerData;
 public class TetriBlockSimple : MonoBehaviour
 {
     public TetrisBlockSimple tetrisBlockSimple;
-    public UC_PlayerData.Player player = UC_PlayerData.Player.NotReady;
+    public UnityAction<Player> TetriPlayerChanged;
+    public Player player = UC_PlayerData.Player.NotReady;
+    public Player Player
+    {
+        get
+        {
+            return player;
+        }
+        set
+        {
+            if(player == value)return;
+            player = value;
+            TetriPlayerChanged?.Invoke(player);
+        }
+    }
     public LayerMask blockTargetMask;
-    public UnityAction TetriPosIdChanged;
+    public UnityAction<Vector2> TetriPosIdChanged;
     public Vector2 PosId
     {
         get
@@ -20,8 +34,8 @@ public class TetriBlockSimple : MonoBehaviour
         set
         {
             if(posId == value)return;
-            TetriPosIdChanged?.Invoke();
             posId = value;
+            TetriPosIdChanged?.Invoke(posId);
         }
     }
     private Vector2 posId;
@@ -77,7 +91,6 @@ public class TetriBlockSimple : MonoBehaviour
         sharedMaterial = cubeSortingGroup.transform.GetComponent<MeshRenderer>().sharedMaterial;
         Display_playerColor();
     }
-
     public void FailToCreat()
     {
         canCreate = false;
@@ -132,27 +145,33 @@ public class TetriBlockSimple : MonoBehaviour
         BlockTetriHandler block;
         hit.collider.transform.TryGetComponent(out block);
         if(!block){CantPutCallback?.Invoke(this); return false;}
+        if(block.GetComponent<BlockPropsState>().moveCollect == true)
+        {
+            // 道具只能靠砖块移动收集，所以不能放置
+            CantPutCallback?.Invoke(this);
+            return false;
+        }
         if(block.State == BlockTetriHandler.BlockTetriState.Occupying)
         {
-            // 不能放置
+            // 在占领中的砖块，不能放置
             CantPutCallback?.Invoke(this);
             return false;
         }
         if((player == UC_PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2) || (player == UC_PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Peace_Player2))
         {
-            // 不能放置
+            // 对方的和平砖块，和对方已经占领的砖块 不能放置
             CantPutCallback?.Invoke(this);
             return false;
         }
         else if((player == UC_PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1) || (player == UC_PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Peace_Player1))
         {
-            // 不能放置
+            // 对方的和平砖块，和对方已经占领的砖块 不能放置
             CantPutCallback?.Invoke(this);
             return false;
         }
         if(!block.tetriBlockSimpleHolder)
         {
-            // 可以放置
+            // 其他没有被占领过的砖块 可以放置
             return true;
         }
         else
@@ -199,7 +218,7 @@ public class TetriBlockSimple : MonoBehaviour
         }
         
     }
-    public BlockTetriHandler NextBlock()
+    public BlockTetriHandler NextBlock_X()
     {
         BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
         var blockP1 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x + 1,PosId.y));
@@ -216,12 +235,27 @@ public class TetriBlockSimple : MonoBehaviour
         }
         return null;
     }
+    public BlockTetriHandler NextBlock_Z(bool moveUp)
+    {
+        BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
+        if(moveUp)
+        {
+            var blockP1 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y + 1));
+            if(!blockP1)return null;
+            return blockP1.GetComponent<BlockTetriHandler>();
+        }
+        else
+        {
+            var blockP2 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y - 1));
+            if(!blockP2)return null;
+            return blockP2.GetComponent<BlockTetriHandler>();
+        }
+    }
     public BlockTetriHandler CurrentBlock()
     {
         BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
         BlockTetriHandler currentBlock = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y)).GetComponent<BlockTetriHandler>();
         return currentBlock;
-        
     }
     public bool BlockNextCheck(BlockTetriHandler block)
     {
@@ -242,9 +276,34 @@ public class TetriBlockSimple : MonoBehaviour
         {
             return false;
         }
-        return true;
-            
+        return true;   
     }
+    public bool BlockNextCheckBuoy(BlockTetriHandler block)
+    {
+        if(!block)return false;
+        if(block.GetComponent<BlockBuoyHandler>().tetriBuoySimple)
+        {
+            return false;
+        }
+        if(block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2 && player == UC_PlayerData.Player.Player1 && block.tetriBlockSimpleHolder != null)
+        {
+            return false;
+        }
+        if(block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1 && player== UC_PlayerData.Player.Player2 && block.tetriBlockSimpleHolder != null)
+        {
+            return false;
+        }
+        if(block.State == BlockTetriHandler.BlockTetriState.Occupying)
+        {
+            return false;
+        }
+        if(block.tetriBlockSimpleHolder != null)
+        {
+            return false;
+        }
+        return true;   
+    }
+    
     public void DoGroupMoveCheck()
     {
         if(!canCreate)return;

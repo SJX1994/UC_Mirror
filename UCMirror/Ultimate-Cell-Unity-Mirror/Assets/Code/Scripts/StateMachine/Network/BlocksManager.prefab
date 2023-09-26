@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 470015492767617479}
   - component: {fileID: 4011021362593910907}
   - component: {fileID: 833412939492246666}
+  - component: {fileID: 8346157192434546395}
   - component: {fileID: 4677444136600216642}
   m_Layer: 0
   m_Name: BlocksManager
@@ -163,6 +164,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5d175520a1c91941ab0ff9fc436d03c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8346157192434546395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 470015492767617478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1eadb779432a7644b1425b742a2544e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &4677444136600216642

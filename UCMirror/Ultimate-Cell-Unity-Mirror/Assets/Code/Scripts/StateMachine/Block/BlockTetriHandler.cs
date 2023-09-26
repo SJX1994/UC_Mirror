@@ -69,7 +69,7 @@ public class BlockTetriHandler : MonoBehaviour
                 blockDisplay.spriteRenderer_Bright.color = Color.red;
                 break;
             case BlockTetriState.Occupied_Player2:
-                blockDisplay.spriteRenderer_Bright.color = Color.blue;
+                blockDisplay.spriteRenderer_Bright.color = Color.blue + Color.white * 0.3f;
                 break;
             case BlockTetriState.Peace:
                 blockDisplay.spriteRenderer_Bright.color = blockDisplay.blockColorDark;

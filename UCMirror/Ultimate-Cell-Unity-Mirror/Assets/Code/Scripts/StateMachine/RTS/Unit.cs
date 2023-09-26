@@ -52,6 +52,7 @@ public class Unit : MonoBehaviour
     public Animator animator;
     [HideInInspector]
     public UnityAction OnAttacking; // 攻击事件
+    public UnityAction<int> OnBeenAttacked; // 被攻击
     public UnityAction OnAttackFinish; //攻击结束事件
     public UnityAction<Unit> OnDie; // 死亡事件
     public UnityAction<Unit> OnStartCollect; //收集开始
@@ -645,7 +646,7 @@ public class Unit : MonoBehaviour
         //         stateMachineManager.OnUnitDying(s, damage);
         //     };
         // }
-
+        OnBeenAttacked?.Invoke(damage);
         unitTemplate.health -= damage;
         // 血条 着色器
         currentHP = unitTemplate.health;
@@ -759,6 +760,7 @@ public class Unit : MonoBehaviour
 
         while (targetOfAttack != null)
         {
+            if(!animator)break;
             RunEffect(EffectTemplate.EffectType.Attacking);
             animator.SetTrigger("DoAttack");
             OnAttacking?.Invoke();

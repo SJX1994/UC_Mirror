@@ -117,14 +117,15 @@ public class TetrisUnitSimple : MonoBehaviour
         }
         
     }
-    public void UnitActionInit()
+    public void InitPropDoing()
     {
         foreach(var tetriUnit in tetriUnits)
         {
             if(!tetriUnit)continue;
-            // 或许要拆开
-            tetriUnit.haveUnit.OnTetrisMoveing();
+            PropsData.PropsState propChecker = tetriUnit.haveUnit.InitPropDoing();
+            if(propChecker != PropsData.PropsState.None)return;
         }
+        transform.GetComponent<TetrisBlockSimple>().Active_X();
     }
     
 }

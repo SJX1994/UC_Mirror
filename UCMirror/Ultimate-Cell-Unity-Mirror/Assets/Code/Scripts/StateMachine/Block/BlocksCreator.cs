@@ -64,12 +64,12 @@ public class BlocksCreator : SingletonNetwork<BlocksCreator>
         {
             // 初始化可放置区域
             InitPutzone();
-            ReflashPlayerOBlocksOccupied();
+            ReflashPlayerBlocksOccupied();
             // 监听砖块变化事件
             if(RunModeData.CurrentRunMode == RunMode.Local)
             {
                 blocks.ForEach((block) => {
-                    block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += ReflashPlayerOBlocksOccupied;
+                    block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += ReflashPlayerBlocksOccupied;
                 });
                 blocks.ForEach((block) => {
                     block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += CheckFullRows;
@@ -77,6 +77,7 @@ public class BlocksCreator : SingletonNetwork<BlocksCreator>
                 // 道具生成
                 if(!blocksProps) blocksProps = transform.GetComponent<BlocksProps>();
                 blocksProps.Generate(PropsData.PropsState.ChainBall);
+                blocksProps.Generate(PropsData.PropsState.MoveDirectionChanger);
             }else
             {
                 if(!isServer)return;
@@ -94,9 +95,9 @@ public class BlocksCreator : SingletonNetwork<BlocksCreator>
         if(!blocksCounter)blocksCounter = transform.GetComponent<BlocksCounter>();
         blocksCounter.CheckFullRows();
     }
-    public void ReflashPlayerOBlocksOccupied(Vector2 posId = default(Vector2), int state = 0)
+    public void ReflashPlayerBlocksOccupied(Vector2 posId = default(Vector2), int state = 0)
     {
-        BlocksData.Peace_numb = blocks.Where((block) => block.GetComponent<BlockTetriHandler>().State == BlockTetriHandler.BlockTetriState.Peace).Count();
+        BlocksData.peace_numb = blocks.Where((block) => block.GetComponent<BlockTetriHandler>().State == BlockTetriHandler.BlockTetriState.Peace).Count();
         BlocksData.Player1_numb = blocks.Where((block) => block.GetComponent<BlockTetriHandler>().State == BlockTetriHandler.BlockTetriState.Occupied_Player1).Count();
         BlocksData.Player2_numb = blocks.Where((block) => block.GetComponent<BlockTetriHandler>().State == BlockTetriHandler.BlockTetriState.Occupied_Player2).Count();
         if(!blocksUI)blocksUI = FindObjectOfType<BlocksUI>();

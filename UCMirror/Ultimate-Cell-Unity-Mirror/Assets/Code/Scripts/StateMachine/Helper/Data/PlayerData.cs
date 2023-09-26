@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Events;
 namespace UC_PlayerData
 {
     public enum Player
@@ -21,6 +21,7 @@ namespace UC_PlayerData
             purple,
             yellow,
         }
+        public const string Temp = "_Temp";
     }
     public class Dispaly
     {
@@ -60,10 +61,42 @@ namespace UC_PlayerData
     }
     public static class BlocksData
     {
-        public static int Player1_numb = 0;
-        public static int Player2_numb = 0;
-        public static int Peace_numb = 0;
+        public static bool stopEventSend = false; 
+        public static UnityAction<int> OnPlayer1BlocksNumbChange;
+        public static int player1_numb = 0;
+        public static int Player1_numb
+        {
+            get { return player1_numb; }
+            set
+            {
+                if (value == player1_numb || value == 0 ) return;
+                player1_numb = value;
+                if(stopEventSend) return;
+                OnPlayer1BlocksNumbChange?.Invoke(player1_numb);
+            }
+        }
+        public static UnityAction<int> OnPlayer2BlocksNumbChange;
+        public static int player2_numb = 0;
+        public static int Player2_numb
+        {
+            get { return player2_numb; }
+            set
+            {
+                if (value == player2_numb || value == 0) return;
+                player2_numb = value;
+                if(stopEventSend) return;
+                OnPlayer2BlocksNumbChange?.Invoke(player2_numb);
+            }
+        }
+        public static int peace_numb = 0;
         public static int max_numb = 200;
+        public enum BlocksMechanismType
+        {
+            NoneType,
+            WeakAssociation,
+            ReachBottomLine,
+            FullRows,
+        }
     }
     public static class ServerLogic
     {
@@ -106,7 +139,14 @@ namespace UC_PlayerData
         {
             None,
             ChainBall,
+            MoveDirectionChanger,
             HealthAdder,
+        }
+        public enum MoveDirection
+        {
+            Up,
+            Down,
+            NotReady,
         }
     }
 }

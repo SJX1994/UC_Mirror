@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UC_PlayerData;
 public class BlockPropsState : MonoBehaviour
 {
+    public bool moveCollect;
+    private BlockMoveDirection blockMoveDirection;
+    public BlockMoveDirection BlockMoveDirection
+    {
+        get
+        {
+            if(!blockMoveDirection)blockMoveDirection = GetComponent<BlockMoveDirection>();
+            return blockMoveDirection;
+        }
+    }
     private BlockBallHandler blockBallHandler;
     public BlockBallHandler BlockBallHandler
     {

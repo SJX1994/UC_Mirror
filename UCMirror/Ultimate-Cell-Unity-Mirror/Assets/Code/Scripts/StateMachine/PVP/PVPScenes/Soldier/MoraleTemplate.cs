@@ -55,15 +55,14 @@ public class MoraleTemplate : ScriptableObject{
                         float distance = Vector3.Distance(sPosition, circleCenter.position);
                         
                         // 检查距离是否小于或等于圆的半径
-                        if (distance <= circleRadius)
-                        {
-                              // 将距离映射到大小的范围
-                              float size = 1/distance;
-                              // Debug.Log("距离：" + distance + "，强度：" + size);
-                              s.morale.AddMorale(s,value * size,false);
-                              s.morale.EffectByMorale(s,ref s.strength);
-                              soldiersInCircleCount++;
-                        }
+                        if (distance > circleRadius)return;
+                        // 将距离映射到大小的范围
+                        float size = 1/distance;
+                        // Debug.Log("距离：" + distance + "，强度：" + size);
+                        s.morale.AddMorale(s,value * size,false);
+                        s.morale.EffectByMorale(s,ref s.strength);
+                        soldiersInCircleCount++;
+                        
                   }
                   // Debug.Log("在半径内的单位数量：" + soldiersInCircleCount);
             }
