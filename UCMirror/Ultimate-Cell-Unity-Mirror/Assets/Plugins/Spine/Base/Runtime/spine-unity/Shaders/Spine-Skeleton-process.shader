@@ -7,6 +7,10 @@ Shader "Spine/Skeleton-processing" {
 		_Alpha("Alpha", Range(0,1)) = 1.0
 		[PerRendererData]_Porcess("Porcess", Range(0,1)) = 0.0
 
+		[PerRendererData]_Foreshadow("Foreshadow", Range(0,1)) = 0.0
+		_ForeshadowWidth ("Foreshadow Width", Range(0.01, 1)) = 0.1
+        _ForeshadowFrequency ("Foreshadow Frequency", Range(1, 10)) = 5
+
 		_Cutoff ("Shadow alpha cutoff", Range(0,1)) = 0.1
 		[NoScaleOffset] _MainTex ("Main Texture", 2D) = "black" {}
 		
@@ -39,6 +43,7 @@ Shader "Spine/Skeleton-processing" {
 			Comp[_StencilComp]
 			Pass Keep
 		}
+		
 
 		Pass {
 			Name "Normal"
@@ -52,6 +57,9 @@ Shader "Spine/Skeleton-processing" {
 			#include "UnityCG.cginc"
 			#include "CGIncludes/Spine-Common.cginc"
 			sampler2D _MainTex;
+			fixed _Foreshadow;
+			fixed _ForeshadowWidth;
+			fixed _ForeshadowFrequency;
 			fixed _MaxPorcess;
 			fixed _MinPorcess;
 			fixed _Porcess;
@@ -70,6 +78,14 @@ Shader "Spine/Skeleton-processing" {
 				float2 uv : TEXCOORD0;
 				float4 vertexColor : COLOR;
 			};
+			// 计算条纹的透明度
+        	float CalculateStripeAlpha(float2 uv, float width, float frequency)
+        	{
+        	    float stripe = floor(uv.x * frequency);
+        	    float d = distance(uv.x * frequency,  stripe);
+        	    float alpha = step(width, d);
+        	    return saturate(alpha);
+        	}
 
 			VertexOutput vert (VertexInput v) {
 				VertexOutput o;
@@ -94,15 +110,13 @@ Shader "Spine/Skeleton-processing" {
 				float3 texNoColor = lerp( color , gray , 1.0 ) ;
 				texColor.rgb = lerp(texNoColor,texColor.rgb,objectYcolor);
 				texColor.rgb *= _Color;
+				float foreshadow = CalculateStripeAlpha(i.objectPos, _ForeshadowWidth * _Foreshadow, _ForeshadowFrequency);
+				texColor.rgb += texColor.a * _Foreshadow * foreshadow * 0.6f;
+				texColor.rgba *= foreshadow;
 				// 插值检查
 				//texColor.rgb = step(_MinPorcess,i.objectPos.y);
 				#if defined(_STRAIGHT_ALPHA_INPUT)
-				
 				texColor.rgb *= texColor.a *_Alpha ;
-
-				
-
-
 				#endif
 				
 				return (texColor * i.vertexColor);

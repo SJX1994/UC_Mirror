@@ -36,6 +36,14 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       // SkillCooldown skillCooldown;
       
       SoldierBehaviors self;
+      public SoldierBehaviors Self
+      {
+            get
+            {
+                  if(!self)TryGetComponent<SoldierBehaviors>(out self);
+                  return self;
+            }
+      }
       SoldierBehaviors next;
       bool counted = false;
       public bool collected = false;
@@ -62,6 +70,10 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       public bool preview = false;
       float extendDistance = 3f;
       SpriteRenderer selectionCircle;
+      Tween tween_SoldiersStartRelationFrom;
+      Tween tween_SoldiersUpdateRelationFrom;
+      Tween tween_SoldiersEndRelationTo;
+      Tween tween_ChainTransfering;
       
       void Start()
       {
@@ -70,7 +82,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             chainDamageTotal = 0;
             Invoke(nameof(Init), 0.1f);
       }
-      void AllSoldiers()
+      public void AllSoldiers()
       {
             soldiers = new List<SoldierBehaviors>(FindObjectsOfType<SoldierBehaviors>().ToList().Where(x=>CheckSoldier(x)));
       }
@@ -78,17 +90,17 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       {
             List<bool> condition = new();
             if(!soldierBehavior)return false;
-            if(!self)Init();
+            if(!Self)Init();
             if(soldierBehavior.UnitSimple.IsDeadOrNull(soldierBehavior.UnitSimple))return false;
             // 不包含培养皿中的砖块
             Transform p = soldierBehavior.UnitSimple.tetriUnitSimple.TetrisBlockSimple.transform.parent;
             if(p==null)return false;
             condition.Add(p);
-            if(p)condition.Add(p.TryGetComponent<BlocksCreator>(out BlocksCreator bc));
+            if(p)condition.Add(p.TryGetComponent<BlocksCreator_Main>(out BlocksCreator_Main bc));
             // 不包含不同类型的砖块
-            condition.Add(soldierBehavior.morale.soldierType == self.morale.soldierType);
+            condition.Add(soldierBehavior.morale.soldierType == Self.morale.soldierType);
             // 不包含不同玩家的砖块
-            condition.Add(soldierBehavior.UnitSimple.unitTemplate.player == self.UnitSimple.unitTemplate.player);
+            condition.Add(soldierBehavior.UnitSimple.unitTemplate.player == Self.UnitSimple.unitTemplate.player);
             // 不包含拖拽的临时砖块
             condition.Add(!soldierBehavior.UnitSimple.tetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp));
             bool allTrue = condition.All(b => b);
@@ -114,10 +126,10 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             this.preview = preview;
             // skillCooldown.NotActive();
             theFirst = true;
-            this.soldiers = GetSameTypeSoldier(self);
+            this.soldiers = GetSoldiersArranged(Self);
             foreach(var soldier in this.soldiers)
             {
-                  soldier.chainTransfer.bombIsMoving = true;
+                  soldier.ChainTransfer.bombIsMoving = true;
             }
             gloableSoldiers = new SoldierBehaviors[this.soldiers.Count];
             gloableIndex = 0;
@@ -129,21 +141,22 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             {
                   tempIndex += 1;
                   if(soldiers[i]==null) continue;
-                  if(soldiers[i].chainTransfer.theFirst == true)
+                  if(soldiers[i].ChainTransfer.theFirst == true)
                   {
-                        float tempDuration = soldiers[i].chainTransfer.duration;
-                        soldiers[i].chainTransfer.duration *= tempDuration/tempIndex;
-                        soldiers[i].chainTransfer.SoldiersEndRelation(soldiers[i+1],soldiers[i]);
+                        float tempDuration = soldiers[i].ChainTransfer.duration;
+                        soldiers[i].ChainTransfer.duration *= tempDuration/tempIndex;
+                        soldiers[i].ChainTransfer.SoldiersEndRelation(soldiers[i+1],soldiers[i]);
                   }else
                   {
-                        float tempDuration = soldiers[i].chainTransfer.duration;
-                        soldiers[i].chainTransfer.duration *= tempDuration/tempIndex;
-                        float modifyDuration = soldiers[i].chainTransfer.duration;
-                        soldiers[i].chainTransfer.SoldiersUpdateRelation(soldiers[i],soldiers[i-1]);
+                        float tempDuration = soldiers[i].ChainTransfer.duration;
+                        soldiers[i].ChainTransfer.duration *= tempDuration/tempIndex;
+                        float modifyDuration = soldiers[i].ChainTransfer.duration;
+                        soldiers[i].ChainTransfer.SoldiersUpdateRelation(soldiers[i],soldiers[i-1]);
                         // 在指定的间隔后继续执行下一次
                         yield return new WaitForSeconds(modifyDuration);
                         
                   }
+                  
                   
             }
             
@@ -154,31 +167,32 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             if(theFirst)
             {
                   gloableIndex = 0;
-                  gloableIndex+=1;
-                  gloableSoldiers[0] = self;
+                  gloableSoldiers[gloableIndex] = Self;
+                  gloableIndex += 1;
                   counted = true;
-                  next = self.chainTransfer.GetClosestSoldier();
+                  next = Self.ChainTransfer.GetClosestSoldier();
                   chainDamageTotal += chainDamage;
-                  SoldiersStartRelation(self,next);
-                  soldiers.Remove(self);
+                  SoldiersStartRelation(Self,next);
+                  soldiers.Remove(Self);
                   yield return new WaitForSeconds(duration);
             }
             foreach (var soldier in soldiers)
             {     
                   gloableSoldiers[gloableIndex] = soldier;
                   gloableIndex += 1;
-                  float tempDuration = soldier.chainTransfer.duration;
-                  soldier.chainTransfer.duration *= tempDuration/gloableIndex;
-                  float modifyDuration = soldier.chainTransfer.duration;
+                  float tempDuration = soldier.ChainTransfer.duration;
+                  soldier.ChainTransfer.duration *= tempDuration/gloableIndex;
+                  float modifyDuration = soldier.ChainTransfer.duration;
                   if(gloableIndex-1 == soldiers.Count)
                   {
-                       StartCoroutine(soldier.chainTransfer.LastChain(gloableSoldiers,gloableIndex));
+                       StartCoroutine(soldier.ChainTransfer.LastChain(gloableSoldiers,gloableIndex));
                        continue;
                   }
-                  soldier.chainTransfer.next = soldiers[gloableIndex-1];
-                  soldier.chainTransfer.SoldiersStartRelation(soldier,soldier.chainTransfer.next);
-                  soldier.chainTransfer.duration = tempDuration;
-                  chainDamageTotal += soldier.chainTransfer.chainDamage;
+                  soldier.ChainTransfer.next = soldiers[gloableIndex-1];
+                  soldier.ChainTransfer.SoldiersStartRelation(soldier,soldier.ChainTransfer.next);
+                  soldier.ChainTransfer.duration = tempDuration;
+                  chainDamageTotal += soldier.ChainTransfer.chainDamage;
+                  
                   // 在指定的间隔后继续执行下一次
                   // Debug.Log("modifyDuration"+modifyDuration);
                   yield return new WaitForSeconds(modifyDuration);
@@ -188,11 +202,23 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
 
             
       }
-   
+      public void ClearChainTransferBeforDie()
+      {
+            List<Tween> tweens = new List<Tween>();
+            tweens.Add(tween_SoldiersStartRelationFrom);
+            tweens.Add(tween_SoldiersUpdateRelationFrom);
+            tweens.Add(tween_SoldiersEndRelationTo);
+            tweens.Add(tween_ChainTransfering);
+            foreach(Tween tween in tweens)
+            {
+                  if(tween == null)continue;
+                  if(tween.IsPlaying())tween?.Kill();
+            }
+      }
       public void SoldiersStartRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             if(from == null || to == null) return;
-            to.chainTransfer.counted = true;
+            to.ChainTransfer.counted = true;
             Vector3 backPosition = from.transform.position;
             Vector3 targetPosition = to.transform.position;
 
@@ -210,40 +236,42 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             }
             
 
-            from.transform.DOMove(targetPosition, from.chainTransfer.duration/2).onComplete = () =>
+            tween_SoldiersStartRelationFrom = from.transform.DOMove(targetPosition, from.ChainTransfer.duration/2);
+            tween_SoldiersStartRelationFrom.onComplete = () =>
             {
-                  if(to.positiveEffect)to.positiveEffect.Play();
-                  // PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.Positive);
-                  // to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
-                  from.transform.DOLocalMove(Vector3.zero, from.chainTransfer.duration/2).onComplete = () =>
+                  
+                  if(to.PositiveEffect)to.PositiveEffect.Play();
+                  tween_SoldiersStartRelationFrom.Kill();
+                  tween_SoldiersStartRelationFrom = from.transform.DOLocalMove(Vector3.zero, from.ChainTransfer.duration/2);
+                  tween_SoldiersStartRelationFrom.onComplete = () =>
                   {  
                         transform.localPosition = Vector3.zero;
                         Invoke(nameof(ResetPos),0.5f);
+                        tween_SoldiersStartRelationFrom.Kill();
                   };
             };
             
       }
-      void ResetPos()
-      {
-            while(transform.localPosition != Vector3.zero)
-            {
-                  transform.localPosition = Vector3.zero;
-            }
-      }
+      
       public void SoldiersUpdateRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
+            
             if(from == null || to == null) return;
-            to.chainTransfer.counted = false;
+            to.ChainTransfer.counted = false;
             Vector3 backPosition = from.transform.position;
             Vector3 targetPosition = to.transform.position;
+            // Unit 增强
+            from.UnitSimple.Display_onChainBall();
+            to.UnitSimple.Display_onChainBall();
             
-            from.transform.DOMove(targetPosition, from.chainTransfer.duration/2).onComplete = () =>
+            tween_SoldiersUpdateRelationFrom = from.transform.DOMove(targetPosition, from.ChainTransfer.duration/2);
+            tween_SoldiersUpdateRelationFrom.onComplete = () =>
             {
                   
-                  to.positiveEffect.Play();
-                  // PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.Positive);
-                  // to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
-                  from.transform.DOLocalMove(Vector3.zero, from.chainTransfer.duration/2).onComplete = () =>
+                  to.PositiveEffect.Play();
+                  tween_SoldiersUpdateRelationFrom.Kill();
+                  tween_SoldiersUpdateRelationFrom = from.transform.DOLocalMove(Vector3.zero, from.ChainTransfer.duration/2);
+                  tween_SoldiersUpdateRelationFrom.onComplete = () =>
                   {  
                         // 允许状态机的移动
                         Invoke(nameof(ResetPos),0.5f);
@@ -255,6 +283,8 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                               // from.unitBase.ExecuteCommand(guard);
                               // from.unitBase.controled = false;
                         }
+                        from.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Move();
+                        tween_SoldiersUpdateRelationFrom.Kill();
                   };
             };
       }
@@ -282,7 +312,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             Vector3 targetPos = this.targetPosition;
             //大炮发射表现
             PuppetEffectDataStruct ped = new(PuppetEffectDataStruct.EffectType.ChainTransferTrail,targetPos,duration/2);
-            to.chainTransfer.OnPlayEffect?.Invoke(ped);
+            to.ChainTransfer.OnPlayEffect?.Invoke(ped);
             GameObject obj = new("TrailObject");
             TrailRenderer trail = obj.AddComponent<TrailRenderer>();
             trail.startColor = Color.red;
@@ -296,57 +326,67 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             obj.transform.position = transform.position;
             obj.SetActive(true);
             trail.GetComponent<Renderer>().enabled = needRender; // 是否需要渲染
-            to.chainTransfer.ChainTransfering(originDuration);
+            to.ChainTransfer.ChainTransfering(originDuration);
             float ortemp = originDuration;
             // 发射
-            to.transform.DOMove(targetPos,to.chainTransfer.duration/2).onComplete = () =>
+            tween_SoldiersEndRelationTo = to.transform.DOMove(targetPos,to.ChainTransfer.duration/2);
+            tween_SoldiersEndRelationTo.onComplete = () =>
             {
             obj.transform.position = targetPos;
-            // 使用DOTween.To方法来改变颜色
             Color targetColor = new(trail.endColor.r,trail.endColor.g,trail.endColor.b,0f);
             DOTween.To(() => trail.startColor, color => trail.startColor = color, targetColor, originDuration/2);
             DOTween.To(() => trail.endColor, color => trail.endColor = color, targetColor, originDuration/2);
             GameObject boonEffect = Instantiate(boonEffectPrefab.gameObject);
-            boonEffect.GetComponent<ParticleSystem>().GetComponent<Renderer>().enabled = needRender; // 是否需要渲染
+            boonEffect.GetComponent<ParticleSystem>().GetComponent<Renderer>().enabled = needRender; 
             boonEffect.transform.position = targetPos;
             boonEffect.GetComponent<ParticleSystem>().Play();
-            // PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.ChainTransferBoom,targetPos,ortemp);
-            // to.chainTransfer.OnPlayEffect?.Invoke(p); // 玩偶事件
             Destroy(obj,originDuration);
             Destroy(boonEffect,originDuration);
-            to.transform.DOMove(targetPos,to.chainTransfer.originDuration/2).onComplete = () =>
+            tween_SoldiersEndRelationTo.Kill();
+            tween_SoldiersEndRelationTo = to.transform.DOMove(targetPos,to.ChainTransfer.originDuration/2);
+            tween_SoldiersEndRelationTo.onComplete = () =>
             {
-            to.transform.DOLocalMove(Vector3.zero,to.chainTransfer.originDuration).onComplete = () =>
-            {   
-            //复原
-            Invoke(nameof(ResetPos),0.5f);
-            AllSoldiers();
-            foreach(SoldierBehaviors soldier in soldiers)
-            {
-                  
-                  if(!soldier)continue;
-                  soldier.chainTransfer.counted = false;
-                  soldier.chainTransfer.theFirst = false;
-                  soldier.chainTransfer.gloableIndex = 0;
-                  soldier.chainTransfer.duration = originDuration;
-                  soldier.chainTransfer.bombIsMoving = false;
-                  soldier.chainTransfer.preview = false;
-                  // 允许砖块移动
-                  soldier.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Move();
-                  // skillCooldown.NotActive(true);
-            }
-            // 公告
-            if(!mechanismInPut)return;
-            if(!mechanismInPut.warningSystem)return;
-            mechanismInPut.warningSystem.inText1 = (soldiers.Count+1).ToString();
-            mechanismInPut.warningSystem.inText2 = self.morale.soldierType.ToString();
-            mechanismInPut.warningSystem.inText3 = chainDamageTotal.ToString();
-            mechanismInPut.warningSystem.changeWarningTypes = WarningSystem.WarningType.ChainTransfer;
-            };
+                  tween_SoldiersEndRelationTo.Kill();
+                  tween_SoldiersEndRelationTo = to.transform.DOLocalMove(Vector3.zero,to.ChainTransfer.originDuration);
+                  tween_SoldiersEndRelationTo.onComplete = () =>
+                  {   
+                        //复原
+                        Invoke(nameof(ResetPos),0.5f);
+                        AllSoldiers();
+                        foreach(SoldierBehaviors soldier in soldiers)
+                        {
+                              
+                              if(!soldier)continue;
+                              soldier.ChainTransfer.counted = false;
+                              soldier.ChainTransfer.theFirst = false;
+                              soldier.ChainTransfer.gloableIndex = 0;
+                              soldier.ChainTransfer.duration = originDuration;
+                              soldier.ChainTransfer.bombIsMoving = false;
+                              soldier.ChainTransfer.preview = false;
+                              // 允许砖块移动
+                              soldier.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Move();
+                        }
+                        // 公告
+                        if(!mechanismInPut)return;
+                        if(!mechanismInPut.warningSystem)return;
+                        mechanismInPut.warningSystem.inText1 = (soldiers.Count+1).ToString();
+                        mechanismInPut.warningSystem.inText2 = Self.morale.soldierType.ToString();
+                        mechanismInPut.warningSystem.inText3 = chainDamageTotal.ToString();
+                        mechanismInPut.warningSystem.changeWarningTypes = WarningSystem.WarningType.ChainTransfer;
+                        tween_SoldiersEndRelationTo.Kill();
+                        self.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Move();
+                  };
             };
                   
             };
             
+      }
+      void ResetPos()
+      {
+            while(transform.localPosition != Vector3.zero)
+            {
+                  transform.localPosition = Vector3.zero;
+            }
       }
       void UnitBaseCollected(Unit u)
       {
@@ -361,25 +401,25 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             // capsuleCollider.enabled = chainTransfering;
             // 碰撞扣血
             capsuleCollider.radius = 3.9f;
-	      DOVirtual.DelayedCall(duration, () =>
+            // GameObject visableCapsuleCollider = VisableCapsuleCollider();
+            tween_ChainTransfering = DOVirtual.DelayedCall(duration, (TweenCallback)(() =>
             {
                   chainTransfering = false;
 	            // selectionCircle.gameObject.SetActive(chainTransfering);
                   // capsuleCollider.enabled = chainTransfering;
                   foreach(SoldierBehaviors ss in dealAttackSoldiers)
                   {
-                        if(!ss.chainTransfer.boonEffectPrefab)continue;     
-                        if(self.unitBase.IsDeadOrNull(ss.unitBase))continue;  
-                        GameObject boonEffect = Instantiate(ss.chainTransfer.boonEffectPrefab.gameObject);
+                        if(!ss.ChainTransfer.boonEffectPrefab)continue;     
+                        if(this.Self.unitBase.IsDeadOrNull(ss.unitBase))continue;
+                        GameObject boonEffect = Instantiate(ss.ChainTransfer.boonEffectPrefab.gameObject);
                         boonEffect.transform.position = ss.transform.position;
                         // ss.unitBase.SufferAttack(chainDamageTotal);
                         ss.unitBase.SufferAttackSimple(150);
-                        StartCoroutine(WaitParticleDestory(ss,boonEffect.GetComponent<ParticleSystem>()));
+                        StartCoroutine(WaitParticleDestory(ss, boonEffect.GetComponent<ParticleSystem>()));
                   }
-                  capsuleCollider.radius = colliderRadiusTemp;
-                  dealAttackSoldiers.Clear();
-
-            });
+                capsuleCollider.radius = colliderRadiusTemp;
+                dealAttackSoldiers.Clear();
+            }));
       }
       void OnTriggerEnter(Collider other)
       {
@@ -387,8 +427,9 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             // 判断进入碰撞的物体
             if (other.transform.TryGetComponent(out SoldierBehaviors soldierAttack))
             {
-                  if(self.unitBase.unitTemplate.GetOtherPlayerType() != soldierAttack.unitBase.unitTemplate.player)return;
+                  if(Self.unitBase.unitTemplate.GetOtherPlayerType() != soldierAttack.unitBase.unitTemplate.player)return;
                   if(soldierAttack.UnitSimple.tetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp))return;
+                  if(soldierAttack.UnitSimple.tetriUnitSimple.TetrisBlockSimple.transform.parent == null)return;
                   // 在此处编写碰撞逻辑
                   if(!dealAttackSoldiers.Contains(soldierAttack)) 
                   {
@@ -406,25 +447,22 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             {
                   yield return null;
             }
-
             // 执行你想要执行的操作
             Destroy(particleSystem.gameObject);
             
       }
       public SoldierBehaviors GetClosestSoldier()
       {
-            AllSoldiers();
-
             SoldierBehaviors closest = null;
             float closestDistanceSqr = Mathf.Infinity;
             Vector3 currentPosition = transform.position;
             
             foreach (SoldierBehaviors soldier in soldiers)
             {
-                  if(soldier.chainTransfer.collected) continue;
-                  if(soldier.chainTransfer.counted) continue;
-                  if(soldier == self) continue;
-                  if(soldier.morale.soldierType != self.morale.soldierType) continue;
+                  if(soldier.ChainTransfer.collected) continue;
+                  if(soldier.ChainTransfer.counted) continue;
+                  if(soldier == Self) continue;
+                  if(soldier.morale.soldierType != Self.morale.soldierType) continue;
 
                   Vector3 distanceToEnemy = soldier.transform.position - currentPosition;
                   float distanceSqrToEnemy = distanceToEnemy.sqrMagnitude;
@@ -438,76 +476,94 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
 
             return closest;
       }
-      public List<SoldierBehaviors> GetSameTypeSoldier()
+      public SoldierBehaviors GetClosestSoldier(List<SoldierBehaviors> soldiers)
       {
-            List<SoldierBehaviors> tempSoldiers = new();
+            SoldierBehaviors closest = null;
+            float closestDistanceSqr = Mathf.Infinity;
+            Vector3 currentPosition = transform.position;
             
-            foreach(SoldierBehaviors soldier in FindObjectsOfType<SoldierBehaviors>())
+            foreach (SoldierBehaviors soldier in soldiers)
             {
-                if(soldier.morale.soldierType != self.morale.soldierType) continue;
-            //     if(soldier.unitBase.unitTemplate.unitType == UnitTemplate.UnitType.Virus)continue;
-                if(soldier.UnitSimple.unitTemplate.player != self.UnitSimple.unitTemplate.player) continue;
-                tempSoldiers.Add(soldier);
-            }
+                  if(soldier.ChainTransfer.collected) continue;
+                  if(soldier.ChainTransfer.counted) continue;
+                  if(soldier == Self) continue;
+                  if(soldier.morale.soldierType != Self.morale.soldierType) continue;
 
-            List<SoldierBehaviors> tempS = new(tempSoldiers);
-            
-            foreach(SoldierBehaviors s in tempS)
-            {
-                  if(s.chainTransfer.collected == true || s.fourDirectionsLinks.forceBreakLink == true)
+                  Vector3 distanceToEnemy = soldier.transform.position - currentPosition;
+                  float distanceSqrToEnemy = distanceToEnemy.sqrMagnitude;
+
+                  if (distanceSqrToEnemy < closestDistanceSqr)
                   {
-                        tempSoldiers.Remove(s);
+                        closestDistanceSqr = distanceSqrToEnemy;
+                        closest = soldier;
                   }
             }
-            
-            return tempSoldiers;
+
+            return closest;
       }
-      List<SoldierBehaviors> GetSameTypeSoldier(SoldierBehaviors firstSoldier)
+      List<SoldierBehaviors> tempSoldiers = new();
+      List<SoldierBehaviors> GetSoldiersArranged(SoldierBehaviors firstSoldier)
       {
-            soldiers = GetSameTypeSoldier();
-            List<SoldierBehaviors> tempSoldiers = new List<SoldierBehaviors>();
+            FindSoliderRecursion(firstSoldier,soldiers);
+            tempSoldiers.ForEach(x=>x.ChainTransfer.counted = false);
+            var tempSoldiersReturn = tempSoldiers;
+            tempSoldiers = new();
+            return tempSoldiersReturn;
+      }
+      void FindSoliderRecursion(SoldierBehaviors next,List<SoldierBehaviors> soldiers)
+      {
+            SoldierBehaviors soldier = next.ChainTransfer.GetClosestSoldier(soldiers);
+            if(soldier == null)return;
+            if(!tempSoldiers.Contains(soldier))tempSoldiers.Add(soldier);
+            soldier.ChainTransfer.counted = true;
+            FindSoliderRecursion(soldier,soldiers);
+      }
+      // List<SoldierBehaviors> GetSoldiersArranged(SoldierBehaviors firstSoldier)
+      // {
+      //       // soldiers = GetSameTypeSoldier();
+      //       // AllSoldiers();
+      //       List<SoldierBehaviors> tempSoldiers = new List<SoldierBehaviors>();
 
-            firstSoldier.chainTransfer.counted = true;
-            tempSoldiers.Add(firstSoldier);
+      //       firstSoldier.chainTransfer.counted = true;
+      //       tempSoldiers.Add(firstSoldier);
 
-            SoldierBehaviors nextSoldier = null;
-
-            for(int i = 0; i < this.soldiers.Count-1; i++)
-            {
-                  if(nextSoldier == null)
-                  {
-                        nextSoldier = firstSoldier.chainTransfer.GetClosestSoldier();
-                        if(nextSoldier!=null)
-                        {
-                              nextSoldier.chainTransfer.counted = true;
-                              tempSoldiers.Add(nextSoldier);
-                        }
-                  }else
-                  {
-                        nextSoldier = nextSoldier.chainTransfer.GetClosestSoldier();
-                        if(nextSoldier!=null)
-                        {
-                              nextSoldier.chainTransfer.counted = true;
-                              tempSoldiers.Add(nextSoldier);
-                        }     
+      //       SoldierBehaviors nextSoldier = null;
+      //       for(int i = 0; i < this.soldiers.Count-1; i++)
+      //       {
+      //             if(nextSoldier == null)
+      //             {
+      //                   nextSoldier = firstSoldier.chainTransfer.GetClosestSoldier();
+      //                   if(nextSoldier!=null)
+      //                   {
+      //                         nextSoldier.chainTransfer.counted = true;
+      //                         tempSoldiers.Add(nextSoldier);
+      //                   }
+      //             }else
+      //             {
+      //                   nextSoldier = nextSoldier.chainTransfer.GetClosestSoldier();
+      //                   if(nextSoldier!=null)
+      //                   {
+      //                         nextSoldier.chainTransfer.counted = true;
+      //                         tempSoldiers.Add(nextSoldier);
+      //                   }     
                         
-                  }
+      //             }
                   
-            }
-            foreach(SoldierBehaviors s in tempSoldiers)
-            {
-                s.chainTransfer.counted = false;
-            }
+      //       }
+      //       foreach(SoldierBehaviors s in tempSoldiers)
+      //       {
+      //           s.chainTransfer.counted = false;
+      //       }
 
-            return tempSoldiers;
-      }
+      //       return tempSoldiers;
+      // }
       void Display_setSkine()
       {
             // if(!skillCooldown) skillCooldown = FindObjectOfType<SkillCooldown>();
             // if(!skillCooldownTimer) skillCooldownTimer = FindObjectOfType<SkillCooldownTimer>();
-            if(self.skinName!="")
+            if(Self.skinName!="")
             {
-                  switch(self.morale.soldierType)
+                  switch(Self.morale.soldierType)
                   {
                         case MoraleTemplate.SoldierType.Red:
                              boonMat = boonMats.Find(x=>x.name == "FourDirLinkEffect_red");
@@ -539,11 +595,10 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       }
       void Init()
       {
-            self = transform.GetComponent<SoldierBehaviors>();
-            if(self.unitBase!=null)
+            if(Self.unitBase!=null)
             {
-                  self.unitBase.OnStartCollect += UnitBaseCollected;
-                  self.unitBase.OnDie += UnitBaseCollected;
+                  Self.unitBase.OnStartCollect += UnitBaseCollected;
+                  Self.unitBase.OnDie += UnitBaseCollected;
             }
             // skillCooldownTimer = FindObjectOfType<SkillCooldownTimer>();
             next = null;
@@ -557,7 +612,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             bombIsMoving = false;
             preview = false;
             collected = false;
-            this.self.morale.soldierType =  transform.GetComponent<SoldierBehaviors>().morale.soldierType;
+            this.Self.morale.soldierType =  transform.GetComponent<SoldierBehaviors>().morale.soldierType;
             capsuleCollider = GetComponent<CapsuleCollider>();
             Invoke(nameof(Display_setSkine), 0.1f);
             // selectionCircle = self.unitBase.selectionCircle; 

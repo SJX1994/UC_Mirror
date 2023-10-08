@@ -249,7 +249,7 @@ public class ApplyDifferenceAttribute : MonoBehaviour
     void ApplyDifference(DifferenceAttributeTemplate diff)
     {
         baseUnit.flip = diff.flipSkeleton;
-        diff.skeletonRenderer = baseUnit.skeletonRenderer; 
+        diff.skeletonRenderer = baseUnit.SkeletonRenderer; 
         diff.SwitchToSkeletonData();
         baseUnit.animator.runtimeAnimatorController = diff.animatorController;
        

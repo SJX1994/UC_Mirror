@@ -26,6 +26,7 @@ public class MoraleTemplate : ScriptableObject{
       public float affectedRange;
       public Color affectedRangeColor;
       public bool isAffectedRangeVisible = true;
+      private float previousValue;
       // 每个单位自身的基础属性都要乘以这个系数
       public void EffectByMorale( SoldierBehaviors soldier,ref float value )
       {
@@ -34,48 +35,60 @@ public class MoraleTemplate : ScriptableObject{
       // 基于心理学的 自我赋能感
       public void AddMorale(SoldierBehaviors soldier, float value, bool source = false)
       {
-            if(soldier.morale.morale + value > soldier.morale.maxMorale)
-            {
-                  soldier.morale.morale = soldier.morale.maxMorale;
-                  return;
-            }
-            if(source)
-            {
-                  SoldierBehaviors[] soldiers = FindObjectsOfType<SoldierBehaviors>();
-                  Transform circleCenter = soldier.transform;
-                  float circleRadius = soldier.morale.affectedRange;
-                  int soldiersInCircleCount = 0;
-                  foreach (SoldierBehaviors s in soldiers)
-                  {
-                        if(s==soldier)continue;
-                        // 获取单位的坐标
-                        Vector3 sPosition = s.transform.position;
-
-                        // 计算单位与圆心的距离
-                        float distance = Vector3.Distance(sPosition, circleCenter.position);
-                        
-                        // 检查距离是否小于或等于圆的半径
-                        if (distance > circleRadius)return;
-                        // 将距离映射到大小的范围
-                        float size = 1/distance;
-                        // Debug.Log("距离：" + distance + "，强度：" + size);
-                        s.morale.AddMorale(s,value * size,false);
-                        s.morale.EffectByMorale(s,ref s.strength);
-                        soldiersInCircleCount++;
-                        
-                  }
-                  // Debug.Log("在半径内的单位数量：" + soldiersInCircleCount);
-            }
             soldier.morale.morale += value;
+            soldier.morale.morale = soldier.morale.morale>=soldier.morale.maxMorale?soldier.morale.maxMorale : soldier.morale.morale;
+            if(!source)return;
+            SoldierBehaviors[] soldiers = FindObjectsOfType<SoldierBehaviors>();
+            Transform circleCenter = soldier.transform;
+            float circleRadius = soldier.morale.affectedRange;
+            int soldiersInCircleCount = 0;
+            foreach (SoldierBehaviors s in soldiers)
+            {
+                  if(s==soldier)continue;
+                  // 获取单位的坐标
+                  Vector3 sPosition = s.transform.position;
+                  // 计算单位与圆心的距离
+                  float distance = Vector3.Distance(sPosition, circleCenter.position);
+                  // 检查距离是否小于或等于圆的半径
+                  if (distance > circleRadius)return;
+                  // 将距离映射到大小的范围
+                  float size = 1/distance;
+                  // Debug.Log("距离：" + distance + "，强度：" + size);
+                  s.morale.AddMorale(s,value * size,false);
+                  s.morale.EffectByMorale(s,ref s.strength);
+                  soldiersInCircleCount++;
+            }
+            // Debug.Log("在半径内的单位数量：" + soldiersInCircleCount);
+            
+            
             
       }
       public void ReduceMorale(SoldierBehaviors soldier, float value, bool source = false)
       {
-            
-            if(soldier.morale.morale>0.6f)
+            soldier.morale.morale -= value;
+            soldier.morale.morale = soldier.morale.morale <= soldier.morale.minMorale? soldier.morale.minMorale : soldier.morale.morale;
+            if(!source)return;
+            SoldierBehaviors[] soldiers = FindObjectsOfType<SoldierBehaviors>();
+            Transform circleCenter = soldier.transform;
+            float circleRadius = soldier.morale.affectedRange;
+            int soldiersInCircleCount = 0;
+            foreach (SoldierBehaviors s in soldiers)
             {
-                  soldier.morale.morale -= value;
+                  if(s==soldier)continue;
+                  // 获取单位的坐标
+                  Vector3 sPosition = s.transform.position;
+                  // 计算单位与圆心的距离
+                  float distance = Vector3.Distance(sPosition, circleCenter.position);
+                  // 检查距离是否小于或等于圆的半径
+                  if (distance > circleRadius)return;
+                  // 将距离映射到大小的范围
+                  float size = 1/distance;
+                  // Debug.Log("距离：" + distance + "，强度：" + size);
+                  s.morale.ReduceMorale(s,value * size,false);
+                  s.morale.EffectByMorale(s,ref s.strength);
+                  soldiersInCircleCount++;
             }
+            
             
       }
       public static void DrawMoraleRange(Vector3 center, float radius, Color color, float duration = 0)

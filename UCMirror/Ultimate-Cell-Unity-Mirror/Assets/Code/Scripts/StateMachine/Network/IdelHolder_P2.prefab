@@ -172,11 +172,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   idelTemplate: {fileID: 11400000, guid: fa927714fea9d7d4692f2828e085764a, type: 2}
-  IdelBtn: {fileID: 5359268593346658393}
   Idel: {fileID: 5359268594098800227}
   IdelWorldSpace: {fileID: 5359268593195270722}
-  ImageBlock: {fileID: 5359268594020305283}
-  blockText: {fileID: 5359268594882861640}
+  clickEvent: {fileID: 0}
   tetrominoes:
   - {fileID: 1415807295820550346, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: -523616940837414915, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
@@ -518,11 +516,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   idelTemplate: {fileID: 11400000, guid: fa927714fea9d7d4692f2828e085764a, type: 2}
-  IdelBtn: {fileID: 5359268593065913081}
   Idel: {fileID: 5359268593026689840}
   IdelWorldSpace: {fileID: 5359268593807892388}
-  ImageBlock: {fileID: 5359268594187614282}
-  blockText: {fileID: 5359268594559404959}
+  clickEvent: {fileID: 0}
   tetrominoes:
   - {fileID: 1415807295820550346, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: -523616940837414915, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
@@ -1280,11 +1276,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   idelTemplate: {fileID: 11400000, guid: fa927714fea9d7d4692f2828e085764a, type: 2}
-  IdelBtn: {fileID: 5359268593684497416}
   Idel: {fileID: 5359268593753105543}
   IdelWorldSpace: {fileID: 5359268593855211835}
-  ImageBlock: {fileID: 5359268592911720488}
-  blockText: {fileID: 5359268593502829370}
+  clickEvent: {fileID: 5359268593952499539}
   tetrominoes:
   - {fileID: 1415807295820550346, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: -523616940837414915, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}

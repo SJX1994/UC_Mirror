@@ -4,6 +4,15 @@ using UC_PlayerData;
 public class BlockPropsState : MonoBehaviour
 {
     public bool moveCollect;
+    private BlockObstacle blockObstacle;
+    public BlockObstacle BlockObstacle
+    {
+        get
+        {
+            if(!blockObstacle)blockObstacle = GetComponent<BlockObstacle>();
+            return blockObstacle;
+        }
+    }
     private BlockMoveDirection blockMoveDirection;
     public BlockMoveDirection BlockMoveDirection
     {

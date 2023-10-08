@@ -8,7 +8,7 @@ using Mirror;
 public class BuoyTurnHandle : NetworkBehaviour
 {
     BuoyInfo buoyInfo;
-    BlocksCreator blocksCreator;
+    BlocksCreator_Main blocksCreator;
     float zoomSpeed = 0.5f;
     float minValue = 1f;
     float maxValue = 5f;
@@ -82,7 +82,7 @@ public class BuoyTurnHandle : NetworkBehaviour
     }
     public void Active()
     {
-        blocksCreator = transform.parent.parent.GetComponent<BlocksCreator>();
+        blocksCreator = transform.parent.parent.GetComponent<BlocksCreator_Main>();
         actived = true;
         isWarningSystem = FindObjectOfType<WarningSystem>();
     }
@@ -343,9 +343,9 @@ public class BuoyTurnHandle : NetworkBehaviour
     void Warning(string showText,bool showWarning = true)
     {
         if(!isWarningSystem || !showWarning)return;
-        if(!MechanismInPut.Instance.warningSystem)return;
-        MechanismInPut.Instance.warningSystem.inText1 = showText;
-        MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuoyInfo;
+        // if(!MechanismInPut.Instance.warningSystem)return;
+        // MechanismInPut.Instance.warningSystem.inText1 = showText;
+        // MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuoyInfo;
         
     }
 }

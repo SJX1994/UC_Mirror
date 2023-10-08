@@ -83,7 +83,7 @@ const int MAX_CONTROL = 3;
 	{
 		for(int i = 0;i<MAX_CONTROL;i++)
 		{
-			RopeBridge rope = Instantiate<RopeBridge>(weakRope,skeletonRenderer.transform);
+			RopeBridge rope = Instantiate<RopeBridge>(weakRope,SkeletonRenderer.transform);
 			rope.gameObject.SetActive(false);
 			weakRopes.Add(rope);
 		}

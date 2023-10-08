@@ -51,7 +51,14 @@ public class BlockDisplay : MonoBehaviour
     Color _rendererTemp;
     List<SpriteRenderer> _rendererChilden = new();
     Color _rendererChildenTemp;
-
+    private BlockBuoyHandler blockBuoyHandler;
+    public BlockBuoyHandler BlockBuoyHandler{
+        get
+        {
+            if(!blockBuoyHandler)blockBuoyHandler = GetComponent<BlockBuoyHandler>();
+            return blockBuoyHandler;
+        }
+    }
     #endregion 数据对象
     #region 数据关系
     void Start()

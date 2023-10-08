@@ -30,7 +30,28 @@ public class SoldierBehaviors : MonoBehaviour
     public MoraleTemplate morale;
     // 强度
     public float strength = 1f;
+    public float Strength
+    {
+        get
+        {
+            return strength;
+        }
+        set
+        {
+            if(value == strength)return;
+            strength = value;
+            Debug.Log(unitBase.transform.name +  "+++ StrengthChanging +++" + strength);
+        }
+    }
     public GameObject strengthBar;
+    public GameObject StrengthBar
+    {
+        get
+        {
+            if(!strengthBar)strengthBar = transform.Find("Spine").Find("Strength").gameObject;
+            return strengthBar;
+        }
+    }
     [HideInInspector]
     public float maxStrength = 2f;
     [HideInInspector]
@@ -51,17 +72,53 @@ public class SoldierBehaviors : MonoBehaviour
     }
     [HideInInspector]
     public WeakAssociation weakAssociation;
+    public WeakAssociation WeakAssociation
+    {
+        get
+        {
+            if(!weakAssociation)weakAssociation = TryGetComponent(out WeakAssociation wa) ? wa : null;
+            return weakAssociation;
+        }
+    }
     [HideInInspector]
     public FourDirectionsLink fourDirectionsLinks;
+    public FourDirectionsLink FourDirectionsLinks{
+        get
+        {
+            if(!fourDirectionsLinks)fourDirectionsLinks = TryGetComponent(out FourDirectionsLink fdl) ? fdl : null;
+            return fourDirectionsLinks;
+        }
+    }
     [HideInInspector]
     public ChainTransfer chainTransfer;
-
+    public ChainTransfer ChainTransfer
+    {
+        get
+        {
+            if(!chainTransfer)chainTransfer = TryGetComponent(out ChainTransfer ct) ? ct : null;
+            return chainTransfer;
+        }
+    }
     [HideInInspector]
-    public ParticleSystem fourDirectionsLinkStartEffect = new(); 
-    [HideInInspector]
-    public ParticleSystem fourDirectionsLinkEndEffect = new(); 
+    public ParticleSystem negativeEffect = new(); 
+    public ParticleSystem NegativeEffect
+    {
+        get
+        {
+            if(!negativeEffect)negativeEffect=transform.Find("FourDirLinkBadEffect").GetComponent<ParticleSystem>();
+            return negativeEffect;
+        }
+    }
     [HideInInspector]
     public ParticleSystem positiveEffect = new();
+    public ParticleSystem PositiveEffect
+    {
+        get
+        {
+            if(!positiveEffect)positiveEffect=transform.Find("FourDirLinkGoodEffect").GetComponent<ParticleSystem>();
+            return positiveEffect;
+        }
+    }
     [HideInInspector]
     public Unit unitBase;
     private UnitSimple unitSimple;
@@ -72,6 +129,16 @@ public class SoldierBehaviors : MonoBehaviour
             if(unitSimple)return unitSimple;
             unitSimple = TryGetComponent(out UnitSimple unit) ? unit : null;
             return unitSimple;
+        }
+    }
+    private TetriMechanism tetriMechanism;
+    public TetriMechanism TetriMechanism
+    {
+        get
+        {
+            if(tetriMechanism)return tetriMechanism;
+            tetriMechanism = UnitSimple.tetriUnitSimple.TryGetComponent(out TetriMechanism tm) ? tm : null;
+            return tetriMechanism;
         }
     }
     [HideInInspector]
@@ -90,21 +157,12 @@ public class SoldierBehaviors : MonoBehaviour
         needRender = true;
         morale.baseminMorale =  morale.minMorale;
         morale.EffectByMorale(this,ref strength);
-        // 组件
-        weakAssociation = transform.GetComponent<WeakAssociation>();
-        fourDirectionsLinks = transform.GetComponent<FourDirectionsLink>();
-        chainTransfer = transform.GetComponent<ChainTransfer>();
-        // 资产
-        fourDirectionsLinkStartEffect = transform.Find("FourDirLinkGoodEffect").GetComponent<ParticleSystem>();
-        fourDirectionsLinkEndEffect = transform.Find("FourDirLinkBadEffect").GetComponent<ParticleSystem>();
-        positiveEffect = transform.Find("FourDirLinkGoodEffect").GetComponent<ParticleSystem>();
-        strengthBar = transform.Find("Spine").Find("Strength").gameObject;
         if(!needRender)
         {
-            fourDirectionsLinkStartEffect.GetComponent<Renderer>().enabled = false;
-            fourDirectionsLinkEndEffect.GetComponent<Renderer>().enabled = false;
-            positiveEffect.GetComponent<Renderer>().enabled = false;
-            strengthBar.GetComponent<SpriteRenderer>().enabled = false;
+            PositiveEffect.GetComponent<Renderer>().enabled = false;
+            NegativeEffect.GetComponent<Renderer>().enabled = false;
+            PositiveEffect.GetComponent<Renderer>().enabled = false;
+            StrengthBar.GetComponent<SpriteRenderer>().enabled = false;
         }
         // Unit
         skinName = "";
@@ -114,7 +172,7 @@ public class SoldierBehaviors : MonoBehaviour
         {
             unitBase.OnDie += OnEndCalculate;
             unitBase.OnCollect += OnEndCalculate;
-            skinName = unitBase.skeletonRenderer.Skeleton.Skin.Name;
+            skinName = unitBase.SkeletonRenderer.Skeleton.Skin.Name;
             switch(skinName)
             {
                 case "red":
@@ -148,35 +206,66 @@ public class SoldierBehaviors : MonoBehaviour
         // mechanismInPut.modeChangeAction += ModeChangedAction;
         
     }
-    void Update()
+    void LateUpdate()
     {
         // 士气
-        strengthBar.transform.localScale = Vector3.one * strength;
+        StrengthBar.transform.localScale = Vector3.one * strength;
         if(morale.morale<=morale.minMorale)return;
         morale.ReduceMorale(this,decreaseRate*Time.deltaTime , false);
         morale.EffectByMorale(this,ref strength);
     }
+    public void Behaviors_onObstacle()
+    {
+        morale.ReduceMorale(this, 0.5f, true);
+        morale.EffectByMorale(this,ref strength);
+        NegativeEffect.Play();
+    }
     public void Behaviors_OnFullRows()
     {
-        morale.AddMorale(this, 0.2f, true);
+        morale.AddMorale(this, 1.2f, false);
         morale.EffectByMorale(this,ref strength);
-        positiveEffect.Play();
+        PositiveEffect.Play();
+    }
+    public void Behaviors_WeakAssociation()
+    {
+        morale.AddMorale(this, 1.5f, false);
+        morale.EffectByMorale(this,ref strength);
+        PositiveEffect.Play();
     }
     public void Behaviors_ChainTransfer()
     {
         if(transform.GetComponent<UnitSimple>().unitTemplate.player == UC_PlayerData.Player.NotReady)return;
         if (!transform.TryGetComponent<ChainTransfer>(out ChainTransfer tempChainTransfer))return;
         FirstChainTransfer();
+        tempChainTransfer.AllSoldiers();
         if(!(tempChainTransfer.bombIsMoving == false && tempChainTransfer.CanDoChain()))return;
         tempChainTransfer.FirstChain(false);
+    }
+    public void Behaviors_onMoveDirectionChanger()
+    {
+        morale.AddMorale(this, 1.0f, true);
+        morale.EffectByMorale(this,ref strength);
+        PositiveEffect.Play();
+    }
+    public void Behaviors_onReachBottomLine()
+    {
+        morale.AddMorale(this, 10.0f, false);
+        morale.EffectByMorale(this,ref strength);
+        PositiveEffect.Play();
+    }
+    public void Behaviors_onLevelUp(int level)
+    {
+        morale.AddMorale(this, level * 0.5f, false);
+        morale.EffectByMorale(this,ref strength);
+        PositiveEffect.Play();
     }
 #endregion 数据关系
 #region 数据操作
     void FirstChainTransfer()
-    {
+    {   
         morale.AddMorale(this, 1.5f, true);
         morale.EffectByMorale(this,ref strength);
-        positiveEffect.Play();
+        PositiveEffect.Play();
     }
     public void DrawMoraleRange(LineRenderer lineRenderer)
     {
@@ -234,7 +323,7 @@ public class SoldierBehaviors : MonoBehaviour
         if(!unitBase)return;
         if(!unitBase.selectionCircle)return;
         unitBase.selectionCircle.gameObject.SetActive(false);
-        unitBase.skeletonRenderer.transform.localScale -= Vector3.one * 0.5f;
+        unitBase.SkeletonRenderer.transform.localScale -= Vector3.one * 0.5f;
     }
     private void OnMouseEnter()
     {
@@ -245,7 +334,7 @@ public class SoldierBehaviors : MonoBehaviour
     {
         if(!unitBase)return;
         // unitBase.selectionCircle.gameObject.SetActive(true);
-        unitBase.skeletonRenderer.transform.localScale += Vector3.one * 0.5f;
+        unitBase.SkeletonRenderer.transform.localScale += Vector3.one * 0.5f;
     }
     private void OnMouseDrag()
     {

@@ -21,6 +21,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _ForeshadowTex:
+        m_Texture: {fileID: 2800000, guid: 0aabd3e74c643b24fab3429183a86f83, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: d9043633149006e4ab9411a8c32d85a3, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -30,6 +34,9 @@ Material:
     - _Alpha: 1
     - _Amplitude: 1
     - _Cutoff: 0.1
+    - _Foreshadow: 0
+    - _ForeshadowFrequency: 6
+    - _ForeshadowWidth: 0.43
     - _MaxPorcess: 3.08
     - _MinPorcess: -0.5
     - _OutlineMipLevel: 0
@@ -44,5 +51,6 @@ Material:
     - _ThresholdEnd: 0.25
     - _Use8Neighbourhood: 1
     m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 1, g: 1, b: 0, a: 1}
   m_BuildTextureStacks: []

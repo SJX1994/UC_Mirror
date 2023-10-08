@@ -179,7 +179,7 @@ public class StateMachineManager : Singleton<StateMachineManager>
 
                 // Debug.Log("外尔信息接收成功 " + "UnitIndexId:" + info.UnitIndexId + "," + "NewTetris:" + info.CreateUnit + "," + "Pos:" + info.UnitPos);
                 // 根据 位置创建 单位
-                CreateVirusUnit(info);
+                // CreateVirusUnit(info);
             }
             else
             {
@@ -429,26 +429,26 @@ public class StateMachineManager : Singleton<StateMachineManager>
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
-    public Unit CreateVirusUnit(UnitInfoClass info)
-    {
-        // 生成单位
-        Unit virus = Instantiate(virusUnit, info.UnitPosUse, Quaternion.identity);
+    // public Unit CreateVirusUnit(UnitInfoClass info)
+    // {
+    //     // 生成单位
+    //     Unit virus = Instantiate(virusUnit, info.UnitPosUse, Quaternion.identity);
 
-        virus.skeletonRenderer.Skeleton.SetSkin(info.color.ToString());
-        Weapon weapon;
-        if (virus.skeletonRenderer.transform.TryGetComponent(out weapon))
-        {
-            weapon.SetWeapon(info.color);
-            weapon.OnChangeWeapon += CellWeaponChange;
-        }
+    //     virus.SkeletonRenderer.Skeleton.SetSkin(info.color.ToString());
+    //     Weapon weapon;
+    //     if (virus.SkeletonRenderer.transform.TryGetComponent(out weapon))
+    //     {
+    //         weapon.SetWeapon(info.color);
+    //         weapon.OnChangeWeapon += CellWeaponChange;
+    //     }
 
-        virus.id = info.UnitIndexId;
-        virus.OnDie += VirusDie;
-        virus.OnArrive += VirusArrive;
-        virusUnits.Add(info.UnitIndexId, virus);
+    //     virus.id = info.UnitIndexId;
+    //     virus.OnDie += VirusDie;
+    //     virus.OnArrive += VirusArrive;
+    //     virusUnits.Add(info.UnitIndexId, virus);
 
-        return virus;
-    }
+    //     return virus;
+    // }
 
     /// <summary>
     /// 生成外尔战士Boss
@@ -498,11 +498,11 @@ public class StateMachineManager : Singleton<StateMachineManager>
         }
         cell.level = info.UnitLevel;
 
-        cell.skeletonRenderer.Skeleton.SetSkin(info.color.ToString());
+        cell.SkeletonRenderer.Skeleton.SetSkin(info.color.ToString());
         Weapon weapon;
-        if (cell.skeletonRenderer.transform.TryGetComponent(out weapon))
+        if (cell.SkeletonRenderer.transform.TryGetComponent(out weapon))
         {
-            weapon.SetWeapon(info.color);
+            // weapon.SetWeapon(info.color);
             weapon.OnChangeWeapon += CellWeaponChange;
         }
 

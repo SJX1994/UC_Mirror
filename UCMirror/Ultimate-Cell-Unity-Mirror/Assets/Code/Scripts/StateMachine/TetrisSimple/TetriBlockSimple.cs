@@ -67,10 +67,7 @@ public class TetriBlockSimple : MonoBehaviour
     {
         get
         {
-            if(!tetriUnitSimple)
-            {
-                tetriUnitSimple = transform.GetComponent<TetriUnitSimple>();
-            }
+            if(!tetriUnitSimple)tetriUnitSimple = transform.GetComponent<TetriUnitSimple>();
             return tetriUnitSimple;
         }
         set
@@ -78,6 +75,7 @@ public class TetriBlockSimple : MonoBehaviour
             tetriUnitSimple = value;
         }
     }
+    public UnityAction<TetriBlockSimple> tetriStuckEvent;
     // Start is called before the first frame update
     void Awake()
     {
@@ -220,7 +218,7 @@ public class TetriBlockSimple : MonoBehaviour
     }
     public BlockTetriHandler NextBlock_X()
     {
-        BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
+        BlocksCreator_Main blocksCreator = tetrisBlockSimple.blocksCreator;
         var blockP1 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x + 1,PosId.y));
         var blockP2 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x - 1,PosId.y));
         if(player == UC_PlayerData.Player.Player1)
@@ -237,23 +235,16 @@ public class TetriBlockSimple : MonoBehaviour
     }
     public BlockTetriHandler NextBlock_Z(bool moveUp)
     {
-        BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
-        if(moveUp)
-        {
-            var blockP1 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y + 1));
-            if(!blockP1)return null;
-            return blockP1.GetComponent<BlockTetriHandler>();
-        }
-        else
-        {
-            var blockP2 = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y - 1));
-            if(!blockP2)return null;
-            return blockP2.GetComponent<BlockTetriHandler>();
-        }
+        BlocksCreator_Main blocksCreator = tetrisBlockSimple.blocksCreator;
+        BlockDisplay blockZ = null;
+        int checkDir = moveUp ? 1 : -1;
+        blockZ = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y+ checkDir));
+        if(!blockZ){tetriStuckEvent?.Invoke(this);return null;} // 卡住事件
+        return blockZ.GetComponent<BlockTetriHandler>();
     }
     public BlockTetriHandler CurrentBlock()
     {
-        BlocksCreator blocksCreator = tetrisBlockSimple.blocksCreator;
+        BlocksCreator_Main blocksCreator = tetrisBlockSimple.blocksCreator;
         BlockTetriHandler currentBlock = blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y)).GetComponent<BlockTetriHandler>();
         return currentBlock;
     }

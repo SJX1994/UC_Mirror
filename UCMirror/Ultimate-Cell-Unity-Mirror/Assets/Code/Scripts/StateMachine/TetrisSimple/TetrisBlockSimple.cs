@@ -46,7 +46,15 @@ public class TetrisBlockSimple : NetworkBehaviour
     public List<TetriBlockSimple> pioneerTetris;
     public List<TetriBlockSimple> childTetris;
     public UnityAction OnTetrisMoveing;
-    public BlocksCreator blocksCreator;
+    public BlocksCreator_Main blocksCreator;
+    public BlocksCreator_Main BlocksCreator
+    {
+        get
+        {
+            if(!blocksCreator)blocksCreator = FindObjectOfType<BlocksCreator_Main>();
+            return blocksCreator;
+        }
+    }
     public Dictionary<TetriBlockSimple,BlockTetriHandler> TB_cache = new();
     public UnityAction<Dictionary<TetriBuoySimple,BlockBuoyHandler>> OnCacheUpdateForBuoyMarkers;
     public UnityAction OnUpdatDisplay;
@@ -136,7 +144,7 @@ public class TetrisBlockSimple : NetworkBehaviour
        color = transform.GetChild(0).GetComponent<SpriteRenderer>().color;
        color = new Color(color.r,color.g,color.b,1f);
        onTheBlocksCreator = false;
-       blocksCreator = FindObjectOfType<BlocksCreator>();
+       blocksCreator = FindObjectOfType<BlocksCreator_Main>();
     }
     void Start()
     {
@@ -159,7 +167,7 @@ public class TetrisBlockSimple : NetworkBehaviour
        color = transform.GetChild(0).GetComponent<SpriteRenderer>().color;
        color = new Color(color.r,color.g,color.b,1f);
        onTheBlocksCreator = false;
-       blocksCreator = FindObjectOfType<BlocksCreator>();
+       blocksCreator = FindObjectOfType<BlocksCreator_Main>();
        foreach (Transform child in transform)
        {
            childTetris.Add(child.GetComponent<TetriBlockSimple>());
@@ -179,7 +187,7 @@ public class TetrisBlockSimple : NetworkBehaviour
         Stop_X();
         Stop_Z();
         if(!transform.parent)return false;
-        blocksCreator = transform.parent.GetComponent<BlocksCreator>();
+        blocksCreator = transform.parent.GetComponent<BlocksCreator_Main>();
         foreach (TetriBlockSimple child in childTetris)
         {
             if(child == null)continue;
@@ -196,7 +204,7 @@ public class TetrisBlockSimple : NetworkBehaviour
     {
         
         if(!transform.parent)return false;
-        blocksCreator = transform.parent.GetComponent<BlocksCreator>();
+        blocksCreator = transform.parent.GetComponent<BlocksCreator_Main>();
         foreach (TetriBlockSimple child in childTetris)
         {
             if(child == null)continue;
@@ -214,7 +222,7 @@ public class TetrisBlockSimple : NetworkBehaviour
     public bool Active_Z()
     {
         if(!transform.parent)return false;
-        blocksCreator = transform.parent.GetComponent<BlocksCreator>();
+        blocksCreator = transform.parent.GetComponent<BlocksCreator_Main>();
         foreach (TetriBlockSimple child in childTetris)
         {
             if(child == null)continue;
@@ -400,6 +408,7 @@ public class TetrisBlockSimple : NetworkBehaviour
     }
     public void Move()
     {
+        if(IsMoving())return;
         Move_X();
     }
     public void Move_X()
@@ -432,6 +441,7 @@ public class TetrisBlockSimple : NetworkBehaviour
         posId = new Vector2(transform.localPosition.x,transform.localPosition.z);
         OnTetrisMoveing?.Invoke();
         EvaluateCollision();
+        
     }
     void MoveActive_Z()
     {
@@ -447,6 +457,11 @@ public class TetrisBlockSimple : NetworkBehaviour
         posId = new Vector2(transform.localPosition.x,transform.localPosition.z);
         OnTetrisMoveing?.Invoke();
         EvaluateCollision();
+        
+    }
+    public bool IsMoving()
+    {
+        return IsInvoking(nameof(MoveActive_X)) || IsInvoking(nameof(MoveActive_Z));
     }
     public void Rotate(Vector3 axis)
     {
@@ -552,12 +567,9 @@ public class TetrisBlockSimple : NetworkBehaviour
     /// </summary>
     public void Display_AfterCreate()
     {
-        // 使用 DOTween.Sequence 创建一个序列
         sequence = DOTween.Sequence();
-        // 在序列中添加需要执行的动画
         sequence.Append(transform.DOLocalMoveY(0.2f, occupyingTime/4).SetEase(Ease.Linear));
         sequence.Append(transform.DOLocalMoveY(0f, occupyingTime/4).SetEase(Ease.Linear));
-        // 设置循环模式为 PingPong
         sequence.SetLoops(-1, LoopType.Yoyo);
     }
     public bool OnBuoyDrop()
@@ -608,7 +620,7 @@ public class TetrisBlockSimple : NetworkBehaviour
     public void GoOnTheBlocksCreator(bool oldValue,bool newValue)
     {
         if(Local())return;
-        if(!blocksCreator){blocksCreator = FindObjectOfType<BlocksCreator>();}
+        if(!blocksCreator){blocksCreator = FindObjectOfType<BlocksCreator_Main>();}
         if(newValue)
         {
             transform.parent = blocksCreator.transform;

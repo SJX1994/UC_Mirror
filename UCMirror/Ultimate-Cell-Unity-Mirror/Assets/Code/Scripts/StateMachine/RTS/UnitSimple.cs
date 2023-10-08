@@ -6,12 +6,41 @@ public class UnitSimple : Unit
 {
 # region 数据对象
     public float durationRunning = 1f;
+    public float DurationRunning
+    {
+        get
+        {
+            if(!tetriUnitSimple.TetrisBlockSimple)return 0f;
+            if(durationRunning!=tetriUnitSimple.TetrisBlockSimple.occupyingTime)durationRunning = tetriUnitSimple.TetrisBlockSimple.occupyingTime;
+            return durationRunning;
+        }
+        set
+        {
+            durationRunning = value;
+        }
+    }
     public Material mat;
     public TetriUnitSimple tetriUnitSimple;
     float runningSpeed = 3f;
+    public float RunningSpeed
+    {
+        get
+        {
+            if(!tetriUnitSimple.TetrisBlockSimple)return 0f;
+            if(runningSpeed!=tetriUnitSimple.TetrisBlockSimple.occupyingTime)runningSpeed = 1/tetriUnitSimple.TetrisBlockSimple.occupyingTime;
+            return runningSpeed;
+        }
+    }
     float runningValue = 0f;
     float runningDelay = 1.0f;
-    Tween runningTween;
+    float RunningDelay
+    {
+        get
+        {
+            return runningDelay;
+        }
+    }
+    public Tween runningTween;
     // 机制相关
     SoldierBehaviors soldier;
     public SoldierBehaviors Soldier
@@ -22,6 +51,13 @@ public class UnitSimple : Unit
             return soldier;
         }
     }
+    public Vector2 PosId
+    {
+        get
+        {
+            return tetriUnitSimple.PosId;
+        }
+    }
     // 可视化
     Vector3 startPoint;
     Vector3 endPoint;
@@ -30,7 +66,17 @@ public class UnitSimple : Unit
     ParticlesController bloodEffectLoad;
     ParticlesController bloodEffect;
     Color bloodColor = Color.clear;
-    
+    Vector3 localScale;
+    Vector3 LocalScale
+    {
+        get
+        {
+            return localScale;
+        }
+    }
+    float originalScaleweapon;
+    int originalAttackPower;
+    int originalHealth;
 # endregion 数据对象
 # region 数据关系
     public override void Awake()
@@ -41,9 +87,13 @@ public class UnitSimple : Unit
         base.Start();
         lineRenderer = GetComponent<LineRenderer>();
         soldier = GetComponent<SoldierBehaviors>();
-        if(!soldier.weakAssociation)soldier.Start();
-        soldier.weakAssociation.WeakAssociationActive += BlocksMechanismDoing;
+        if(!soldier.WeakAssociation)soldier.Start();
+        soldier.WeakAssociation.weakAssociationActive += BlocksMechanismDoing;
+        originalScaleweapon = Weapon.WeaponTemplate.scale_weapon;
+        originalAttackPower = Weapon.WeaponTemplate.attackPowerBonus;
+        originalHealth = Weapon.WeaponTemplate.healthBonus;
         DifferentPlayerInit();
+        ShaderInit();
     }
     public override void Update()
     {
@@ -52,8 +102,69 @@ public class UnitSimple : Unit
         endPoint = targetOfAttack ? targetOfAttack.transform.position : startPoint;
         Attack(targetOfAttack);
     }
+    // blocks 机制行为表现
+    public void BlocksMechanismDoing(BlocksData.BlocksMechanismType MechNeedUnit)
+    {
+        switch(MechNeedUnit)
+        {
+            case BlocksData.BlocksMechanismType.WeakAssociation:
+                Display_onWeakAssociation();
+            break;
+            case BlocksData.BlocksMechanismType.FullRows:
+                Display_onFullRows();
+            break;
+            case BlocksData.BlocksMechanismType.ReachBottomLine:
+                Display_onReachBottomLine();
+            break;
+            case BlocksData.BlocksMechanismType.ReachBottomLineGain:
+                Display_onReachBottomLineGain();
+            break;
+        }
+    }
+    // 道具收集初始化
+    public PropsData.PropsState InitPropDoing()
+    {
+        PropsData.PropsState propState = tetriUnitSimple.Ray_PorpCollect();
+        switch(propState)
+        {
+            case PropsData.PropsState.ChainBall:
+                Display_onChainBall();
+            break;
+            case PropsData.PropsState.MoveDirectionChanger:
+                Display_onMoveDirectionChanger();
+            break;
+        }
+        OnTetrisMoveing();
+        return propState;
+    }
+    // 道具行为表现
+    void PropDoing()
+    {
+        PropsData.PropsState propState = tetriUnitSimple.Ray_PorpCollect();
+        if(propState == PropsData.PropsState.None)return;
+        switch(propState)
+        {
+            case PropsData.PropsState.ChainBall:
+                Display_onChainBall();
+            break;
+            case PropsData.PropsState.MoveDirectionChanger:
+                Display_onMoveDirectionChanger();
+            break;
+            case PropsData.PropsState.Obstacle:
+                Display_onObstacle();
+            break;
+        }
+    }
+    
 # endregion 数据关系
 # region 数据操作
+   
+    // 着色器初始化
+    void ShaderInit()
+    {
+        localScale = transform.localScale;
+        UpdateMatForeshadow(0);
+    }
     // 玩家差异
     public void DifferentPlayerInit()
     {
@@ -90,7 +201,8 @@ public class UnitSimple : Unit
         lineRenderer.startColor = lineRendererColor;
         lineRenderer.endColor = lineRendererColor;
         lineRenderer.endWidth = 0.0f;
-        soldier.strengthBar.GetComponent<SpriteRenderer>().color = moraleColor;
+        moraleColor.a = 0.666f;
+        soldier.StrengthBar.GetComponent<SpriteRenderer>().color = moraleColor;
         if(!bloodEffectLoad)bloodEffectLoad = Resources.Load<ParticlesController>("Effect/BeenAttackBlood");
         OnBeenAttacked += OnBeenAttackedBlood;
     }
@@ -143,80 +255,108 @@ public class UnitSimple : Unit
     {
         ResetRotationRot();
     }
+    // 移动监听
     public void OnTetrisMoveing()
     {
         PropDoing();
         DrawLine();
         ResetRotation();
     }
-    public PropsData.PropsState InitPropDoing()
+    // 被玩家从培养皿
+    // 夹起的表现
+    public void Display_OnBeginDragDisplay()
     {
-        PropsData.PropsState propState = tetriUnitSimple.Ray_PorpCollect();
-        switch(propState)
-        {
-            case PropsData.PropsState.ChainBall:
-                // 链式传递
-                Soldier.Behaviors_ChainTransfer();
-                // 首个砖块获得加成
-                animator.SetTrigger("DoWin");
-                SufferAddHealthSimple((int)maxHealth);
-            break;
-            case PropsData.PropsState.MoveDirectionChanger:
-                // 移动方向改变
-                tetriUnitSimple.TetrisBlockSimple.MoveUp = tetriUnitSimple.MoveDirectionCatch == PropsData.MoveDirection.Up ? true : false;
-                tetriUnitSimple.MoveDirectionCatch=PropsData.MoveDirection.NotReady;
-                // 首个砖块获得加成
-                animator.SetTrigger("DoWin");
-            break;
-        }
-        OnTetrisMoveing();
-        return propState;
+        UpdateMatForeshadow(1);
+        transform.localScale = LocalScale + Vector3.one * 0.15f;
     }
-    // blocks 机制行为表现
-    public void BlocksMechanismDoing(BlocksData.BlocksMechanismType MechNeedUnit)
+    // 放下的表现
+    public void Display_OnEndDragDisplay()
     {
-        switch(MechNeedUnit)
-        {
-            case BlocksData.BlocksMechanismType.WeakAssociation:
-                animator.SetTrigger("DoWin");
-                SufferAddHealthSimple((int)maxHealth);
-            break;
-            case BlocksData.BlocksMechanismType.FullRows:
-                Display_onFullRows();
-            break;
-        }
+        UpdateMatForeshadow(0);
+        transform.localScale = LocalScale;
     }
-    // 道具行为
-    void PropDoing()
+    // 当砖块Z向移动到顶后的表现
+    public void Display_OnTetriStuck(TetriBlockSimple tetriBlock)
     {
-        PropsData.PropsState propState = tetriUnitSimple.Ray_PorpCollect();
-        if(propState == PropsData.PropsState.None)return;
-        switch(propState)
-        {
-            case PropsData.PropsState.ChainBall:
-                // 链式传递
-                Soldier.Behaviors_ChainTransfer();
-                // 首个砖块获得加成
-                animator.SetTrigger("DoWin");
-                SufferAddHealthSimple((int)maxHealth);
-            break;
-            case PropsData.PropsState.MoveDirectionChanger:
-                // 移动方向改变
-                tetriUnitSimple.TetrisBlockSimple.MoveUp = tetriUnitSimple.MoveDirectionCatch == PropsData.MoveDirection.Up ? true : false;
-                tetriUnitSimple.MoveDirectionCatch=PropsData.MoveDirection.NotReady;
-                // 首个砖块获得加成
-                animator.SetTrigger("DoWin");
-            break;
-        }
+        Display_AllWin(tetriBlock);
+    }
+    // 抵达对方底线后的表现
+    void Display_onReachBottomLine()
+    {
+        tetriUnitSimple.TetrisSpeedNormal();
+        Display_AllWin(tetriUnitSimple.TetriBlock);
+        Soldier.Behaviors_onReachBottomLine();
+        SufferAddHealthSimple((int)maxHealth);
+        SkeletonRenderer.transform.DOScale(Vector3.one * 1.2f, tetriUnitSimple.TetrisBlockSimple.occupyingTime).SetEase(Ease.OutExpo).onComplete = () => {
+            tetriUnitSimple.TetrisUnitSimple.KillAllUnits();
+        };
+    }
+    void Display_onReachBottomLineGain()
+    {
+        Display_AllWin(tetriUnitSimple.TetriBlock);
+        
+        // 整组增强
+        tetriUnitSimple.TetrisBlockSimple.childTetris.ForEach((tetri) => {
+            tetri.TetriUnitSimple.PlayBlockEffect();
+            tetri.TetriUnitSimple.haveUnit.Soldier.Behaviors_onReachBottomLine();
+            tetri.TetriUnitSimple.haveUnit.SufferAddHealthSimple((int)maxHealth);
+        });
+    }
+    // 障碍物表现
+    void Display_onObstacle()
+    {
+        tetriUnitSimple.PlayBlockEffect();
+        tetriUnitSimple.TetrisSpeedDown(1.5f);
+        SufferAttackSimple((int)currentHP/2);
+        Soldier.Behaviors_onObstacle();
+    }
+    // 移动方向改变
+    void Display_onMoveDirectionChanger()
+    {
+        // 整组播放特效
+        tetriUnitSimple.TetrisBlockSimple.childTetris.ForEach((tetri) => {
+            tetri.TetriUnitSimple.PlayBlockEffect();
+        });
+        // 移动方向改变
+        tetriUnitSimple.TetrisBlockSimple.MoveUp = tetriUnitSimple.MoveDirectionCatch == PropsData.MoveDirection.Up ? true : false;
+        tetriUnitSimple.MoveDirectionCatch=PropsData.MoveDirection.NotReady;
+        // 首个砖块获得加成
+        Soldier.Behaviors_onMoveDirectionChanger();
+        animator.SetTrigger("DoWin");
+        SufferAddHealthSimple((int)maxHealth);
+        unitTemplate.attackSpeed *= soldier.strength;
+    }
+    // 链式传递表现
+    public void Display_onChainBall()
+    {
+        // 链式传递
+        Soldier.Behaviors_ChainTransfer();
+        // 首个砖块获得加成
+        animator.SetTrigger("DoWin");
+        tetriUnitSimple.PlayBlockEffect();
+        SufferAddHealthSimple((int)maxHealth);
     }
     // 满行增强士气
     void Display_onFullRows()
     {
-        ResetRotation();    
+        ResetRotation();
+        tetriUnitSimple.PlayBlockEffect();
         runningValue = 0f;
         animator.SetFloat("Speed", 0f);
         animator.SetTrigger("DoWin");
-        soldier.Behaviors_OnFullRows();
+        Soldier.Behaviors_OnFullRows();
+        SufferAddHealthSimple((int)maxHealth);
+        unitTemplate.attackSpeed *= soldier.strength;
+        if(runningTween != null)runningTween.Kill();
+    }
+    // 弱势关联表现
+    void Display_onWeakAssociation()
+    {
+        ResetRotation();
+        tetriUnitSimple.PlayBlockEffect();
+        animator.SetFloat("Speed", 0f);
+        animator.SetTrigger("DoWin");
+        Soldier.Behaviors_WeakAssociation();
         SufferAddHealthSimple((int)maxHealth);
         unitTemplate.attackSpeed *= soldier.strength;
         if(runningTween != null)runningTween.Kill();
@@ -229,12 +369,12 @@ public class UnitSimple : Unit
         runningValue = 0f;
         animator.SetFloat("Speed", 0f);
         if(runningTween != null)runningTween.Kill();
-        DOVirtual.DelayedCall(runningDelay, Display_delayCallRunning);
+        DOVirtual.DelayedCall(RunningDelay, Display_delayCallRunning);
     }
     void Display_delayCallRunning()
     {
-        float endValue = runningSpeed;
-        float duration = durationRunning - runningDelay;
+        float endValue = RunningSpeed;
+        float duration = DurationRunning - RunningDelay;
         if(!animator){runningTween.Kill(); return;}
         runningTween = DOVirtual.Float(0, animator.speed + endValue, duration, (float value) =>
         {
@@ -251,6 +391,16 @@ public class UnitSimple : Unit
             animator.SetFloat("Speed", 0f);
             ResetRotation();
         };
+    }
+    // 全体庆祝
+    void Display_AllWin(TetriBlockSimple tetriBlock)
+    {
+        foreach(var display in tetriBlock.tetrisBlockSimple.childTetris)
+        {
+            if(!display)continue;
+            if(!display.GetComponent<TetriUnitSimple>().haveUnit)continue;
+            display.GetComponent<TetriUnitSimple>().haveUnit.animator.SetTrigger("DoWin");
+        }
     }
     // 朝向
     public void SetFlip()
@@ -278,6 +428,15 @@ public class UnitSimple : Unit
         Quaternion rotationToCamera = Quaternion.LookRotation(directionToCamera);
         transform.rotation = rotationToCamera;
     }
-    
+    // 升级表现
+    public void LevelUpDisplay(int level,float growth = 0.21f)
+    {   
+        Weapon.WeaponTemplate.scale_weapon = originalScaleweapon + growth * level;
+        Weapon.ResetWeaponDispaly();
+        Weapon.WeaponTemplate.attackPowerBonus = originalAttackPower + level;
+        Weapon.WeaponTemplate.healthBonus = originalHealth + level * 2;
+        animator.SetTrigger("DoWin");
+        Soldier.Behaviors_onLevelUp(level);
+    }
 # endregion 数据操作
 }

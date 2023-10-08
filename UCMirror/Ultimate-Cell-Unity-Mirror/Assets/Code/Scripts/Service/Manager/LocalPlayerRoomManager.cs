@@ -56,7 +56,7 @@ public class LocalPlayerRoomManager : MonoBehaviour
         tetris.BlockSetLocal(blocksDic);
 
         // 本地新建Unit
-        unitManager.CreateNewUnit(blocksDic);
+        // unitManager.CreateNewUnit(blocksDic);
     }
 
     /// <summary>

@@ -12,7 +12,7 @@ public class G2C_UnitInfoManager : MonoBehaviour
     public Unit cellUnit;*/
 
     // Unit ID 管理
-    private int UnitId = 1000;
+    // private int UnitId = 1000;
 
     // Unit信息整体管理
     private Dictionary<int, UnitInfoClass> unitInfoState = new();
@@ -71,74 +71,74 @@ public class G2C_UnitInfoManager : MonoBehaviour
     /// </summary>
     /// <param name="info"></param>
     /// <param name="blocks"></param>
-    public void CreateNewUnit(Dictionary<int, TetrisClass> blocks)
-    {
-        // 将传输数据转化为 UnitInfoClass
-        var UnitInfoList = ChangeTetrisIntoUnitInfo(blocks, true);
+    // public void CreateNewUnit(Dictionary<int, TetrisClass> blocks)
+    // {
+    //     // 将传输数据转化为 UnitInfoClass
+    //     var UnitInfoList = ChangeTetrisIntoUnitInfo(blocks, true);
 
-        foreach (UnitInfoClass info in UnitInfoList)
-        {
-            if (info.UnitIndexId > 0)
-            {
-                CreateCellUnit(info);
-            }
-            else
-            {
-                CreateVirusUnit(info);
-            }
-        }
-    }
+    //     foreach (UnitInfoClass info in UnitInfoList)
+    //     {
+    //         if (info.UnitIndexId > 0)
+    //         {
+    //             CreateCellUnit(info);
+    //         }
+    //         else
+    //         {
+    //             CreateVirusUnit(info);
+    //         }
+    //     }
+    // }
 
     /// <summary>
     /// 新建玩家一 Unit数据
     /// </summary>
-    private void CreateCellUnit(UnitInfoClass info)
-    {
-        if (!unitInfoState.ContainsKey(info.UnitIndexId))
-        {
-            // 根据 位置创建 单位
-            var unit = stateManager.CreateCellUnit(info);
+    // private void CreateCellUnit(UnitInfoClass info)
+    // {
+    //     if (!unitInfoState.ContainsKey(info.UnitIndexId))
+    //     {
+    //         // 根据 位置创建 单位
+    //         var unit = stateManager.CreateCellUnit(info);
 
-            playerOneUnit.Add(info.UnitIndexId, unit);
+    //         playerOneUnit.Add(info.UnitIndexId, unit);
 
-            unitInfoState.Add(info.UnitIndexId, info);
+    //         unitInfoState.Add(info.UnitIndexId, info);
 
-            if (CommunicationManager.ServerState == 1)
-            {
-                playerRoom.G2C_SendPuppetCreateInfo(info.UnitIndexId);
+    //         if (CommunicationManager.ServerState == 1)
+    //         {
+    //             playerRoom.G2C_SendPuppetCreateInfo(info.UnitIndexId);
 
-                var puppetListener = unit.GetComponent<PuppetLineServerListener>();
+    //             var puppetListener = unit.GetComponent<PuppetLineServerListener>();
 
-                puppetListener.unitInfoManager = this;
-            }
-        }
-    }
+    //             puppetListener.unitInfoManager = this;
+    //         }
+    //     }
+    // }
 
     /// <summary>
     /// 新建玩家二 Unit数据
     /// </summary>
-    private void CreateVirusUnit(UnitInfoClass info)
-    {
-        if (!unitInfoState.ContainsKey(info.UnitIndexId))
-        {
-            // 根据 位置创建 单位
-            var unit = stateManager.CreateVirusUnit(info);
+    // private void CreateVirusUnit(UnitInfoClass info)
+    // {
+    //     if (!unitInfoState.ContainsKey(info.UnitIndexId))
+    //     {
+    //         // 根据 位置创建 单位
+    //         var unit = stateManager.CreateVirusUnit(info);
 
-            playerTwoUnit.Add(info.UnitIndexId, unit);
+    //         playerTwoUnit.Add(info.UnitIndexId, unit);
 
-            unitInfoState.Add(info.UnitIndexId, info);
+    //         unitInfoState.Add(info.UnitIndexId, info);
 
-            if (CommunicationManager.ServerState == 1)
-            {
-                playerRoom.G2C_SendPuppetCreateInfo(info.UnitIndexId);
+    //         if (CommunicationManager.ServerState == 1)
+    //         {
+    //             playerRoom.G2C_SendPuppetCreateInfo(info.UnitIndexId);
 
-                var puppetListener = unit.GetComponent<PuppetLineServerListener>();
+    //             var puppetListener = unit.GetComponent<PuppetLineServerListener>();
 
-                puppetListener.unitInfoManager = this;
-            }
+    //             puppetListener.unitInfoManager = this;
+    //         }
 
-        }
-    }
+    //     }
+    // }
 
     /// <summary>
     /// 更新Unit信息

@@ -12,18 +12,53 @@ public class TetriUnitSimple : MonoBehaviour
     public TetriUnitTemplate tetriUnitTemplate;
     public UnitSimple haveUnit;
     UnitSimple loadUnit;
+    public Vector2 PosId
+    {
+        get
+        {
+            if(dead)return default(Vector2);
+            return TetriBlock.PosId;
+        }
+        
+    }
     TetriBlockSimple tetriBlock;
+    public TetriBlockSimple TetriBlock
+    {
+        get
+        {
+            if(dead)return null;
+            if(!tetriBlock)tetriBlock = GetComponent<TetriBlockSimple>();
+            return tetriBlock;
+        }
+    }
     public TetrisBlockSimple TetrisBlockSimple
     {
         get
         {
+            if(dead)return null;
             if(!tetriBlock)tetriBlock = GetComponent<TetriBlockSimple>();
             return tetriBlock.tetrisBlockSimple;
         }
     }
-    TetriBuoySimple tetriBuoy;
+    private TetriBuoySimple tetriBuoy;
+    public TetriBuoySimple TetriBuoy
+    {
+        get
+        {
+            if(!tetriBuoy)tetriBuoy = GetComponent<TetriBuoySimple>();
+            return tetriBuoy;
+        }
+    }
     public TetriBuoySimple tetriTemp;
     public TetrisUnitSimple tetrisUnitSimple;
+    public TetrisUnitSimple TetrisUnitSimple
+    {
+        get
+        {
+            if(!tetrisUnitSimple)tetrisUnitSimple = transform.parent.GetComponent<TetrisUnitSimple>();
+            return tetrisUnitSimple;
+        }
+    }
     public UnitData.Color type = UnitData.Color.notReady;
     // 创建键值对
     public KeyValuePair<int, UnitData.Color> indexPairColor = new();
@@ -43,8 +78,10 @@ public class TetriUnitSimple : MonoBehaviour
             moveDirectionCatch = value;
         }
     }
+    bool dead = false;
     void Start()
     {
+        dead = false;
         if(!loadUnit){loadUnit = Resources.Load<UnitSimple>("UnitSimple");}
         tetriBlock = GetComponent<TetriBlockSimple>();
         tetriBuoy = GetComponent<TetriBuoySimple>();
@@ -70,11 +107,11 @@ public class TetriUnitSimple : MonoBehaviour
         unit.skinName = skinName[UnityEngine.Random.Range(0, 4)];
         type = (UnitData.Color)Enum.Parse(typeof(UnitData.Color), unit.skinName);
         unit.tag = "Untagged";
-        unit.skeletonRenderer.Skeleton.SetSkin(unit.skinName);
+        unit.SkeletonRenderer.Skeleton.SetSkin(unit.skinName);
         unit.idV2 = tetriBlock.PosId;
         UnitSimple unitSimple = unit as UnitSimple;
         unitSimple.tetriUnitSimple = this;
-        unitSimple.durationRunning = tetriBlock.tetrisBlockSimple.occupyingTime;
+        unitSimple.DurationRunning = tetriBlock.tetrisBlockSimple.occupyingTime;
         unitSimple.ResetRotation();
         unitSimple.SetFlip();
         indexPairColor = new KeyValuePair<int, UnitData.Color>(tetriUnitIndex,type);
@@ -85,10 +122,13 @@ public class TetriUnitSimple : MonoBehaviour
         tetriBlock.tetrisBlockSimple.OnStartMove += unitSimple.Display_StartRunning;
         tetriBlock.tetrisBlockSimple.OnTetrisMoveing += unitSimple.OnTetrisMoveing;
         tetriBlock.TetriPosIdChanged += unitSimple.OnTetriPosIdChanged;
+        tetriBlock.tetriStuckEvent += unitSimple.Display_OnTetriStuck;
         tetriBuoy.OnTetriTempChange += GetTetriTemp;
+    
+        
         // 武器
         Weapon weapon;
-        if (!unit.skeletonRenderer.transform.TryGetComponent(out weapon))return null;
+        if (!unit.SkeletonRenderer.transform.TryGetComponent(out weapon))return null;
         weapon.SetWeapon(type);
         tetrisUnitSimple.InitProcess++;
         return unit;
@@ -102,10 +142,10 @@ public class TetriUnitSimple : MonoBehaviour
         unit.skinName = loadIndexPairColor.Value.ToString();
         type = (UnitData.Color)Enum.Parse(typeof(UnitData.Color), unit.skinName);
         unit.tag = "Untagged";
-        unit.skeletonRenderer.Skeleton.SetSkin(unit.skinName);
+        unit.SkeletonRenderer.Skeleton.SetSkin(unit.skinName);
         unit.idV2 = tetriBlock.PosId;
         UnitSimple unitSimple = unit as UnitSimple;
-        unitSimple.durationRunning = tetriBlock.tetrisBlockSimple.occupyingTime;
+        unitSimple.DurationRunning = tetriBlock.tetrisBlockSimple.occupyingTime;
         unitSimple.ResetRotation();
         unitSimple.SetFlip();
         indexPairColor = new KeyValuePair<int, UnitData.Color>(tetriUnitIndex,type);
@@ -116,22 +156,55 @@ public class TetriUnitSimple : MonoBehaviour
         tetriBlock.tetrisBlockSimple.OnStartMove += unitSimple.Display_StartRunning;
         tetriBlock.tetrisBlockSimple.OnTetrisMoveing += unitSimple.OnTetrisMoveing;
         tetriBlock.TetriPosIdChanged += unitSimple.OnTetriPosIdChanged;
+        tetriBlock.tetriStuckEvent += unitSimple.Display_OnTetriStuck;
         tetriBuoy.OnTetriTempChange += GetTetriTemp;
         // 武器
         Weapon weapon;
-        if (!unit.skeletonRenderer.transform.TryGetComponent(out weapon))return null;
+        if (!unit.SkeletonRenderer.transform.TryGetComponent(out weapon))return null;
         weapon.SetWeapon(type);
         tetrisUnitSimple.InitProcess++;
         return unit;
+    }
+    public void LevelUp(int level)
+    {
+        haveUnit.LevelUpDisplay(level);
+    }
+    public void TetrisSpeedDown(float slowDown)
+    {
+        TetrisBlockSimple.occupyingTime += slowDown;
+        TetrisBlockSimple.Stop();
+        TetrisBlockSimple.Move();
+    }
+    public void TetrisSpeedNormal()
+    {
+        TetrisBlockSimple.occupyingTime = 3.0f;
+        TetrisBlockSimple.Stop();
+        TetrisBlockSimple.Move();
+    }
+    public void PlayBlockEffect()
+    {
+        if(!TetriBuoy.blockBuoyHandler)return;
+        BlockDisplay blockDisplay = TetriBuoy.blockBuoyHandler.BlockDisplay;
+        BlocksEffects bE =  TetrisBlockSimple.blocksCreator.BlocksEffects;
+        bE.LoadAttentionEffect(blockDisplay,TetrisBlockSimple.player);
     }
     void GetTetriTemp(TetriBuoySimple temp)
     {
         if(temp==null)return;
         tetriTemp = temp;
     }
-    void UnitDie(Unit whoDie)
+    public void UnitDie(Unit whoDie)
     {
+        
+        // 取消Dotween
+        haveUnit.runningTween?.Kill();
         UnitSimple unitSimple = whoDie as UnitSimple;
+        // 取消协程
+        unitSimple.Soldier.ChainTransfer.ClearChainTransferBeforDie();
+        unitSimple.Soldier.StopAllCoroutines();
+        unitSimple.Soldier.ChainTransfer.StopAllCoroutines();
+        unitSimple.Soldier.WeakAssociation.StopAllCoroutines();
+        unitSimple.Soldier.FourDirectionsLinks.StopAllCoroutines();
         // 表现
         ParticleSystem dieParticle = unitSimple.Soldier.Effect.effectCollection.Display_setSkine(unitSimple.Soldier);
         dieParticle = Instantiate(dieParticle);
@@ -141,8 +214,9 @@ public class TetriUnitSimple : MonoBehaviour
         // 恢复砖块状态
         tetriBlock.canCreate = false;
         tetriBlock.CancleOccupied();
+        TetrisBlockSimple.Move();
         // 取消后续事件检测
-        tetrisUnitSimple.tetriUnits.Remove(this);
+        tetrisUnitSimple.TetriUnits.Remove(this);
         tetrisUnitSimple.GetComponent<TetrisBlockSimple>().childTetris.Remove(this.GetComponent<TetriBlockSimple>());
         tetrisUnitSimple.GetComponent<TetrisBuoySimple>().childTetris.Remove(this.GetComponent<TetriBuoySimple>());
         tetriBlock.tetrisBlockSimple.pioneerTetris.Remove(this.GetComponent<TetriBlockSimple>());
@@ -152,10 +226,12 @@ public class TetriUnitSimple : MonoBehaviour
         tetriBlock.tetrisBlockSimple.OnRotate -= unitSimple.OnRotate;
         tetriBlock.tetrisBlockSimple.OnStartMove -= unitSimple.Display_StartRunning;
         tetriBlock.tetrisBlockSimple.OnTetrisMoveing -= unitSimple.OnTetrisMoveing;
+        tetriBlock.tetriStuckEvent -= unitSimple.Display_OnTetriStuck;
         tetriBlock.tetrisBlockSimple.childTetris.Remove(this.GetComponent<TetriBlockSimple>());
         tetriBlock.tetrisBlockSimple.sequence?.Kill();
         tetriBlock.Reset_OnDie();
         tetriBuoy.Reset();
+        dead = true;
         Destroy(gameObject,1.0f);
     }
     public void FailToCreat()
@@ -202,12 +278,22 @@ public class TetriUnitSimple : MonoBehaviour
             case PropsData.PropsState.MoveDirectionChanger:
                 if(block.BlockMoveDirection.BlockPairTetri.Value != null)
                 {
-                    
-                    moveDirectionCatch = block.BlockMoveDirection.BlockPairTetri.Value.moveDirection;
+                    MoveDirectionCatch = block.BlockMoveDirection.BlockPairTetri.Value.moveDirection;
                 }
                 block.BlockMoveDirection.Collect();
             break;
+            case PropsData.PropsState.Obstacle:
+                block.BlockObstacle.Collect();
+            break;
         }   
         return block.propsState;
+    }
+    public void OnBeginDragDisplay()
+    {
+        haveUnit.Display_OnBeginDragDisplay();
+    }
+    public void OnEndDragDisplay()
+    {
+        haveUnit.Display_OnEndDragDisplay();
     }
 }

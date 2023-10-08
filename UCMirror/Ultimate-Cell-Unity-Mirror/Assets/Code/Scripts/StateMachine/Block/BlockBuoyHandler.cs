@@ -7,6 +7,14 @@ public class BlockBuoyHandler : MonoBehaviour
     public Vector2 posId;
     public TetriBuoySimple tetriBuoySimple;
     BlockDisplay blockDisplay;
+    public BlockDisplay BlockDisplay
+    {
+        get
+        {
+            if(!blockDisplay)blockDisplay = GetComponent<BlockDisplay>();
+            return blockDisplay;
+        }
+    }
     public BlockTetriHandler blockTetriHandler;
     
     // Start is called before the first frame update

@@ -114,7 +114,7 @@ public class BuildingManager : Singleton<BuildingManager>
             // // 发送编组信息
             // this.SendBuildingState(-1f, -1f, 1);
             if(isWarningSystem)
-                MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuildingMarshalling;
+                // MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuildingMarshalling;
             if (OnMarshallingCall != null)
             {
                 OnMarshallingCall(building);
@@ -125,7 +125,7 @@ public class BuildingManager : Singleton<BuildingManager>
             // // 发送编组解除信息
             // this.SendBuildingState(-1f, -1f, 2);
             if(isWarningSystem)
-                MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuildingUnmarshal;
+                // MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuildingUnmarshal;
             if (OnUnmarshalCall != null)
             {
                 OnUnmarshalCall(building);
@@ -136,7 +136,7 @@ public class BuildingManager : Singleton<BuildingManager>
             // // 发送编组保持信息
             // this.SendBuildingState(-1f, -1f, 2);
             if(isWarningSystem)
-                MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuildingKeep;
+                // MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.BuildingKeep;
             if (OnKeepCall != null)
             {
                 OnKeepCall(building);

@@ -32,7 +32,7 @@ public class BlockTetriHandler : MonoBehaviour
     public Vector2 posId;
     public TetriBlockSimple tetriBlockSimpleHolder;
     [Header("联网")]
-    public BlocksCreator blocksCreator;
+    public BlocksCreator_Main blocksCreator;
     public UnityAction<Vector2,int> OnBlockTetriStateChanged;
     // Start is called before the first frame update
     void Awake()

@@ -182,6 +182,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2503343723301077259, guid: da39fe95a267f4f44a5f1268e63282c6,
+        type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2503343723301077259, guid: da39fe95a267f4f44a5f1268e63282c6,
+        type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 2503343723517980844, guid: da39fe95a267f4f44a5f1268e63282c6,
         type: 3}
       propertyPath: m_Name

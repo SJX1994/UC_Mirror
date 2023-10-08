@@ -225,7 +225,7 @@ public class UnitSoul : Unit
                   {
                         soulSlider.value += unitSoulTemplate.value;
                         stateMachineManager.soulTextUI.text = (int.Parse(stateMachineManager.soulTextUI.text)+unitSoulTemplate.value).ToString();
-                        string name = skeletonRenderer.Skeleton.Skin.Name;
+                        string name = SkeletonRenderer.Skeleton.Skin.Name;
                         switch(name)
                         {
                               case "blue":

@@ -63,7 +63,7 @@ namespace UC_PlayerData
     {
         public static bool stopEventSend = false; 
         public static UnityAction<int> OnPlayer1BlocksNumbChange;
-        public static int player1_numb = 0;
+        public static int player1_numb = 20;
         public static int Player1_numb
         {
             get { return player1_numb; }
@@ -76,7 +76,7 @@ namespace UC_PlayerData
             }
         }
         public static UnityAction<int> OnPlayer2BlocksNumbChange;
-        public static int player2_numb = 0;
+        public static int player2_numb = 20;
         public static int Player2_numb
         {
             get { return player2_numb; }
@@ -95,8 +95,30 @@ namespace UC_PlayerData
             NoneType,
             WeakAssociation,
             ReachBottomLine,
+            ReachBottomLineGain,
             FullRows,
         }
+    }
+    public static class Referee
+    {
+        public static float currentTime = 0f; // 当前计时时间
+        public static float totalTime = 180f; // 当前计时时间
+        public static bool isTimerRunning = false; // 计时器是否正在运行
+        public static string timerText = "00:00"; // 计时器UI显示的文本
+        private static Player winner = Player.NotReady;
+        public static Player Winner
+        {
+            get
+            {
+                return winner;
+            }
+            set
+            {
+                winner = value;
+                Debug.Log("Winner is " + winner);
+            }
+        }
+        public static bool gameover = false;
     }
     public static class ServerLogic
     {
@@ -140,6 +162,7 @@ namespace UC_PlayerData
             None,
             ChainBall,
             MoveDirectionChanger,
+            Obstacle,
             HealthAdder,
         }
         public enum MoveDirection

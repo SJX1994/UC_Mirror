@@ -35,14 +35,30 @@ public class Unit : MonoBehaviour
     public NavMeshAgent navMeshAgent;
     [HideInInspector]
     public SkeletonRenderer skeletonRenderer;
+    public SkeletonRenderer SkeletonRenderer
+    {
+        get
+        {
+            if(!skeletonRenderer)skeletonRenderer = transform.Find("Spine").GetComponent<SkeletonRenderer>();
+            return skeletonRenderer;
+        }
+    }
     [HideInInspector]
     public SpriteRenderer selectionCircle;
     Color selectionCircleColor;
     [HideInInspector]
     public Weapon weapon = null;
+    public Weapon Weapon
+    {
+        get
+        {
+            if(!weapon)weapon = transform.Find("Spine").GetComponent<Weapon>();
+            return weapon;
+        }
+    }
     private Renderer spineRenderer;
-    private MaterialPropertyBlock spinePropertyBlock;
-
+    private MaterialPropertyBlock spinePropertyBlock_hp;
+    private MaterialPropertyBlock spinePropertyBlock_foreshadow;
     protected bool isReady = false;
     protected float lastGuardCheckTime, guardCheckInterval = 1f;
     private Unit[] hostiles;
@@ -86,7 +102,6 @@ public class Unit : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = transform.Find("Spine").GetComponent<Animator>();
-        skeletonRenderer = transform.Find("Spine").GetComponent<SkeletonRenderer>();
         selectionCircle = transform.Find("SelectionCircle").GetComponent<SpriteRenderer>();
         spineRenderer = transform.Find("Spine").GetComponent<Renderer>();
         unitTemplate = Instantiate(unitTemplate); // 复制细胞模板 防止重写
@@ -106,7 +121,7 @@ public class Unit : MonoBehaviour
 		if(!stateMachineManager)return;
         rightAngle = new Vector3(80f, 0f, 0f);
         // 武器	
-        skeletonRenderer.transform.TryGetComponent(out weapon);
+        SkeletonRenderer.transform.TryGetComponent(out weapon);
         Invoke(nameof(UnitSetSkin), 0.1f);
 		if (!TryGetComponent<Effect>(out Effect effect))return;
         this.effect = effect;
@@ -115,11 +130,11 @@ public class Unit : MonoBehaviour
         unitTemplate.health *= level;
         unitTemplate.attackPower *= level;
         unitTemplate.attackSpeed *= level;
-        if (!unitTemplate.levelSprite)return;
-        for (int i = 1; i < level + 1; i++)
-        {
-            skeletonRenderer.transform.Find("Level_" + i).GetComponent<SpriteRenderer>().sprite = unitTemplate.levelSprite;
-        }
+        // if (!unitTemplate.levelSprite)return;
+        // for (int i = 1; i < level + 1; i++)
+        // {
+        //     skeletonRenderer.transform.Find("Level_" + i).GetComponent<SpriteRenderer>().sprite = unitTemplate.levelSprite;
+        // }
         if(!navMeshAgent)return;
         if(!navMeshAgent.enabled)return;
         // 团结但是性格各异的 塞尔战士 所以走路速度略有不同 :)
@@ -129,10 +144,10 @@ public class Unit : MonoBehaviour
     }
     void OnDisable()
     {
-        if (spinePropertyBlock == null)spinePropertyBlock = new MaterialPropertyBlock();
-        spineRenderer.GetPropertyBlock(spinePropertyBlock);
-        spinePropertyBlock.SetFloat("_Porcess", 1f);
-        spineRenderer.SetPropertyBlock(spinePropertyBlock);
+        if (spinePropertyBlock_hp == null)spinePropertyBlock_hp = new MaterialPropertyBlock();
+        spineRenderer.GetPropertyBlock(spinePropertyBlock_hp);
+        spinePropertyBlock_hp.SetFloat("_Porcess", 1f);
+        spineRenderer.SetPropertyBlock(spinePropertyBlock_hp);
     }
     public virtual void Update()
     {
@@ -280,8 +295,8 @@ public class Unit : MonoBehaviour
 
     public void UnitSetSkin()
     {
-        if(!skeletonRenderer){Awake();Start();}
-        skinName = skeletonRenderer.Skeleton.Skin.Name;
+        if(!SkeletonRenderer){Awake();Start();}
+        skinName = SkeletonRenderer.Skeleton.Skin.Name;
         switch (skinName)
         {
             case "red":
@@ -307,13 +322,23 @@ public class Unit : MonoBehaviour
     }
     void UpdateMatHealth(float SetFloat)
     {
-        if (spinePropertyBlock == null)
+        if (spinePropertyBlock_hp == null)
         {
-            spinePropertyBlock = new MaterialPropertyBlock();
+            spinePropertyBlock_hp = new MaterialPropertyBlock();
         }
-        spineRenderer.GetPropertyBlock(spinePropertyBlock);
-        spinePropertyBlock.SetFloat("_Porcess", SetFloat);
-        spineRenderer.SetPropertyBlock(spinePropertyBlock);
+        spineRenderer.GetPropertyBlock(spinePropertyBlock_hp);
+        spinePropertyBlock_hp.SetFloat("_Porcess", SetFloat);
+        spineRenderer.SetPropertyBlock(spinePropertyBlock_hp);
+    }
+    public void UpdateMatForeshadow(float SetFloat)
+    {
+        if (spinePropertyBlock_foreshadow == null)
+        {
+            spinePropertyBlock_foreshadow = new MaterialPropertyBlock();
+        }
+        spineRenderer.GetPropertyBlock(spinePropertyBlock_foreshadow);
+        spinePropertyBlock_foreshadow.SetFloat("_Foreshadow", SetFloat);
+        spineRenderer.SetPropertyBlock(spinePropertyBlock_foreshadow);
     }
     /// <summary>
     /// 数字范围映射
@@ -332,7 +357,7 @@ public class Unit : MonoBehaviour
     {
         if (horizontal != 0)
         {
-            skeletonRenderer.Skeleton.ScaleX = horizontal > 0 ? -1f : 1f;
+            SkeletonRenderer.Skeleton.ScaleX = horizontal > 0 ? -1f : 1f;
 
         }
     }
@@ -469,7 +494,7 @@ public class Unit : MonoBehaviour
         {
             for (int i = 1; i < level + 1; i++)
             {
-                Destroy(skeletonRenderer.transform.Find("Level_" + i).gameObject);
+                Destroy(SkeletonRenderer.transform.Find("Level_" + i).gameObject);
             }
 
         }
@@ -586,12 +611,12 @@ public class Unit : MonoBehaviour
             UnitSoul soul = Instantiate(unitSoul, transform.position, Quaternion.identity);
             if (unitTemplate.unitType == UnitTemplate.UnitType.Cell)
             {
-                skinName = skeletonRenderer.Skeleton.Skin.Name;
+                skinName = SkeletonRenderer.Skeleton.Skin.Name;
                 if (skinName == "")
                 {
                     skinName = "red";
                 }
-                soul.skeletonRenderer.Skeleton.SetSkin(skinName);
+                soul.SkeletonRenderer.Skeleton.SetSkin(skinName);
             }
         }
 

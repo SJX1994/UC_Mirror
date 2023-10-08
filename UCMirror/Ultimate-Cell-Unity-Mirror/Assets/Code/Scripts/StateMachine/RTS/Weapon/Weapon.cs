@@ -19,16 +19,23 @@ public class Weapon : MonoBehaviour
     RegionAttachment attachment;
     Slot spineSlot;
     bool applyPMA;
-    WeaponTemplate.WeaponType thisWeaponType;
-    // 通讯
+    public WeaponTemplate.WeaponType thisWeaponType;
     [HideInInspector]
     public WeaponTemplate weaponTemplate;
+    public WeaponTemplate WeaponTemplate
+    {
+        get
+        {
+            if(weaponTemplate)return weaponTemplate;
+            weaponTemplate = weaponTemplates.Find((weapon) => weapon.weaponType == thisWeaponType);
+            return weaponTemplate;
+        }
+    }
     static Dictionary<Texture, AtlasPage> atlasPageCache;
     Unit unit;
     ApplyDifferenceAttribute applyDifferenceAttribute;
     bool isBonus = false;
     public SkeletonMecanim skeletonAnimation;
-    // 武器指向目标
     [SpineBone(dataField: "skeletonAnimation")]
     public string boneName;
     [HideInInspector]
@@ -65,42 +72,38 @@ public class Weapon : MonoBehaviour
             animatedSkeleton.UpdateComplete -= AnimationOverrideSpriteAttach;
     }
 
-    public void SetWeapon(EventType.UnitColor color)
-    {
-        transform.parent.TryGetComponent(out applyDifferenceAttribute);
-        if (!applyDifferenceAttribute) return;
-        switch (color)
-        {
-            // TODO 更多武器
-            case EventType.UnitColor.red:
-                if (applyDifferenceAttribute.differenceAttributeTemplate_Red != null) break;
-                SetWeapon(WeaponTemplate.WeaponType.Sword);
-                thisWeaponType = WeaponTemplate.WeaponType.Sword;
-                break;
-            case EventType.UnitColor.blue:
-                if (applyDifferenceAttribute.differenceAttributeTemplate_Blue != null) break;
-                SetWeapon(WeaponTemplate.WeaponType.Spear);
-                thisWeaponType = WeaponTemplate.WeaponType.Spear;
-                break;
-            case EventType.UnitColor.green:
-                if (applyDifferenceAttribute.differenceAttributeTemplate_Green != null) break;
-                SetWeapon(WeaponTemplate.WeaponType.Shield);
-                thisWeaponType = WeaponTemplate.WeaponType.Shield;
-                break;
-            case EventType.UnitColor.purple:
-                if (applyDifferenceAttribute.differenceAttributeTemplate_Purple != null) break;
-                SetWeapon(WeaponTemplate.WeaponType.Bow);
-                thisWeaponType = WeaponTemplate.WeaponType.Bow;
+    // public void SetWeapon(EventType.UnitColor color)
+    // {
+    //     transform.parent.TryGetComponent(out applyDifferenceAttribute);
+    //     if (!applyDifferenceAttribute) return;
+    //     switch (color)
+    //     {
+    //         // TODO 更多武器
+    //         case EventType.UnitColor.red:
+    //             if (applyDifferenceAttribute.differenceAttributeTemplate_Red != null) break;
+    //             SetWeapon(WeaponTemplate.WeaponType.Sword);
+    //             thisWeaponType = WeaponTemplate.WeaponType.Sword;
+    //             break;
+    //         case EventType.UnitColor.blue:
+    //             if (applyDifferenceAttribute.differenceAttributeTemplate_Blue != null) break;
+    //             SetWeapon(WeaponTemplate.WeaponType.Spear);
+    //             thisWeaponType = WeaponTemplate.WeaponType.Spear;
+    //             break;
+    //         case EventType.UnitColor.green:
+    //             if (applyDifferenceAttribute.differenceAttributeTemplate_Green != null) break;
+    //             SetWeapon(WeaponTemplate.WeaponType.Shield);
+    //             thisWeaponType = WeaponTemplate.WeaponType.Shield;
+    //             break;
+    //         case EventType.UnitColor.purple:
+    //             if (applyDifferenceAttribute.differenceAttributeTemplate_Purple != null) break;
+    //             SetWeapon(WeaponTemplate.WeaponType.Bow);
+    //             thisWeaponType = WeaponTemplate.WeaponType.Bow;
 
-                break;
+    //             break;
 
-        }
-        // 修改武器后对应产生属性变化事件
-        if (OnChangeWeapon != null)
-        {
-            OnChangeWeapon(this);
-        }
-    }
+    //     }
+    //     OnChangeWeapon?.Invoke(this);
+    // }
     public void SetWeapon(UnitData.Color color)
     {
         transform.parent.TryGetComponent(out applyDifferenceAttribute);
@@ -130,11 +133,7 @@ public class Weapon : MonoBehaviour
                 break;
 
         }
-        // 修改武器后对应产生属性变化事件
-        if (OnChangeWeapon != null)
-        {
-            OnChangeWeapon(this);
-        }
+        OnChangeWeapon?.Invoke(this);
     }
     #endregion 数据关系
     #region 数据操作
@@ -197,8 +196,7 @@ public class Weapon : MonoBehaviour
         rot_weapon = weaponTemplate.rot_weapon;
         scale_weapon = weaponTemplate.scale_weapon;
         Initialize(true);
-        weaponTemplate = Instantiate(weaponTemplate); // 复制武器模板 防止重写
-                                                      // 武器加成
+        weaponTemplate = Instantiate(weaponTemplate);
         if (transform.parent.TryGetComponent(out unit) && !isBonus)
         {
             isBonus = true;
@@ -221,13 +219,21 @@ public class Weapon : MonoBehaviour
     }
     public void ResetWeaponDispaly(WeaponTemplate.WeaponType weaponType)
     {
-
         weaponTemplate = weaponTemplates.Find((weapon) => weapon.weaponType == weaponType);
         weaponSprite = weaponTemplate.weaponSprite;
         pos_weaponX = weaponTemplate.pos_weaponX;
         pos_weaponY = weaponTemplate.pos_weaponY;
         rot_weapon = weaponTemplate.rot_weapon;
         scale_weapon = weaponTemplate.scale_weapon;
+        Initialize(true);
+    }
+    public void ResetWeaponDispaly()
+    {
+        weaponSprite = WeaponTemplate.weaponSprite;
+        pos_weaponX = WeaponTemplate.pos_weaponX;
+        pos_weaponY = WeaponTemplate.pos_weaponY;
+        rot_weapon = WeaponTemplate.rot_weapon;
+        scale_weapon = WeaponTemplate.scale_weapon;
         Initialize(true);
     }
     WeaponTemplate weaponDisplay;
@@ -274,8 +280,6 @@ public class Weapon : MonoBehaviour
             if (unit.unitTemplate.attackPower <= 0) unit.unitTemplate.attackPower = 1;
             if (unit.unitTemplate.attackSpeed <= 0) unit.unitTemplate.attackSpeed = 1;
             if (unit.unitTemplate.health <= 0) unit.unitTemplate.health = 1;
-
-
         }
         ResetWeaponDispaly(thisWeaponType);
         OnChangeWeapon?.Invoke(this);
@@ -330,8 +334,6 @@ public class Weapon : MonoBehaviour
                 attachment.ScaleX += scale_weapon;
                 attachment.ScaleY += scale_weapon;
                 attachment.UpdateRegion();
-
-
             }
         }
     }

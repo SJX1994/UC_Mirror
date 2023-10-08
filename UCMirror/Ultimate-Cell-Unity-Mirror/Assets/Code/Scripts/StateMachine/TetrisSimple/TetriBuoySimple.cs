@@ -8,6 +8,23 @@ public class TetriBuoySimple : MonoBehaviour
     public BlockBuoyHandler blockBuoyHandler;
     UC_PlayerData.Player player;
     public TetriBlockSimple tetriBlockSimple;
+    public TetriBlockSimple TetriBlockSimple
+    {
+        get
+        {
+            if(!tetriBlockSimple)tetriBlockSimple = GetComponent<TetriBlockSimple>();
+            return tetriBlockSimple;
+        }
+    }
+    private TetriUnitSimple tetriUnitSimple;
+    public TetriUnitSimple TetriUnitSimple
+    {
+        get
+        {
+            if(!tetriUnitSimple)tetriUnitSimple = GetComponent<TetriUnitSimple>();
+            return tetriUnitSimple;
+        }
+    }
     public TetrisBuoySimple tetrisBuoySimple;
     private TetriBuoySimple tetriTemp;
     public TetriBuoySimple TetriTemp
@@ -53,8 +70,8 @@ public class TetriBuoySimple : MonoBehaviour
         // 发射射线向下进行检测
         Ray ray = new Ray(transform.position, Vector3.down);
         RaycastHit hit;
-        if(!tetriBlockSimple)return false;
-        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, tetriBlockSimple.blockTargetMask);
+        if(!TetriBlockSimple)return false;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, TetriBlockSimple.blockTargetMask);
         if (!hitBlock)return false;
         // 进一步的处理
         BlockBuoyHandler block;
@@ -73,10 +90,10 @@ public class TetriBuoySimple : MonoBehaviour
         {
             return false;
         }
-        if(block.blockTetriHandler.tetriBlockSimpleHolder)
-        {
-            return false;
-        }
+        // if(block.blockTetriHandler.tetriBlockSimpleHolder)
+        // {
+        //     return false;
+        // }
         if((block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace) || (tetriBlockSimple.player == UC_PlayerData.Player.Player1 && block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace_Player1) || (tetriBlockSimple.player == UC_PlayerData.Player.Player2 && block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace_Player2))
         {
             return true;
@@ -150,7 +167,7 @@ public class TetriBuoySimple : MonoBehaviour
     public void Display_Evaluate()
     {
         if(!tetriDisplayRange)return;
-        BlocksCreator blocksCreator = tetrisBuoySimple.tetrisBlockSimple.blocksCreator;
+        BlocksCreator_Main blocksCreator = tetrisBuoySimple.tetrisBlockSimple.blocksCreator;
         var blockUp = blocksCreator.blocks.Find((block) => block.posId == new Vector2(posId.x,posId.y + 1));
         if(blockUp && blockUp.GetComponent<BlockBuoyHandler>().tetriBuoySimple && blockUp.GetComponent<BlockBuoyHandler>().tetriBuoySimple.player == player)
         {

@@ -95,7 +95,7 @@ public class G2C_PlayerRoom : MonoBehaviour
             }
 
             // 根据砖块信息生成Unit
-            unitManager.CreateNewUnit(blocksDic);
+            // unitManager.CreateNewUnit(blocksDic);
 
             // 将砖块数据镜像翻转
             var blocksList = tetris.BlocksMirrorSet(blocksDic);
@@ -122,7 +122,7 @@ public class G2C_PlayerRoom : MonoBehaviour
             }
 
             // 根据砖块信息生成Unit
-            unitManager.CreateNewUnit(blocksDic);
+            // unitManager.CreateNewUnit(blocksDic);
 
             // 向另一个玩家发送镜像砖块新建数据，发送端玩家砖块自己新建
             this.G2C_SendCreateBlocksMessage(player, blocksDic.Values.ToList());

@@ -94,10 +94,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 470015492767617464}
-  - component: {fileID: 470015492767617479}
+  - component: {fileID: 7004758093251860301}
   - component: {fileID: 4011021362593910907}
   - component: {fileID: 833412939492246666}
   - component: {fileID: 8346157192434546395}
+  - component: {fileID: 7362634607219849759}
   - component: {fileID: 4677444136600216642}
   m_Layer: 0
   m_Name: BlocksManager
@@ -122,7 +123,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &470015492767617479
+--- !u!114 &7004758093251860301
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,12 +132,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 470015492767617478}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f459f81f22058c140bf4dadcf664db3e, type: 3}
+  m_Script: {fileID: 11500000, guid: f78bac2728de85c4893e94972ed5bf42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
-  syncInterval: 0.1
+  syncInterval: 0
   FlowMask: {fileID: 470015492654241586}
   block: {fileID: 7486268708185842489, guid: 7df7815a73bc9664599e37fbd76d0f60, type: 3}
   x: 10
@@ -176,6 +177,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1eadb779432a7644b1425b742a2544e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7362634607219849759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 470015492767617478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a238fae78795b44b72ea7c7e268e42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &4677444136600216642

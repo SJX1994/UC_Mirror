@@ -3646,6 +3646,11 @@ PrefabInstance:
       propertyPath: virusTargetPositions.Array.data[2]
       value: 
       objectReference: {fileID: 468775276}
+    - target: {fileID: 7926015164872161787, guid: 4337a4424519f624e9a5ad58196ecbcd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7926015165078557083, guid: 4337a4424519f624e9a5ad58196ecbcd,
         type: 3}
       propertyPath: m_AnchorMax.y

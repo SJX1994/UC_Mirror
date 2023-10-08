@@ -11,7 +11,7 @@ public class StarItem : BaseUI
         return UIType.StarItem;
     }
 
-    #region ½»»¥¿Ø¼þ
+    #region ???????
 
     public Image Obtained;
 

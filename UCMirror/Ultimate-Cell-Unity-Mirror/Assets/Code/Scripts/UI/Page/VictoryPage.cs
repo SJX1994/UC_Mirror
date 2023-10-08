@@ -10,23 +10,23 @@ public class VictoryPage : BaseUI
         return UIType.VictoryPage;
     }
 
-    #region ½»»¥×é¼ş
+    #region äº¤äº’ç»„ä»¶
 
-    [Header("ĞÇĞÇ")]
+    [Header("æ˜Ÿæ˜Ÿ")]
     public GameObject Star1;
     public GameObject Star2;
     public GameObject Star3;
 
-    [Header("°´Å¥")]
+    [Header("æŒ‰é’®")]
     public Button NextMapBtn;
     public Button BackBtn;
 
-    [Header("ÊıÖµ")]
+    [Header("æ•°å€¼")]
     public Text FractionText;
     public Text GoldText;
     public Text ExpText;
 
-    [Header("ÌØĞ§")]
+    [Header("ç‰¹æ•ˆ")]
     public ParticleSystem VictoryEffect;
 
     private int fractio = 0;
@@ -34,23 +34,27 @@ public class VictoryPage : BaseUI
     private int exp = 0;
     #endregion
 
-    #region ÒµÎñ
+    #region ä¸šåŠ¡
 
     public override void OnStart()
     {
-        #region Ïà»úÂß¼­
-        //ÕâÀïĞèÒª°ÑUIÉè¶¨ÎªScreenSpace
-        Camera uiCam = GameObject.FindGameObjectWithTag("UICamera").GetComponent<Camera>();
+        #region ç›¸æœºé€»è¾‘
+        //è¿™é‡Œéœ€è¦æŠŠUIè®¾å®šä¸ºScreenSpace
+        // Camera uiCam = GameObject.FindGameObjectWithTag("UICamera").GetComponent<Camera>();
         Canvas canvas = this.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
-        canvas.worldCamera = uiCam;
+        // canvas.worldCamera = uiCam;
         canvas.sortingOrder = 200;
         canvas.planeDistance = 5;
         canvas.sortingLayerName = "Flow";
         #endregion
 
-        BtnEvent.RigisterButtonClickEvent(NextMapBtn.transform.gameObject, p => { });
-        BtnEvent.RigisterButtonClickEvent(BackBtn.transform.gameObject, p => { });
+        BtnEvent.RigisterButtonClickEvent(NextMapBtn.transform.gameObject, p => {
+            FindObjectOfType<BlocksReferee>().Restart();
+        });
+        BtnEvent.RigisterButtonClickEvent(BackBtn.transform.gameObject, p => {
+            FindObjectOfType<BlocksReferee>().Restart();
+        });
 
         int targetFractio = 302;
         DOTween.To(() => fractio, x => fractio = x, targetFractio, 2);

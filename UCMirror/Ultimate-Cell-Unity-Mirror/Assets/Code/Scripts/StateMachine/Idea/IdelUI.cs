@@ -24,6 +24,7 @@ public class IdelUI : MonoBehaviour
     {
         foreach (var Info in BoxInfo)
         {
+            if(!Info)continue;
             Info.GetComponent<IdelBox>().idelUI = this;
         }
     }
@@ -89,13 +90,14 @@ public class IdelUI : MonoBehaviour
     public void RefreshButtonClick() 
     {
         // MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.Reflash;
-
+        // Debug.Log("刷新想法");
         foreach (GameObject Info in BoxInfo) 
         {
+            if(!Info)continue;
             Info.GetComponent<IdelBox>().RefreshGameObj();
         }
 
-        AudioSystemManager.Instance.PlaySound("Button_Click");
+        // AudioSystemManager.Instance.PlaySound("Button_Click");
     }
     
     #endregion

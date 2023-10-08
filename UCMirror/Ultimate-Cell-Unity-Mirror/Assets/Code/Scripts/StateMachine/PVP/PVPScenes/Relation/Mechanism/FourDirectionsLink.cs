@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using UnityEngine.Events;
+using UC_PlayerData;
 public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
 {
+      bool active = true;
       private bool needRender;
       public bool NeedRender { 
             get {return needRender;}
@@ -28,7 +30,138 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       /// W + E
       ///   S
       /// </summary>
-      public SoldierBehaviors North,East,South,West;
+      private SoldierBehaviors north,east,south,west;
+      public SoldierBehaviors North
+      {
+            get
+            {
+                  return north;
+            }
+            set
+            {
+                  if(value!=null)
+                  {
+                        if(value.unitBase.unitTemplate.player != Self.unitBase.unitTemplate.player)
+                        { value = null; }
+                  }
+                  if(north == value)return;
+                  north = value;
+                  Level_DataEffect();
+            }
+      }
+      public SoldierBehaviors East
+      {
+            get
+            {
+                  return east;
+            }
+            set
+            {
+                  if(value!=null)
+                  {
+                        if(value.unitBase.unitTemplate.player != Self.unitBase.unitTemplate.player)
+                        { value = null; }
+                  }
+                  if(east == value)return;
+                  east = value;
+                  Level_DataEffect();
+            }
+      }
+      public SoldierBehaviors South
+      {
+            get
+            {
+                  return south;
+            }
+            set
+            {
+                  if(value!=null)
+                  {
+                        if(value.unitBase.unitTemplate.player != Self.unitBase.unitTemplate.player)
+                        { value = null; }
+                  }
+                  if(south == value)return;
+                  south = value;
+                  Level_DataEffect();
+            }
+      }
+      public SoldierBehaviors West
+      {
+            get
+            {
+                  return west;
+            }
+            set
+            {
+                  if(value!=null)
+                  {
+                        if(value.unitBase.unitTemplate.player != Self.unitBase.unitTemplate.player)
+                        { value = null; }
+                  }
+                  if(west == value)return;
+                  west = value;
+                  Level_DataEffect();
+            }
+      }
+
+      private BlockDisplay northBlock,eastBlock,southBlock,westBlock;
+      public BlockDisplay NorthBlock
+      {
+            get
+            {
+                  Vector2 posId = Self.UnitSimple.PosId;
+                  Vector2 checkerPosId = new Vector2(posId.x,posId.y+1);
+                  if( checkerPosId.x >= Dispaly.MaxWidth || checkerPosId.x < 0 || checkerPosId.y >= Dispaly.MaxHeight || checkerPosId.y < 0)return null;
+                  if(!northBlock || northBlock.posId != checkerPosId )
+                  {
+                        northBlock = Self.TetriMechanism.FindBlockWithId(checkerPosId);
+                  }
+                  return northBlock;
+            }
+      }
+      public BlockDisplay EastBlock
+      {
+            get
+            {
+                  Vector2 posId = Self.UnitSimple.PosId;
+                  Vector2 checkerPosId = new Vector2(posId.x+1,posId.y);
+                  if( checkerPosId.x >= Dispaly.MaxWidth || checkerPosId.x < 0 || checkerPosId.y >= Dispaly.MaxHeight || checkerPosId.y < 0)return null;
+                  if(!eastBlock || eastBlock.posId != checkerPosId )
+                  {
+                        eastBlock = Self.TetriMechanism.FindBlockWithId(checkerPosId);
+                  }
+                  return eastBlock;
+            }
+      }
+      public BlockDisplay SouthBlock
+      {
+            get
+            {
+                  Vector2 posId = Self.UnitSimple.PosId;
+                  Vector2 checkerPosId = new Vector2(posId.x,posId.y-1);
+                  if( checkerPosId.x >= Dispaly.MaxWidth || checkerPosId.x < 0 || checkerPosId.y >= Dispaly.MaxHeight || checkerPosId.y < 0)return null;
+                  if(!southBlock || southBlock.posId != checkerPosId )
+                  {
+                        southBlock = Self.TetriMechanism.FindBlockWithId(checkerPosId);
+                  }
+                  return southBlock;
+            }
+      }
+      public BlockDisplay WestBlock
+      {
+            get
+            {
+                  Vector2 posId = Self.UnitSimple.PosId;
+                  Vector2 checkerPosId = new Vector2(posId.x-1,posId.y);
+                  if( checkerPosId.x >= Dispaly.MaxWidth || checkerPosId.x < 0 || checkerPosId.y >= Dispaly.MaxHeight || checkerPosId.y < 0)return null;
+                  if(!westBlock || westBlock.posId != checkerPosId )
+                  {
+                        westBlock = Self.TetriMechanism.FindBlockWithId(checkerPosId);
+                  }
+                  return westBlock;
+            }
+      }
+   
       public enum Direction
       {
             North,
@@ -36,11 +169,16 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
             South,
             West
       }
-      private readonly Dictionary< SoldierBehaviors,Direction> direction_Soldier_dir = new();
-     
-
       [HideInInspector]
       public SoldierBehaviors self;
+      public SoldierBehaviors Self
+      {
+            get
+            {
+                  if(!self)self = GetComponent<SoldierBehaviors>();
+                  return self;
+            }
+      }
       [HideInInspector]
       public float range = 3f;
       [HideInInspector]
@@ -49,177 +187,206 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       /// <summary>
       /// 表现
       /// </summary>
-      // 设置要使用的 Sorting Layer 名称
-      public string sortingLayerName = "YourSortingLayerName";
-
-      // 设置要使用的 Sorting Order
-      public int sortingOrder = 0;
-      
       public Material fourDirectionsLinkLinkMat;
       public List<Material> fourDirectionsLinkLinkMats;
-
-      readonly Dictionary<SoldierBehaviors,LineRenderer> lineRenderers = new();  // Line Renderer组件
       [HideInInspector]
-      public List<SpriteRenderer> levelSpriteRenders;
-      public bool forceBreakLink;
-
-    
-
-    void Start()
+      private SpriteRenderer sprit_North,sprit_East,sprit_South,sprit_West;
+      public SpriteRenderer Sprit_North
       {
+            get
+            {
+                  if(!sprit_North)sprit_North = Self.unitBase.SkeletonRenderer.transform.Find("Level_N").GetComponent<SpriteRenderer>();
+                  return sprit_North;
+            }
+      }
+      public SpriteRenderer Sprit_East
+      {
+            get
+            {
+                  if(!sprit_East)sprit_East = Self.unitBase.SkeletonRenderer.transform.Find("Level_E").GetComponent<SpriteRenderer>();
+                  return sprit_East;
+            }
+      }
+      public SpriteRenderer Sprit_South
+      {
+            get
+            {
+                  if(!sprit_South)sprit_South = Self.unitBase.SkeletonRenderer.transform.Find("Level_S").GetComponent<SpriteRenderer>();
+                  return sprit_South;
+            }
+      }
+      public SpriteRenderer Sprit_West
+      {
+            get
+            {
+                  if(!sprit_West)sprit_West = Self.unitBase.SkeletonRenderer.transform.Find("Level_W").GetComponent<SpriteRenderer>();
+                  return sprit_West;
+            }
+      }
+      private bool died = false;
+
+      void Start()
+      {
+            active = false;
+            died = false;
+            NeedRender = true;
+            Self.TetriMechanism.TetrisBlockSimple.OnUpdatDisplay += ()=>{ if(!active)active = true;};
+            Self.unitBase.OnDie += (Unit unit)=>{this.StopAllCoroutines();died = true;};
+            InitLevel();
             linkMinStrengthIncrease = 0.2f;
-            self = transform.GetComponent<SoldierBehaviors>();
-            forceBreakLink = false;
-            // 联结表现
-            Transform spine = transform.Find("Spine");             
-            foreach(SpriteRenderer spriteRender in levelSpriteRenders)
-            {
-                  if(spriteRender!=null)
-                  {
-                        spriteRender.color = new Color(1,1,1,0.5f);
-                  }
-                  
-            }
-            if(self.unitBase!=null)
-            {
-                  self.unitBase.OnStartCollect += UnitBaseCollected;
-                  self.unitBase.OnDie += UnitBaseCollected;
-            }
+            // 联结表现          
             Invoke(nameof(SetSkine), 0.1f);
-            mechanismInPut = FindObjectOfType<MechanismInPut>();
-            if(!self.unitBase)return;
-            if(!self.unitBase.unitTemplate.levelSprite)return;
-            for(int i = 1; i < self.unitBase.level+1; i++)
-            {
-                  levelSpriteRenders.Add(spine.Find("Level_"+i).GetComponent<SpriteRenderer>());
-            }
-            if(!mechanismInPut)return;
-            mechanismInPut.modeChangeAction += ModeChangedAction;
             
       }
-      void ModeChangedAction(MechanismInPut.ModeTest modeTest)
+      public void LateUpdate()
       {
-            this.modeTest = modeTest;
-            if(modeTest == MechanismInPut.ModeTest.FourDirectionsLinks || this.modeTest == MechanismInPut.ModeTest.ChainTransfer || modeTest == MechanismInPut.ModeTest.ChainTransferAndFourDirectionsLinks)
+           if(active)Active();
+      }
+      public void Active()
+      {
+            LinkChecker();
+            UpdateLevel();
+      }
+      void LinkChecker()
+      {   
+            if(died || !Self || !Self.UnitSimple )return;
+            // 获取单位的坐标
+            Vector2 posId = Self.UnitSimple.PosId;
+            // 方位检测
+            var NorthTetri = NorthBlock ? NorthBlock.BlockBuoyHandler.tetriBuoySimple : null;
+            var EastTetri = EastBlock ? EastBlock.BlockBuoyHandler.tetriBuoySimple : null;
+            var SouthTetri = SouthBlock ? SouthBlock.BlockBuoyHandler.tetriBuoySimple : null;
+            var WestTetri = WestBlock ? WestBlock.BlockBuoyHandler.tetriBuoySimple : null;
+            if (NorthTetri)
             {
-                  StartLink();
+                  if(North != NorthTetri.TetriUnitSimple.haveUnit.Soldier)
+                  {
+                        North = NorthTetri.TetriUnitSimple.haveUnit.Soldier;
+                        SoldiersStartRelation(Self,North);
+                  }else
+                  {
+                        SoldiersUpdateRelation(Self,North);
+                  }
+                  
             }else
             {
-                  Dictionary<SoldierBehaviors, LineRenderer> tempDictionary = new(lineRenderers);
-                  foreach (KeyValuePair<SoldierBehaviors,LineRenderer> kvp in tempDictionary)
-                  {
-                        if(kvp.Value == null)continue;
-                        kvp.Key.morale.minMorale = kvp.Key.morale.baseminMorale;
-                        GameObject remove = lineRenderers[kvp.Key].gameObject;
-                        lineRenderers.Remove(kvp.Key);
-                        direction_Soldier_dir.Remove(kvp.Key);
-                        Destroy(remove);
-                  }
+                  SoldiersEndRelation(Self,North);
+                  North = null;
             }
-      }
-      public void Update()
-      {
-            if(forceBreakLink || !self)return;
-            if(this.modeTest == MechanismInPut.ModeTest.FourDirectionsLinks || this.modeTest == MechanismInPut.ModeTest.ChainTransfer || modeTest == MechanismInPut.ModeTest.ChainTransferAndFourDirectionsLinks)
+            if (EastTetri)
             {
-                  // 持续 + 断开
-                  Dictionary<SoldierBehaviors, LineRenderer> tempDictionary = new(lineRenderers);
-                  foreach (KeyValuePair<SoldierBehaviors,LineRenderer> kvp in tempDictionary)
+                  if(East != EastTetri.TetriUnitSimple.haveUnit.Soldier)
                   {
-                        if(kvp.Value == null)continue;
-                        //if(self.transform.hasChanged || kvp.Key.transform.hasChanged)
-                        {
-                              SoldiersEndRelation(self, kvp.Key);
-                              SoldiersUpdateRelation(self,kvp.Key);
-                        }
+                        East = EastTetri.TetriUnitSimple.haveUnit.Soldier;
+                        SoldiersStartRelation(Self,East);
+                  }else
+                  {
+                        SoldiersUpdateRelation(Self,East);
                   }
-                  // 重连
-                  StartLink();
-            }
-      }
-      void StartLink()
-      {
-            if(forceBreakLink)return;
-            List<SoldierBehaviors> soldiers = FindObjectsOfType<SoldierBehaviors>().ToList();
-      
-            foreach (var s in soldiers)
+            }else
             {
-                  
-                  if(s == self) continue;
-                  if(self == null) continue;
-                  if(s == null ) continue;
-                  // 获取单位的坐标
-                  Vector3 sPosition = self.transform.position;
-
-                  // 计算单位与圆心的距离
-                  float distance = Vector3.Distance(sPosition, s.transform.position);
-                  if (distance <= range)
+                  SoldiersEndRelation(Self,East);
+                  East = null;
+            }
+            if (WestTetri)
+            {
+                  if(West != WestTetri.TetriUnitSimple.haveUnit.Soldier)
                   {
-                        // 方位检测
-                        Vector3 positionDifference = s.transform.localPosition - self.transform.localPosition;
-
-                        if (positionDifference.x > 0 && East == null )
-                        {
-                              East = s;
-                              if(!AddIfNotExists(direction_Soldier_dir,East,Direction.East))
-                              {
-                                    SoldiersStartRelation(self,East);
-                              }else
-                              {
-                                    East = null;
-                              }
-                             
-                              
-                        }
-                        else if (positionDifference.x < 0 && West == null )
-                        {
-                              West = s;
-                              if(!AddIfNotExists(direction_Soldier_dir,West,Direction.West))
-                              {
-                                    SoldiersStartRelation(self,West);
-                              }else
-                              {
-                                    West = null;
-                              }
-                             
-                              
-                              
-                              
-                        }
-                        if (positionDifference.z > 0 && North == null )
-                        {
-                              North = s;
-                              if(!AddIfNotExists(direction_Soldier_dir,North,Direction.North))
-                              {
-                                    SoldiersStartRelation(self,North);
-                              }else
-                              {
-                                    North = null;
-                              }
-                             
-                              
-                              
-                              
-                        }
-                        else if (positionDifference.z < 0 && South == null )
-                        {
-                              South = s;
-                              if(!AddIfNotExists(direction_Soldier_dir,South,Direction.South))
-                              {
-                                    SoldiersStartRelation(self,South);
-                              }else
-                              {
-                                    South = null;
-                              }
-                              
-                              
-                              
-                              
-                        }
+                        West = WestTetri.TetriUnitSimple.haveUnit.Soldier;
+                        SoldiersStartRelation(Self,West);
+                  }else
+                  {
+                        SoldiersUpdateRelation(Self,East);
                   }
+            }else
+            {
+                  SoldiersEndRelation(Self,West);
+                  West = null;
+            }
+            if (SouthTetri)
+            {
+                  if(South != SouthTetri.TetriUnitSimple.haveUnit.Soldier)
+                  {
+                        South = SouthTetri.TetriUnitSimple.haveUnit.Soldier;
+                        SoldiersStartRelation(Self,South);
+                  }else
+                  {
+                        SoldiersUpdateRelation(Self,South);
+                  }
+            }else
+            {
+                  SoldiersEndRelation(Self,South);
+                  South = null;
             }
       }
-      
+      void InitLevel()
+      {
+            Sprit_North.enabled = false;
+            Sprit_East.enabled = false;
+            Sprit_South.enabled = false;
+            Sprit_West.enabled = false;
+      }
+      void UpdateLevel()
+      {
+            Level_Display();
+      }
+      void Level_Display()
+      {
+            if(North)
+            {
+                  if(Self.unitBase.unitTemplate.player != North.unitBase.unitTemplate.player)North = null;
+                  Sprit_North.enabled = North;
+            }else
+            {
+                  StopCoroutine(WaitParticleAddMorale(Self,Self.PositiveEffect));
+                  StopCoroutine(WaitParticleReduceMorale(Self,Self.NegativeEffect));
+                  Sprit_North.enabled = false;
+            }
+            if(East)
+            {
+                  if(Self.unitBase.unitTemplate.player != East.unitBase.unitTemplate.player)East = null;
+                  Sprit_East.enabled = East;
+            }else
+            {
+                  StopCoroutine(WaitParticleAddMorale(Self,Self.PositiveEffect));
+                  StopCoroutine(WaitParticleReduceMorale(Self,Self.NegativeEffect));
+                  Sprit_East.enabled = false;
+            }
+            if(South)
+            {
+                  if(Self.unitBase.unitTemplate.player != South.unitBase.unitTemplate.player)South = null;
+                  Sprit_South.enabled = South;
+            }else
+            {
+                  StopCoroutine(WaitParticleAddMorale(Self,Self.PositiveEffect));
+                  StopCoroutine(WaitParticleReduceMorale(Self,Self.NegativeEffect));
+                  Sprit_South.enabled = false;
+            }
+            if(West)
+            {
+                  if(Self.unitBase.unitTemplate.player != West.unitBase.unitTemplate.player)West = null;
+                  Sprit_West.enabled = West;
+            }else
+            {
+                  StopCoroutine(WaitParticleAddMorale(Self,Self.PositiveEffect));
+                  StopCoroutine(WaitParticleReduceMorale(Self,Self.NegativeEffect));
+                  Sprit_West.enabled = false;
+            }
+            
+      }
+      void Level_DataEffect()
+      {
+            if(!Self)return;
+            if(North || East || South || West)
+            {
+                  StartCoroutine(WaitParticleAddMorale(Self,Self.PositiveEffect));
+            }else if( !North || !East || !South || !West)
+            {
+                  StartCoroutine(WaitParticleReduceMorale(Self,Self.NegativeEffect));
+            }
+            // Debug.Log("Level_DataEffect++" + Self.morale.morale);
+      }
+
       /// <summary>
       /// 实现联结 关系 开始时的刹那间的表现
       /// 基于心理学的 互助和合作 增强领悟感
@@ -228,75 +395,12 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       /// <param name="to"></param>
       public void SoldiersStartRelation(SoldierBehaviors from,SoldierBehaviors to)
       {
-            if(forceBreakLink)return;
-            if(!to)return;
-            if(!from)return;
+            if(!to || !from)return;
             if(!to.unitBase)return;
-            if(to.unitBase.unitTemplate.unitType != from.unitBase.unitTemplate.unitType) return;
-
+            if(to.unitBase.unitTemplate.player != from.unitBase.unitTemplate.player)return;
             // 特效表现
-            ParticleSystem ps = to.fourDirectionsLinkStartEffect;
-            ps.GetComponent<Renderer>().enabled = needRender;
-
-            // 玩偶表现
-            PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.Positive);
-            to.fourDirectionsLinks.OnPlayEffect?.Invoke(p); 
-
-            if(ps!=null)
-            {
-                  StartCoroutine(WaitParticleAddMorale(to,ps));
-            }
-            
-
-            if(levelSpriteRenders.Count > 0)
-            {
-                  if(!to || !from)return;
-                  
-                  foreach(SpriteRenderer spriteRender in from.fourDirectionsLinks.levelSpriteRenders)
-                  {
-                        if(spriteRender!=null)
-                        {
-                              spriteRender.color = new Color(1,1,1,1);
-                        }
-                  }
-                  // foreach(SpriteRenderer spriteRender in to.fourDirectionsLinks.levelSpriteRenders)
-                  // {
-                  //       if(spriteRender!=null)
-                  //       {
-                  //             spriteRender.color = new Color(1,1,1,1);
-                  //       }
-                        
-                  // }
-            }
-            
-            
-            // Line表现
-            GameObject lineObject = new("LineRenderer");
-            LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
-            lineRenderers.Add(to,lineRenderer);
-            lineRenderer.positionCount = 2; // 设置线段的顶点数
-            lineRenderer.SetPosition(0, from.transform.position); // 设置起点坐标
-            lineRenderer.SetPosition(1, to.transform.position); // 设置终点坐标
-            lineRenderer.startColor = Color.red; // 设置线段起点颜色
-            lineRenderer.endColor = Color.blue; // 设置线段终点颜色
-            lineRenderer.startWidth = 0.5f; // 设置线段起点宽度
-            lineRenderer.endWidth = 0.1f; // 设置线段终点宽度
-            lineRenderer.numCapVertices = 6; // 设置线段端点的圆滑度
-            if(SortingLayer.NameToID(sortingLayerName)!=0)
-            {
-                  int sortingLayerID = SortingLayer.NameToID(sortingLayerName);
-                  lineRenderer.sortingLayerID = sortingLayerID;
-                  lineRenderer.sortingOrder = sortingOrder;
-            }
-            Renderer lineRendererRenderer = lineRenderer.GetComponent<Renderer>();
-            lineRendererRenderer.material = fourDirectionsLinkLinkMat;
-            // 玩偶表现
-                  // PuppetEffectDataStruct p2 = new(PuppetEffectDataStruct.EffectType.FourDirectionsLinkerStart,to.unitBase.id,sortingLayerName,direction_Soldier_dir[to]);
-                  // from.fourDirectionsLinks.OnPlayEffect?.Invoke(p2); 
-
-            lineRendererRenderer.GetComponent<Renderer>().enabled = needRender;
-            
-            
+            ParticleSystem ps = to.PositiveEffect;
+            if(!ps)return;
       }
       /// <summary>
       /// 实现联结 关系 持续的表现
@@ -306,48 +410,9 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       /// <param name="to"></param>
       public void SoldiersUpdateRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
-            if(!to)return;
-        if(forceBreakLink)
-        {
-            SoldiersEndRelation(from,to);
-            return;
-        }
+            if(!to || !from)return;
             Vector3 startPosition = from.transform.position;
             Vector3 endPosition = to.transform.position;
-        foreach (KeyValuePair<SoldierBehaviors,Direction> kvp in direction_Soldier_dir)
-        {
-            if(kvp.Key == to)
-            {
-                  
-                  LineRenderer lineRenderer = lineRenderers[to];
-                  // 玩偶表现
-                        PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.FourDirectionsLinkerUpdate,kvp.Value,endPosition);
-                        from.fourDirectionsLinks.OnPlayEffect?.Invoke(p);
-                  switch (kvp.Value)
-                  {
-                        case Direction.North:
-                              lineRenderer.SetPosition(0, startPosition);
-                              lineRenderer.SetPosition(1, endPosition);
-                        break;
-                        case Direction.East:
-                              lineRenderer.SetPosition(0, startPosition);
-                              lineRenderer.SetPosition(1, endPosition);
-                        break;
-                        case Direction.South:
-                              lineRenderer.SetPosition(0, startPosition);
-                              lineRenderer.SetPosition(1, endPosition);
-                        break;
-                        case Direction.West:
-                              lineRenderer.SetPosition(0, startPosition);
-                              lineRenderer.SetPosition(1, endPosition);
-                        break;
-
-                  }
-                  
-                 
-
-            }
-        }
       }
       /// <summary>
       /// 实现联结 关系 结束的表现
@@ -357,181 +422,83 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       /// <param name="to"></param>
       public void SoldiersEndRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
-            if(to == null)return;
-            if(forceBreakLink)
-            {
-                  if(lineRenderers.ContainsKey(to))
-                  {
-                        PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.FourDirectionsLinkerEnd,direction_Soldier_dir[to]);
-                        from.fourDirectionsLinks.OnPlayEffect?.Invoke(p);
-                        
-                        GameObject remove = lineRenderers[to].gameObject;
-                        lineRenderers.Remove(to);
-                        direction_Soldier_dir.Remove(to);
-                        Destroy(remove);
-                  }
-                  
-                  return;
-            }
-            if(!self)return;
-            float distance = Vector3.Distance(self.transform.position, to.transform.position);
-            if(distance > range)
-            {
-                  
-                  switch (direction_Soldier_dir[to])
-                  {
-                        case Direction.North:
-                              North = null;
-                        break;
-                        case Direction.East:
-                              East = null;
-                        break;
-                        case Direction.South:
-                              South = null;
-                        break;
-                        case Direction.West:
-                              West = null;
-                        break;
-                  }
-                  // 特效表现
-                  ParticleSystem ps = to.fourDirectionsLinkEndEffect;
-                  StartCoroutine(WaitParticleReduceMorale(to,ps));
-                  
-                  // 玩偶表现
-                        PuppetEffectDataStruct p = new(PuppetEffectDataStruct.EffectType.FourDirectionsLinkerEnd,direction_Soldier_dir[to]);
-                        from.fourDirectionsLinks.OnPlayEffect?.Invoke(p);
-
-                  if(levelSpriteRenders.Count > 0)
-                  {
-                        foreach(SpriteRenderer spriteRender in from.fourDirectionsLinks.levelSpriteRenders)
-                        {
-                              if(spriteRender!=null)
-                              {
-                                    spriteRender.color = new Color(1,1,1,0.5f);
-                              }
-                        }
-                        foreach(SpriteRenderer spriteRender in to.fourDirectionsLinks.levelSpriteRenders)
-                        {
-                              if(spriteRender!=null)
-                              {
-                                    spriteRender.color = new Color(1,1,1,0.5f);
-                              }
-                              
-                        }
-                  }
-                  
-
-                  GameObject remove = lineRenderers[to].gameObject;
-                  lineRenderers.Remove(to);
-                  direction_Soldier_dir.Remove(to);
-                  Destroy(remove);
-            }
-            
-      }
-      /// <summary>
-      /// 防止重复添加的检查
-      /// </summary>
-      /// <param name="dictionary"></param>
-      /// <param name="key"></param>
-      /// <param name="value"></param>
-      /// <typeparam name="TKey"></typeparam>
-      /// <typeparam name="TValue"></typeparam>
-      /// <returns></returns>
-      public static bool AddIfNotExists<TKey, TValue>(Dictionary<TKey, TValue> dictionary, TKey key, TValue value)
-      {
-            if(dictionary.Count == 0) 
-            {
-                  dictionary.Add(key, value);
-                  return false;
-            }
-            if (dictionary.ContainsKey(key))
-            {
-                  return true; // 存在重复的键
-            }else
-            {
-                  dictionary.Add(key, value);
-                  return false; // 添加成功，不存在重复的键
-            }
-
-            
+            if(!to)return;
+            if(!Self)return;
+            // 特效表现
+            ParticleSystem ps = to.NegativeEffect;
+            if(!ps)return;
+            StartCoroutine(WaitParticleReduceMorale(from,from.NegativeEffect));
+            StartCoroutine(WaitParticleReduceMorale(to,to.NegativeEffect));
       }
       private IEnumerator WaitParticleAddMorale(SoldierBehaviors soldier,ParticleSystem particleSystem)
       {
+            if(!soldier || !particleSystem)yield return null;
             // 等待粒子特效开始播放
             particleSystem.Play();
-            while (particleSystem.isPlaying)
-            {
-                  yield return null;
-            }
+            // while (particleSystem.isPlaying && !died)
+            // {
+            //       if(died)break;
+            //       yield return null;
+            // }
 
             // 执行你想要执行的操作
-            soldier.morale.ModifyBaseMinMorale(soldier,+linkMinStrengthIncrease);
-            soldier.morale.AddMorale(soldier, 0.06f, false);
+            // soldier.morale.ModifyBaseMinMorale(soldier,+linkMinStrengthIncrease);
+            soldier.morale.AddMorale(soldier, 1.06f, false);
             soldier.morale.EffectByMorale(soldier,ref soldier.strength);
             
       }
       private IEnumerator WaitParticleReduceMorale(SoldierBehaviors soldier,ParticleSystem particleSystem)
       {
+            if(!soldier || !particleSystem)yield return null;
             // 等待粒子特效开始播放
             particleSystem.Play();
-            while (particleSystem.isPlaying)
-            {
-                  yield return null;
-            }
+            // while ( particleSystem.isPlaying && !died)
+            // {
+            //       if(died)break;
+            //       yield return null;
+            // }
 
             // 执行你想要执行的操作
-            soldier.morale.ModifyBaseMinMorale(soldier,-linkMinStrengthIncrease);
-            
+            // soldier.morale.ModifyBaseMinMorale(soldier,-linkMinStrengthIncrease);
+            soldier.morale.ReduceMorale(soldier, 1.06f, false);
+            soldier.morale.EffectByMorale(soldier,ref soldier.strength);
       }
       void SetSkine()
       {
-            if(!self)return;
-            if(self.skinName!="")
+            if(!Self)return;
+            if(Self.skinName!="")
             {
-                  switch(self.morale.soldierType)
+                  switch(Self.morale.soldierType)
                   {
                         case MoraleTemplate.SoldierType.Red:
-                             fourDirectionsLinkLinkMat = fourDirectionsLinkLinkMats.Find(x=>x.name == "FourDirLinkLine_red");
+                             // fourDirectionsLinkLinkMat = fourDirectionsLinkLinkMats.Find(x=>x.name == "FourDirLinkLine_red");
                         break;
                         case MoraleTemplate.SoldierType.Blue:
-                              fourDirectionsLinkLinkMat = fourDirectionsLinkLinkMats.Find(x=>x.name == "FourDirLinkLine_blue");
+                              // fourDirectionsLinkLinkMat = fourDirectionsLinkLinkMats.Find(x=>x.name == "FourDirLinkLine_blue");
                         break;
                         case MoraleTemplate.SoldierType.Green:
-                              fourDirectionsLinkLinkMat = fourDirectionsLinkLinkMats.Find(x=>x.name == "FourDirLinkLine_green");
+                              // fourDirectionsLinkLinkMat = fourDirectionsLinkLinkMats.Find(x=>x.name == "FourDirLinkLine_green");
                         break;
                         case MoraleTemplate.SoldierType.Purple:
-                              fourDirectionsLinkLinkMat = fourDirectionsLinkLinkMats.Find(x=>x.name == "FourDirLinkLine_purple");
+                              // fourDirectionsLinkLinkMat = fourDirectionsLinkLinkMats.Find(x=>x.name == "FourDirLinkLine_purple");
                         break;
                   }
             }     
-            
+            if(Self.unitBase.unitTemplate.player == Player.Player1)
+            {
+                  Sprit_North.color = Dispaly.Player1Color + Color.white*0.3f;
+                  Sprit_East.color = Dispaly.Player1Color+ Color.white*0.3f;
+                  Sprit_South.color = Dispaly.Player1Color+ Color.white*0.3f;
+                  Sprit_West.color = Dispaly.Player1Color+ Color.white*0.3f;
+            }else if(Self.unitBase.unitTemplate.player == Player.Player2)
+            {
+                  Sprit_North.color = Dispaly.Player2Color+ Color.white*0.3f;
+                  Sprit_East.color = Dispaly.Player2Color+ Color.white*0.3f;
+                  Sprit_South.color = Dispaly.Player2Color+ Color.white*0.3f;
+                  Sprit_West.color = Dispaly.Player2Color+ Color.white*0.3f;
+            }
       }
-      void UnitBaseCollected(Unit u)
-      {
-            
-           forceBreakLink = true;
-
-           if(North!=null)
-           {
-             SoldiersEndRelation(self,North);
-           }
-           if(East!=null)
-           {
-             SoldiersEndRelation(self,East);
-           }
-           if(South!=null)
-           {
-             SoldiersEndRelation(self,South);
-           }
-           if(West!=null)
-           {
-             SoldiersEndRelation(self,West);
-           }
-           self = null;
-
-           this.enabled = false;
-           
-      }
+      
       /// <summary>
     /// 为机制 刷新战场信息
     /// </summary>
@@ -540,66 +507,4 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
           mechanismInPut.modeTest = MechanismInPut.ModeTest.FourDirectionsLinks;
           mechanismInPut.modeTest = MechanismInPut.ModeTest.ChainTransfer;
     }
-    /// <summary>
-    /// 比较两个队列
-    /// </summary>
-    private bool ListEquals(List<SoldierBehaviors> list1, List<SoldierBehaviors> list2)
-      {
-            if (list1.Count != list2.Count)
-            {
-                  return false;
-            }
-
-            for (int i = 0; i < list1.Count; i++)
-            {
-                  if (!list1[i].Equals(list2[i]))
-                  {
-                        return false;
-                  }
-            }
-
-            return true;
-      }
 }
-#if UNITY_EDITOR
-[CustomEditor(typeof(FourDirectionsLink))]
-public class FourDirectionsLinkEditor : Editor
-{
-    FourDirectionsLink myScript;
-    FourDirectionsLinkEditor()
-    {
-        // 注册场景视图回调函数
-        SceneView.duringSceneGui += OnSceneGUI;
-    }
-    private  void OnSceneGUI(SceneView sceneView)
-    {
-        if (target == null)
-        {
-            return;
-        }
-        myScript = (FourDirectionsLink)target;
-       
-        // 绘制您的Handles内容
-        DrawFourDirLinkRange(myScript.transform.position, myScript.range, myScript.rangeColor);
-        // 刷新Scene视图
-        sceneView.Repaint();
-    }
-    private  void OnSceneGUI()
-    {
-        if (target == null)
-        {
-            return;
-        }
-        myScript = (FourDirectionsLink)target;
-        DrawFourDirLinkRange(myScript.transform.position, myScript.range, myScript.rangeColor);
-    }
-    public static void DrawFourDirLinkRange(Vector3 center, float radius, Color color, float duration = 0)
-      {
-            
-            Handles.color = color;
-            Handles.DrawWireCube(center, Vector3.one * radius * 2);
-            
-            
-      }
-}
-#endif

@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UC_PlayerData;
-public class MechanismInPut : Singleton<MechanismInPut>
+public class MechanismInPut : MonoBehaviour
 {
       public ModeTest modeTest;
       public UnityAction<ModeTest> modeChangeAction;
@@ -46,7 +46,7 @@ public class MechanismInPut : Singleton<MechanismInPut>
             foreach(SoldierBehaviors s in tempS)
             {
                   if(!s)continue;
-                  if(s.chainTransfer.collected == true || s.fourDirectionsLinks.forceBreakLink == true)
+                  if(s.ChainTransfer.collected == true)
                   {
                         soldiers.Remove(s);
                   }
@@ -71,7 +71,7 @@ public class MechanismInPut : Singleton<MechanismInPut>
                         int links = 0;
                         foreach(SoldierBehaviors s in tempS)
                         {
-                              if(s.fourDirectionsLinks.North!=null || s.fourDirectionsLinks.East!=null || s.fourDirectionsLinks.West!=null || s.fourDirectionsLinks.South!=null)
+                              if(s.FourDirectionsLinks.North!=null || s.FourDirectionsLinks.East!=null || s.FourDirectionsLinks.West!=null || s.FourDirectionsLinks.South!=null)
                               {
                                     links++;
                               }

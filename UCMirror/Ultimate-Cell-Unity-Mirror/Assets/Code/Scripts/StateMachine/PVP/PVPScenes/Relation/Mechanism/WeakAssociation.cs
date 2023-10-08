@@ -22,6 +22,14 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       MechanismInPut mechanismInPut;
       public List<SoldierBehaviors> soldiers = new();
       public SoldierBehaviors self;
+      public SoldierBehaviors Self
+      {
+            get
+            {
+                  if(!self)self = GetComponent<SoldierBehaviors>();
+                  return self;
+            }
+      }
       MechanismInPut.ModeTest modeTest;
       // 弱势关联表现
       
@@ -41,14 +49,13 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       
       private Vector3[] points; // 抛物线上的所有点
       public bool active = false;
-      public UnityAction<BlocksData.BlocksMechanismType> WeakAssociationActive;
+      public UnityAction<BlocksData.BlocksMechanismType> weakAssociationActive;
       public void Start()
       {
-            self = transform.GetComponent<SoldierBehaviors>();
-            if(self.unitBase!=null)
+            if(Self.unitBase!=null)
             {
-                  self.unitBase.OnStartCollect += UnitBaseCollected;
-                  self.unitBase.OnDie += UnitBaseCollected;
+                  Self.unitBase.OnStartCollect += UnitBaseCollected;
+                  Self.unitBase.OnDie += UnitBaseCollected;
             }
             Invoke(nameof(SetSkine), 0.1f);
             mechanismInPut = FindObjectOfType<MechanismInPut>();
@@ -63,7 +70,7 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       public void Active()
       {
             SoldierBehaviors to =  GetClosestSoldier();
-            SoldiersStartRelation(self,to);
+            SoldiersStartRelation(Self,to);
             active = true;
       }
       public void Stop()
@@ -94,13 +101,13 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       {
             needRender = true;
             if(from == null || to == null) return;
-            to.positiveEffect.Play();
-            from.positiveEffect.Play();
+            to.PositiveEffect.Play();
+            from.PositiveEffect.Play();
             associationSource = from;
             associationTarget = to;
             // UnitSimple 需要处理的事情
-            // to.weakAssociation.WeakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
-            // from.weakAssociation.WeakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
+            to.WeakAssociation.weakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
+            from.WeakAssociation.weakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
             // 玩偶表现
             // PuppetEffectDataStruct p = new (PuppetEffectDataStruct.EffectType.Positive);
             // from.weakAssociation.OnPlayEffect?.Invoke(p);
@@ -148,16 +155,9 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       }
       public void SoldiersEndRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
-            to.positiveEffect.Play();
-            from.positiveEffect.Play();
-            // SoldierBehaviors 需要处理的事情
-            to.morale.AddMorale(to, 0.6f, true);
-            to.morale.EffectByMorale(to,ref to.strength);
-            from.morale.AddMorale(to, 0.6f, true);
-            from.morale.EffectByMorale(to,ref to.strength);
             // UnitSimple 需要处理的事情
-            to.weakAssociation.WeakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
-            from.weakAssociation.WeakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
+            to.WeakAssociation.weakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
+            from.WeakAssociation.weakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
             Destroy(lineRenderer.gameObject);
       }
 #region 数据操作
@@ -236,9 +236,9 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
             Vector3 currentPosition = transform.position;
             foreach (SoldierBehaviors soldier in soldiers)
             {
-                  if(soldier.weakAssociation.associationTarget!=null) continue;
-                  if(soldier == self) continue;
-                  if(soldier.morale.soldierType != self.morale.soldierType) continue;
+                  if(soldier.WeakAssociation.associationTarget!=null) continue;
+                  if(soldier == Self) continue;
+                  if(soldier.morale.soldierType != Self.morale.soldierType) continue;
                   Vector3 distanceToEnemy = soldier.transform.position - currentPosition;
                   float distanceSqrToEnemy = distanceToEnemy.sqrMagnitude;
 
@@ -253,8 +253,8 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       }
       void SetSkine()
       {
-            if(self.skinName=="")return;
-            switch(self.morale.soldierType)
+            if(Self.skinName=="")return;
+            switch(Self.morale.soldierType)
             {
                   case MoraleTemplate.SoldierType.Red:
                        weakAssociationMat = weakAssociationMats.Find(x=>x.name == "FourDirLinkEffect_red");

@@ -216,8 +216,8 @@ public class PuppetLine : MonoBehaviour
             weapon.shooter.enabled = false;
         }
 
-        baseUnit.skeletonRenderer.transform.GetComponent<MeshRenderer>().enabled = false;
-        foreach(var child in baseUnit.skeletonRenderer.transform.GetComponentsInChildren<SpriteRenderer>())
+        baseUnit.SkeletonRenderer.transform.GetComponent<MeshRenderer>().enabled = false;
+        foreach(var child in baseUnit.SkeletonRenderer.transform.GetComponentsInChildren<SpriteRenderer>())
         {
             child.enabled = false;
         }
@@ -247,9 +247,9 @@ public class PuppetLine : MonoBehaviour
         if(baseUnit!=null && baseSoldier!=null && baseUnit.navMeshAgent)
         {
             // 位置同步
-            PuppetPosition = baseUnit.skeletonRenderer.transform.position;
+            PuppetPosition = baseUnit.SkeletonRenderer.transform.position;
             // 缩放同步
-            PuppetScale = baseUnit.skeletonRenderer.transform.localScale;
+            PuppetScale = baseUnit.SkeletonRenderer.transform.localScale;
             // 血量同步
             PuppetHealth = baseUnit.shaderHP;
             // 翻转同步

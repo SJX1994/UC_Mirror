@@ -35,7 +35,7 @@ public class BuoyInfo : NetworkBehaviour
     public UnityAction OnBuoyEndDrag;
     // 在线模式：
     Vector3 mousePos_Temp;
-    public BlocksCreator blocksCreator;
+    public BlocksCreator_Main blocksCreator;
     [SyncVar(hook = nameof(GoOnTheBlocksCreator))]
     public bool onTheBlocksCreator;
     public bool OnTheBlocksCreator
@@ -196,7 +196,7 @@ public class BuoyInfo : NetworkBehaviour
     [Command(requiresAuthority = false)]
     void CmdChangePlayerSkin(bool isPlayer1)
     {
-        blocksCreator = FindObjectOfType<BlocksCreator>();
+        blocksCreator = FindObjectOfType<BlocksCreator_Main>();
         OnTheBlocksCreator = false;
         buoyTurnHandle = transform.Find("TurnHandles_P2").GetComponent<BuoyTurnHandle>();
         buoyBehavior = transform.Find("Behavior_P2").GetComponent<BuoyBehavior>();
@@ -220,7 +220,7 @@ public class BuoyInfo : NetworkBehaviour
     [ClientRpc]
     void ChangePlayerSkin(bool isPlayer1)
     {
-        blocksCreator = FindObjectOfType<BlocksCreator>();
+        blocksCreator = FindObjectOfType<BlocksCreator_Main>();
         OnTheBlocksCreator = false;
         buoyTurnHandle = transform.Find("TurnHandles_P2").GetComponent<BuoyTurnHandle>();
         buoyBehavior = transform.Find("Behavior_P2").GetComponent<BuoyBehavior>();
@@ -243,7 +243,7 @@ public class BuoyInfo : NetworkBehaviour
     public void GoOnTheBlocksCreator(bool oldValue,bool newValue)
     {
         if(Local())return;
-        if(!blocksCreator){blocksCreator = FindObjectOfType<BlocksCreator>();}
+        if(!blocksCreator){blocksCreator = FindObjectOfType<BlocksCreator_Main>();}
         if(newValue)
         {
             transform.parent = blocksCreator.transform;

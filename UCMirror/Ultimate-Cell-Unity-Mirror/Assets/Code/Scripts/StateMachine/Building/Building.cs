@@ -17,7 +17,7 @@ public class Building : MonoBehaviour
     public UnityAction<SpriteRenderer,bool> OnBuildingFuctionHit;
     public UnityAction<SpriteRenderer,Building> OnBuildingFuctionExit;
     public PVP_faction.faction faction = PVP_faction.faction.None;
-    public BlocksCreator blocksCreator;
+    public BlocksCreator_Main blocksCreator;
     // 表现
     private SpriteRenderer selectionCircle;
     private MaterialPropertyBlock spinePropertyBlock;
@@ -68,7 +68,7 @@ public class Building : MonoBehaviour
         animator = spine.GetComponent<Animator>();
         skeletonRenderer = spine.GetComponent<SkeletonRenderer>();
         selectionCircle = transform.Find("SelectionCircle").GetComponent<SpriteRenderer>();
-        blocksCreator = FindObjectOfType<BlocksCreator>();
+        blocksCreator = FindObjectOfType<BlocksCreator_Main>();
         //blocksCreator.OnBlocksInitEnd += LateStart;
         rightAngle = new Vector3(80f, 0f, 0f);
         RepaintMat();
@@ -201,7 +201,7 @@ public class Building : MonoBehaviour
             }
         }else{
         
-            MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.CancelOperation;
+            // MechanismInPut.Instance.warningSystem.changeWarningTypes = WarningSystem.WarningType.CancelOperation;
             Invoke(nameof(ResetPos),0.1f);
         }
         Draging = false;

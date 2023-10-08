@@ -9,10 +9,10 @@ using Common;
 public class UIManager : SingTon<UIManager>
 {
     /// <summary>
-    /// ´æ·ÅUIµÄÊý¾Ý
+    /// ï¿½ï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// _type ×´Ì¬
-    /// _path Â·¾¶
-    /// _uipaeam ²ÎÊý
+    /// _path Â·ï¿½ï¿½
+    /// _uipaeam ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public class UIInfoData
     {
@@ -31,17 +31,17 @@ public class UIManager : SingTon<UIManager>
     }
     
     /// <summary>
-    /// ½çÃæ¹ÜÀíµÄ´Êµä
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´Êµï¿½
     /// </summary>
     public Dictionary<UIType, GameObject> UITypesDics = null;
 
     /// <summary>
-    /// UIÍÆÈëµÄÕ»
+    /// UIï¿½ï¿½ï¿½ï¿½ï¿½Õ»
     /// </summary>
     public Stack<UIInfoData> stackOpenUI = null;
 
     /// <summary>
-    /// ³õÊ¼»¯
+    /// ï¿½ï¿½Ê¼ï¿½ï¿½
     /// </summary>
     public override void Init()
     {
@@ -50,7 +50,7 @@ public class UIManager : SingTon<UIManager>
     }
 
     /// <summary>
-    /// ¸ù¾Ý´Êµä»ñÈ¡UI Prefab
+    /// ï¿½ï¿½ï¿½Ý´Êµï¿½ï¿½È¡UI Prefab
     /// </summary>
     /// <param name="_type"></param>
     /// <returns></returns>
@@ -64,15 +64,15 @@ public class UIManager : SingTon<UIManager>
         }
         else
         {
-            throw new System.Exception("×ÖµäÃ»ÓÐ¶ÔÓ¦Öµ");
+            throw new System.Exception("ï¿½Öµï¿½Ã»ï¿½Ð¶ï¿½Ó¦Öµ");
         }
     }
 
     /// <summary>
-    /// ²é¿´³¡¾°ÊÇ·ñÔÚ´ÊµäÖÐ£¨ÊÇ·ñ±»´ò¿ª£©
+    /// ï¿½é¿´ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ú´Êµï¿½ï¿½Ð£ï¿½ï¿½Ç·ñ±»´ò¿ª£ï¿½
     /// </summary>
     /// <param name="_type"></param>
-    /// <returns>ÊÇ·ñ±»´ò¿ª</returns>
+    /// <returns>ï¿½Ç·ñ±»´ï¿½</returns>
     public bool TryGetUI(UIType _type)
     {
         bool _isInstance;
@@ -82,10 +82,10 @@ public class UIManager : SingTon<UIManager>
     }
 
     /// <summary>
-    /// »ñÈ¡ËùÓÐBaseUI»òÕß¼Ì³Ð×ÔBaseUIµÄÀà
-    /// Èç¹û´ÊµäÄÜÕÒµ½¶ÔÓ¦µÄUI£¬ÄÇÃ´¾Í·µ»ØUIÏÂµÄBaseUIÀà
+    /// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½BaseUIï¿½ï¿½ï¿½ß¼Ì³ï¿½ï¿½ï¿½BaseUIï¿½ï¿½ï¿½ï¿½
+    /// ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½Ó¦ï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½Ã´ï¿½Í·ï¿½ï¿½ï¿½UIï¿½Âµï¿½BaseUIï¿½ï¿½
     /// </summary>
-    /// <typeparam name="T">ËùÓÐUITypeµÄ·ºÀà</typeparam>
+    /// <typeparam name="T">ï¿½ï¿½ï¿½ï¿½UITypeï¿½Ä·ï¿½ï¿½ï¿½</typeparam>
     /// <param name="_type"></param>
     /// <returns></returns>
     public T GetUI<T>(UIType _type) where T : BaseUI
@@ -103,7 +103,7 @@ public class UIManager : SingTon<UIManager>
 
     #region OpenUI
     /// <summary>
-    /// ´ò¿ªUI
+    /// ï¿½ï¿½UI
     /// </summary>
     public void OpenUI(UIType[] _types)
     {
@@ -130,33 +130,33 @@ public class UIManager : SingTon<UIManager>
     }
 
     /// <summary>
-    /// ¿ªÆôUI½çÃæ·½·¨
+    /// ï¿½ï¿½ï¿½ï¿½UIï¿½ï¿½ï¿½æ·½ï¿½ï¿½
     /// </summary>
-    /// <param name="_isCloseOtherUI">ÊÇ·ñ¹Ø±ÕÆäËûUI</param>
-    /// <param name="_types">UIÀàÐÍ/param>
-    /// <param name="_uiparam">Êý¾Ý</param>
+    /// <param name="_isCloseOtherUI">ï¿½Ç·ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½UI</param>
+    /// <param name="_types">UIï¿½ï¿½ï¿½ï¿½/param>
+    /// <param name="_uiparam">ï¿½ï¿½ï¿½ï¿½</param>
     public void OpenUI(bool _isCloseOtherUI, UIType[] _types,object[] _uiparam)
     {
         if (_isCloseOtherUI)
         {
-            //¹Ø±ÕÆäËûUI
+            //ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½UI
             CloseAllUI();
         }
-        //Ê×ÏÈÕÒµ½ËùÓÐµÄUItype
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½Ðµï¿½UItype
         for(int i = 0; i < _types.Length; i++)
         {
             UIType _type = _types[i];
-            //Èç¹ûÕ»ÄÚÃ»ÓÐ¶ÔÓ¦TypeµÄ£¬¾Í½«¶ÔÓ¦TypeµÄÊý¾ÝÍÆÈëÕ»
+            //ï¿½ï¿½ï¿½Õ»ï¿½ï¿½Ã»ï¿½Ð¶ï¿½Ó¦Typeï¿½Ä£ï¿½ï¿½Í½ï¿½ï¿½ï¿½Ó¦Typeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ»
             if (!UITypesDics.ContainsKey(_type))
             {
                 string _path = PathDefines.GetUIPathWithUIType(_type);
                 stackOpenUI.Push(new UIInfoData(_type, _path, _uiparam));
             }
         }
-        //Èç¹ûÕ»ÄÚÓÐÊý¾ÝµÄ»°,¾Í´ò¿ª½çÃæ
+        //ï¿½ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝµÄ»ï¿½,ï¿½Í´ò¿ª½ï¿½ï¿½ï¿½
         if(stackOpenUI.Count > 0)
         {
-            //Òì²½¼ÓÔØUI
+            //ï¿½ì²½ï¿½ï¿½ï¿½ï¿½UI
             CoroutineCtrl.Instance.StartCoroutine(AsyncLoadData());
 
         }
@@ -170,8 +170,8 @@ public class UIManager : SingTon<UIManager>
     public void OpenSubUI( UIType _type, object[] _uiparam,GameObject parentObj)
     {
         string _path = PathDefines.GetUIPathWithUIType(_type);
-        GameObject _prefab = ABManager.Instance.LoadResource<GameObject>("uipage", _path);
-            // Resources.Load<GameObject>(_path);
+        // GameObject _prefab = ABManager.Instance.LoadResource<GameObject>("uipage", _path);
+        GameObject _prefab = Resources.Load<GameObject>(_path);
         GameObject _uiObj = GameObject.Instantiate(_prefab);
         _uiObj.transform.SetParent(parentObj.transform, false);
         BaseUI _baseUI = _uiObj.GetComponent<BaseUI>();
@@ -180,7 +180,7 @@ public class UIManager : SingTon<UIManager>
     }
 
     /// <summary>
-    /// Òì²½¼ÓÔØUI½çÃæ
+    /// ï¿½ì²½ï¿½ï¿½ï¿½ï¿½UIï¿½ï¿½ï¿½ï¿½
     /// </summary>
     /// <returns></returns>
     public IEnumerator AsyncLoadData()
@@ -196,7 +196,7 @@ public class UIManager : SingTon<UIManager>
                 _prefab = ABManager.Instance.LoadResource<GameObject>("uipage", _infoData._path);
                 if(_prefab == null)
                 {
-                    throw new Exception("Ã»ÓÐÕÒµ½UI×ÊÔ´");
+                    throw new Exception("Ã»ï¿½ï¿½ï¿½Òµï¿½UIï¿½ï¿½Ô´");
                 }
                 else
                 {
@@ -210,7 +210,7 @@ public class UIManager : SingTon<UIManager>
                     {
                         _baseUI.SetUI(_infoData._uipaeam);
                     }
-                    //½«Obj¼ÓÈë´Êµä
+                    //ï¿½ï¿½Objï¿½ï¿½ï¿½ï¿½Êµï¿½
                     UITypesDics.Add(_infoData._type, _uiObj);
                 }
             } while (stackOpenUI.Count > 0);
@@ -223,7 +223,7 @@ public class UIManager : SingTon<UIManager>
 
     #region CloseUI
     /// <summary>
-    /// ¹Ø±ÕËùÓÐUI
+    /// ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½UI
     /// </summary>
     public void CloseAllUI()
     {
@@ -235,18 +235,18 @@ public class UIManager : SingTon<UIManager>
     }
 
     /// <summary>
-    /// ¹Ø±ÕUI½çÃæ·½·¨
+    /// ï¿½Ø±ï¿½UIï¿½ï¿½ï¿½æ·½ï¿½ï¿½
     /// </summary>
     /// <param name="_uiType"></param>
     public void CloseUI(UIType _uiType)
     {
         GameObject _uiTypeObj = GetUIObj(_uiType);
-        //Èç¹ûÃ»ÓÐobj£¬ÄÇÃ´´Ó´ÊµäÒÆ³ýUI
+        //ï¿½ï¿½ï¿½Ã»ï¿½ï¿½objï¿½ï¿½ï¿½ï¿½Ã´ï¿½Ó´Êµï¿½ï¿½Æ³ï¿½UI
         if(_uiTypeObj == null)
         {
             UITypesDics.Remove(_uiType);
         }
-        //Èç¹ûÓÐobj£¬ÔÚbaseuiÀïÃæµ÷ÓÃReleaseÏú»Ù¹Ø±Õ
+        //ï¿½ï¿½ï¿½ï¿½ï¿½objï¿½ï¿½ï¿½ï¿½baseuiï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Releaseï¿½ï¿½ï¿½Ù¹Ø±ï¿½
         else
         {
             BaseUI _baseUI = _uiTypeObj.GetComponent<BaseUI>();

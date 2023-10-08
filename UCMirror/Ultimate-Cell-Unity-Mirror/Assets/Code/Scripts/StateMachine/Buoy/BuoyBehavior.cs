@@ -667,6 +667,9 @@ public class BuoyBehavior : NetworkBehaviour
         tsBuoyControled.tetrisBlockSimple.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Drop;
         tsBuoyControled.tetrisBlockSimple.SuccessToCreat();
         tsBuoyControled.tetrisBlockSimple.Active();
+        // 机制检测
+        TetrisBlockSimple tetrisBlockSimple = tsBuoyControled.TetrisBlockSimple;
+        tetrisBlockSimple.BlocksCreator.BlocksCounterInvoke();
         
         if(buoyInfo.Local())
         {
@@ -686,6 +689,7 @@ public class BuoyBehavior : NetworkBehaviour
         RaycastHit hit;
         bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
         condition.Add(hitBlock);
+        if(!tsBuoyControled){DestroyImmediate(tetrisBuoySimpleTemp.gameObject);return false;}
         bool putChecker = tetrisBuoySimpleTemp.DoDropCanPutCheck() && tsBuoyControled.tetrisBlockSimple.OnBuoyDrop();
         condition.Add(putChecker);
         bool allTrue = condition.All(b => b);
@@ -699,6 +703,7 @@ public class BuoyBehavior : NetworkBehaviour
         RaycastHit hit;
         bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
         condition.Add(hitBlock);
+        if(!tsBuoyControled || !tsBuoyControled.tetrisBlockSimple){DestroyImmediate(tetrisBuoySimpleTemp.gameObject);return false;}
         bool putChecker = tetrisBuoySimpleTemp.DoDropCanPutCheck(checkSelfTetris) && tsBuoyControled.tetrisBlockSimple.OnBuoyDrop();
         condition.Add(putChecker);
         bool allTrue = condition.All(b => b);

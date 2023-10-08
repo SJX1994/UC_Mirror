@@ -1,26 +1,26 @@
 /// **************************************
-/// 全局常量类
+/// ????????
 /// **************************************
 
 namespace GameFrameWork
 {
-    //UI状态委托
+    //UI?????
     public delegate void UIStateDelegate(object obj,UIState OldState,UIState NewState);
 
     /// <summary>
-    /// 这里存放所有UI界面枚举
+    /// ??????????UI???????
     /// </summary>
     public enum UIType
     {
-        //测试
+        //????
         None = -1,
 
-        //首页
+        //???
         HomePage2D = 0,
         HomePage3D = 1,
 
-        //首页子页面
-        HeroDetail = 2,//英雄详情页面
+        //????????
+        HeroDetail = 2,//??????????
         HeroStory = 3,
 
         SubHeroItem = 4,
@@ -28,10 +28,10 @@ namespace GameFrameWork
         HeroUpgradePage = 6,
         SubHeroTag = 7,
 
-        //英雄
+        //???
         Hero_Ultimate = 8,
 
-        //战斗
+        //???
         FightUi = 20,
         LegionUi = 21,
         IdelBox = 22,
@@ -43,12 +43,12 @@ namespace GameFrameWork
     }
 
     /// <summary>
-    /// UI页面状态
-    /// 初始化
-    /// 加载
-    /// 准备完毕
-    /// 关闭
-    /// 销毁
+    /// UI?????
+    /// ?????
+    /// ????
+    /// ??????
+    /// ???
+    /// ????
     /// </summary>
     public enum UIState
     {
@@ -61,21 +61,21 @@ namespace GameFrameWork
     }
 
     /// <summary>
-    /// 数据加载
-    /// 这里用于维护所有UI路径
-    /// 包括加载路径
-    /// 和返回路径
+    /// ???????
+    /// ???????????????UI·??
+    /// ????????·??
+    /// ?????·??
     /// </summary>
     public class PathDefines
     {
-        //加载路径
+        //????·??
         public const string UI_PREFABS = "Prefabs/UIPage/";
         public const string UI_ICON = "Prefabs/UIPage/Icon/";
         public const string UI_SUBUI = "Prefabs/UIPage/SubUI/";
         public const string UI_HERO = "Prefabs/UIPage/Hero/";
 
         /// <summary>
-        /// 返回一个路径
+        /// ???????·??
         /// </summary>
         /// <param name="_type"></param>
         /// <returns></returns>
@@ -84,31 +84,31 @@ namespace GameFrameWork
             string path = string.Empty;
             switch (_type)
             {
-                //主页
+                //???
                 case UIType.HomePage2D:
                     path = "HomePage2D";
                     break;
-                //英雄配置页
+                //????????
                 case UIType.HomePage3D:
                     path = "HomePage3D";
                     break;
-                //关卡选择页
+                //???????
                 case UIType.HeroDetail:
                     path = "HeroDetail";
                     break;
-                //（二级）关卡细节页面
+                //?????????????????
                 case UIType.HeroStory:
                     path = "HeroStory";
                     break;
-                //（二级）英雄对象页
+                //???????????????
                 case UIType.SubHeroItem:
                     path = "SubHeroItem";
                     break;
-                //（二级）配置英雄对象页
+                //???????????????????
                 case UIType.SubConfigItem:
                     path = "SubConfigItem";
                     break;
-                //英雄升级页
+                //????????
                 case UIType.HeroUpgradePage:
                     path = "HeroUpgradePage";
                     break;
@@ -116,12 +116,12 @@ namespace GameFrameWork
                     path = "SubHeroTag";
                     break;
 
-                //英雄UI
+                //???UI
                 case UIType.Hero_Ultimate:
                     path = "Hero_Ultimate";
                     break;
 
-                //战斗UI
+                //???UI
                 case UIType.FightUi:
                     path = "FightUi";
                     break;
@@ -135,7 +135,7 @@ namespace GameFrameWork
                     path = "IdelUi";
                     break;
                 case UIType.StarItem:
-                    path = "Star";
+                    path = "UI/Star";
                     break;
                 case UIType.VictoryPage:
                     path = "VictoryPage";
@@ -152,7 +152,7 @@ namespace GameFrameWork
         }
         
         /// <summary>
-        /// 返回一个脚本类型
+        /// ??????????????
         /// </summary>
         /// <param name="_type"></param>
         /// <returns></returns>
@@ -186,12 +186,12 @@ namespace GameFrameWork
                     _stype = typeof(SubHeroTag);
                     break;
 
-                //英雄UI
+                //???UI
                 case UIType.Hero_Ultimate:
                     _stype = typeof(Hero_Ultimate);
                     break;
 
-                //战斗UI
+                //???UI
                 case UIType.FightUi:
                     _stype = typeof(FightUi);
                     break;

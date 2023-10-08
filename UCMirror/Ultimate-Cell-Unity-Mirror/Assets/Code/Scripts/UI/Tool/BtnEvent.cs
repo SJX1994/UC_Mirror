@@ -1,15 +1,15 @@
 /// **************************************
-/// °´Å¥ÊÂ¼şµÄ½Ó¿Ú
+/// æŒ‰é’®äº‹ä»¶çš„æ¥å£
 /// **************************************
 using UnityEngine;
 
 public class BtnEvent : MonoBehaviour
 {
     /// <summary>
-    /// ×¢²á°´Å¥µã»÷ÊÂ¼ş
+    /// æ³¨å†ŒæŒ‰é’®ç‚¹å‡»äº‹ä»¶
     /// </summary>
-    /// <param name="buttonName">°´Å¥Ãû³Æ</param>
-    /// <param name="myEventHandler">µã»÷µÄÊÂ¼ş</param>
+    /// <param name="buttonName">æŒ‰é’®åç§°</param>
+    /// <param name="myEventHandler">ç‚¹å‡»çš„äº‹ä»¶</param>
     public static void RigisterButtonClickEvent(GameObject[] buttonObjs, EventTriggerListener.MyEventHandler myEventHandler)
     {
         for (int i = 0; i < buttonObjs.Length; i++)
@@ -28,9 +28,9 @@ public class BtnEvent : MonoBehaviour
         }
     }
     /// <summary>
-    /// ×¢²á°´Å¥ĞüÍ£ÊÂ¼ş
+    /// æ³¨å†ŒæŒ‰é’®æ‚¬åœäº‹ä»¶
     /// </summary>
-    /// <param name="buttonName">°´Å¥Ãû³Æ</param>
+    /// <param name="buttonName">æŒ‰é’®åç§°</param>
     /// <param name="myEventHandler"></param>
     public static void RigisterButtonEnterEvent(GameObject[] buttonObjs, EventTriggerListener.MyEventHandler myEventHandler)
     {
@@ -52,7 +52,7 @@ public class BtnEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// ×¢²á°´Å¥°´ÏÂ
+    /// æ³¨å†ŒæŒ‰é’®æŒ‰ä¸‹
     /// </summary>
     /// <param name="buttonObj"></param>
     /// <param name="myEventHandler"></param>
@@ -65,10 +65,10 @@ public class BtnEvent : MonoBehaviour
     }
     
     /// <summary>
-    /// ×¢²á°´Å¥Ì§Æğ
+    /// æ³¨å†ŒæŒ‰é’®æŠ¬èµ·
     /// </summary>
-    /// <param name="buttonObj">°´Å¥</param>
-    /// <param name="myEventHandler">×´Ì¬½Ó¿Ú</param>
+    /// <param name="buttonObj">æŒ‰é’®</param>
+    /// <param name="myEventHandler">çŠ¶æ€æ¥å£</param>
     public static void RigisterButtonUpEvent(GameObject buttonObj, EventTriggerListener.MyEventHandler myEventHandler)
     {
         if (buttonObj != null)
@@ -78,9 +78,9 @@ public class BtnEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// ×¢²á°´Å¥Àë¿ªÊÂ¼ş
+    /// æ³¨å†ŒæŒ‰é’®ç¦»å¼€äº‹ä»¶
     /// </summary>
-    /// <param name="buttonName">°´Å¥Ãû³Æ</param>
+    /// <param name="buttonName">æŒ‰é’®åç§°</param>
     /// <param name="myEventHandler"></param>
     public static void RigisterButtonExitEvent(GameObject[] buttonObjs, EventTriggerListener.MyEventHandler myEventHandler)
     {
@@ -102,7 +102,7 @@ public class BtnEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// ×¢²á°´Å¥ÍÏ¶¯¿ªÊ¼ÊÂ¼ş
+    /// æ³¨å†ŒæŒ‰é’®æ‹–åŠ¨å¼€å§‹äº‹ä»¶
     /// </summary>
     /// <param name="buttonObj"></param>
     /// <param name="myEventHandler"></param>
@@ -115,7 +115,7 @@ public class BtnEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// ×¢²á°´Å¥ÍÏ¶¯ÊÂ¼ş
+    /// æ³¨å†ŒæŒ‰é’®æ‹–åŠ¨äº‹ä»¶
     /// </summary>
     /// <param name="buttonObj"></param>
     /// <param name="myEventHandler"></param>
@@ -128,7 +128,7 @@ public class BtnEvent : MonoBehaviour
     }
 
     /// <summary>
-    /// ×¢²á°´Å¥ÍÏ¶¯½áÊøÊÂ¼ş
+    /// æ³¨å†ŒæŒ‰é’®æ‹–åŠ¨ç»“æŸäº‹ä»¶
     /// </summary>
     /// <param name="buttonObj"></param>
     /// <param name="myEventHandler"></param>

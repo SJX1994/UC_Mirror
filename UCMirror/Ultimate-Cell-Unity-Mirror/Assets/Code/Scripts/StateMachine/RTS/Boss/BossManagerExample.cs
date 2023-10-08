@@ -42,7 +42,7 @@ public class BossManagerExample : MonoBehaviour
        GameObject bossTmp = Instantiate(boss,position,Quaternion.identity);
        boss = bossTmp;
        Weapon weapon;
-       if(boss.GetComponent<Unit>().skeletonRenderer.transform.TryGetComponent<Weapon>(out weapon))
+       if(boss.GetComponent<Unit>().SkeletonRenderer.transform.TryGetComponent<Weapon>(out weapon))
         {
             weapon.SetWeapon(WeaponTemplate.WeaponType.Spear);
             weapon.OnChangeWeapon += BossWeaponChange;

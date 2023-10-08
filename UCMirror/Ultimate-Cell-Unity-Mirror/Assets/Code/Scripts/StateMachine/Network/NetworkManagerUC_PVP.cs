@@ -13,7 +13,7 @@ public class NetworkManagerUC_PVP : NetworkManager
     public Transform buoyPlayer1Spawn;
     public Transform buoyPlayer2Spawn;
     [Header("UC_PVP_Server:")]
-    public BlocksCreator blocksCreator;
+    public BlocksCreator_Main blocksCreator;
     public Transform canvasManager_StayMachine;
     [Header("UC_PVP_Client:")]
     public BuoyInfo buoyPlayer;
@@ -87,7 +87,7 @@ public class NetworkManagerUC_PVP : NetworkManager
             // 不看对方的培养皿
             SetPVPplayer(numPlayers);
             // 生成战场方格测试用
-            blocksCreator = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "BlocksManager")).GetComponent<BlocksCreator>();
+            blocksCreator = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "BlocksManager")).GetComponent<BlocksCreator_Main>();
             NetworkServer.Spawn(blocksCreator.gameObject);
         }
         else if (numPlayers == 2)
@@ -97,7 +97,7 @@ public class NetworkManagerUC_PVP : NetworkManager
             buoyPlayer.player = Player.Player2;
             buoyPlayer.Active();
             // 生成战场方格
-            blocksCreator = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "BlocksManager")).GetComponent<BlocksCreator>();
+            blocksCreator = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "BlocksManager")).GetComponent<BlocksCreator_Main>();
             NetworkServer.Spawn(blocksCreator.gameObject);
             // 生成Canvas管理系统
             canvasManager_StayMachine = Instantiate(spawnPrefabs.Find(prefab => prefab.name == "CanvasManager_StayMachine")).transform;
