@@ -25,28 +25,33 @@ public class BlocksReferee : MonoBehaviour
             return gameoverPage;
         }
     }
+    public void Awake()
+    {
+        DOTween.Clear();
+    }
     public void Active()
     {
         ResetTimer();
     }
-    // 计时器胜负判定
     private void Update()
     {
-        if(!Referee.isTimerRunning)return;
-        UpdateTimerString(); // 更新UI上的计时器显示
-        Referee.currentTime -= Time.deltaTime; // 更新当前计时时间
-        if (Referee.currentTime > 0) return;
+        if(!Referee.isTimerRunning_ReverseOrder)return;
+        UpdateStaticTimerString();
+        Referee.currentTime_ReverseOrder -= Time.deltaTime;
+        if (Referee.currentTime_ReverseOrder > 0) return;
         TimerComplete();
     }
     public void StopTimer()
     {
-        Referee.isTimerRunning = false; // 停止计时
+        bool stopCounting = false;
+        Referee.isTimerRunning_ReverseOrder = stopCounting;
     }
     public void ResetTimer()
     {
-        Referee.currentTime = Referee.totalTime; // 重置当前计时时间
-        Referee.isTimerRunning = true; // 开始计时
-        Referee.gameover = false; // 游戏未结束
+        bool startCounting = true;
+        Referee.currentTime_ReverseOrder = Referee.TotalTime_ReverseOrder;
+        Referee.isTimerRunning_ReverseOrder = startCounting;
+        Referee.gameover = false;
     }
     void TimerComplete()
     {
@@ -79,15 +84,14 @@ public class BlocksReferee : MonoBehaviour
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         SceneManager.LoadScene(currentSceneIndex);
     }
-    private void UpdateTimerString()
+    private void UpdateStaticTimerString()
     {
-        // 将当前计时时间转换为分秒格式，并显示在UI上
-        int minutes = Mathf.FloorToInt(Referee.currentTime / 60f);
-        int seconds = Mathf.FloorToInt(Referee.currentTime % 60f);
-        Referee.timerText = string.Format("{0:00}:{1:00}", minutes, seconds);
+        int minutes = Mathf.FloorToInt(Referee.currentTime_ReverseOrder / 60f);
+        int seconds = Mathf.FloorToInt(Referee.currentTime_ReverseOrder % 60f);
+        Referee.timerText_ReverseOrder = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
     // 砖块数胜负判定
-    public void CheckLose(Vector2 posId = default(Vector2), int state = 0)
+    public void CheckLoseByBloksLess(Vector2 posId = default(Vector2), int state = 0)
     {
         BlockTetriHandler.BlockTetriState blockTetriState = (BlockTetriHandler.BlockTetriState)state;
         if(blockTetriState == BlockTetriHandler.BlockTetriState.Occupying || blockTetriState == BlockTetriHandler.BlockTetriState.Peace_Player1 || blockTetriState == BlockTetriHandler.BlockTetriState.Peace_Player2 || blockTetriState == BlockTetriHandler.BlockTetriState.Peace)return;

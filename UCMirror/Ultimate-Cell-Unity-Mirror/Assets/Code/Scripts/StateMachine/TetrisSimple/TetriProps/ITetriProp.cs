@@ -15,7 +15,7 @@ public interface ITetriProp
     public bool MoveCollect{get;set;} // 通过移动收集道具
     bool Ray_TetriPairBlock(); // 向下检测双重标记
     void ResetRotation(); // 看向摄像机
-    public bool Generate(); // 生成道具
+    public bool Generate_ForPlayer(); // 生成道具
     public void Collect(); // 收集道具
     
 }

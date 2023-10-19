@@ -17,6 +17,7 @@ public class CloneToMainScene : MonoBehaviour
         foreach (var obj in cloneObjects)
         {
             obj.SetActive(false);
+            DestroyImmediate(obj);
         }
     }
     bool CheckLocal()

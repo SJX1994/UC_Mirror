@@ -90,21 +90,39 @@ public class TetriObstacle : MonoBehaviour, ITetriProp
             if(locked)return;
             transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce).OnComplete(() => 
             {
+                SetCubeAlpha(0.0f);
                 bool getDataSuccess = Ray_TetriPairBlock();
                 while(!getDataSuccess) { Ray_TetriPairBlock(); }
             });
             
         }
     }
-    
+    Transform cube;
+    Transform Cube
+    {
+        get
+        {
+            if (!cube)cube = Checker.Find("Cube");
+            return cube;
+        }
+    }
 # endregion 数据对象
 # region 数据关系
+    void Start()
+    {
+        UserAction.OnPlayer1UserActionStateChanged += Event_OnUserActionStateChanged;
+        UserAction.OnPlayer2UserActionStateChanged += Event_OnUserActionStateChanged;
+    }
+    void OnDisable()
+    {
+        UserAction.OnPlayer1UserActionStateChanged -= Event_OnUserActionStateChanged;
+        UserAction.OnPlayer2UserActionStateChanged -= Event_OnUserActionStateChanged;
+    }
     void LateUpdate()
     {
         propTimer.UpdateTimer();
         transform.localPosition = new Vector3(transform.localPosition.x, propTimer.NormalizedTime(), transform.localPosition.z);
     }
-    // 道具接口关系
     public void Collect()
     {
         if(locked)return;
@@ -120,10 +138,9 @@ public class TetriObstacle : MonoBehaviour, ITetriProp
 
     public bool Generate(Player turn)
     {
-        
-        return Generate();
+        return Generate_ForPlayer();
     }
-    public bool Generate()
+    public bool Generate_ForPlayer()
     {
         transform.SetParent(BlocksCreator.transform);
         List<BlockTetriHandler> blocks = new();
@@ -133,14 +150,20 @@ public class TetriObstacle : MonoBehaviour, ITetriProp
         var block = BlocksCreator.blocks.Where(b => b.posId == checkId).FirstOrDefault();
         if(block.GetComponent<BlockBuoyHandler>().tetriBuoySimple || block.GetComponent<BlockPropsState>().propsState != PropsData.PropsState.None )
         {
-            Generate();
+            Generate_ForPlayer();
             return false;
         }
         // 道具计时器
         propTimer = new();
         Icon.SetActive(false);
         lockTime = 0.1f;
-        propTimer.StartTimer(lockTime, () => {Locked = false;Icon.SetActive(true);});
+        propTimer.StartTimer(lockTime, () => {
+            Locked = false;
+            SetSpriteAlpha(1.0f);
+            Icon.SetActive(true);
+            int randomFactor = Random.Range(0,2);
+            Icon.GetComponent<SpriteRenderer>().flipX = randomFactor == 0 ? true:false;
+            });
         // 方位属性
         transform.localPosition = new Vector3(block.posId.x, 0.3f, block.posId.y);
         // transform.localScale = Vector3.one;
@@ -150,6 +173,50 @@ public class TetriObstacle : MonoBehaviour, ITetriProp
     }
 # endregion 数据关系
 # region 数据操作
+    void Event_OnUserActionStateChanged(UserAction.State UserActionStateChanged)
+    {
+        switch (UserActionStateChanged)
+        {
+            case UserAction.State.WatchingFight:
+                SetCubeAlpha(0.0f);
+                SetSpriteAlpha(1.0f);
+                break;
+            case UserAction.State.CommandTheBattle_IdeaBox:
+                SetCubeAlpha(1.0f);
+                SetSpriteAlpha(0.4f);
+                break;
+            case UserAction.State.CommandTheBattle_Buoy:
+                SetCubeAlpha(1.0f);
+                SetSpriteAlpha(0.4f);
+                break;
+            case UserAction.State.Loading:
+                SetCubeAlpha(0.0f);
+                break;
+        }
+    }
+    void SetCubeAlpha(float alpha)
+    {
+        if(!Cube)return;
+        float cubeCommandTheBattle_Alpha = alpha;
+        // MeshRenderer cubeMeshRenderer = Cube.GetComponent<MeshRenderer>();
+        // Color cubeBaseColor = cubeMeshRenderer.sharedMaterial.color;
+        // cubeMeshRenderer.sharedMaterial.color = new Color(cubeBaseColor.r,cubeBaseColor.g,cubeBaseColor.b,cubeCommandTheBattle_Alpha);
+        Cube.GetComponent<Renderer>().sortingOrder = alpha >= 0.5f ? UC_PlayerData.Dispaly.FlowOrder : UC_PlayerData.Dispaly.NotFlowOrder;
+        checker.Find("Display_Range").GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(sr => {
+            sr.color = new Color(sr.color.r,sr.color.g,sr.color.b,cubeCommandTheBattle_Alpha);
+            sr.sortingOrder = alpha >= 0.5f ? UC_PlayerData.Dispaly.FlowOrder : UC_PlayerData.Dispaly.NotFlowOrder;
+        });
+        SpriteRenderer checkerSR = checker.GetComponent<SpriteRenderer>();
+        checkerSR.color = new Color(checkerSR.color.r,checkerSR.color.g,checkerSR.color.b,cubeCommandTheBattle_Alpha);
+        checkerSR.sortingOrder = alpha >= 0.5f ? UC_PlayerData.Dispaly.FlowOrder : UC_PlayerData.Dispaly.NotFlowOrder;
+    }
+    void SetSpriteAlpha(float alpha)
+    {
+        float spriteCommandTheBattle_Alpha = alpha;
+        SpriteRenderer tetriSpriteRenderer = Icon.GetComponent<SpriteRenderer>();
+        Color tetriBaseColor = tetriSpriteRenderer.color;
+        tetriSpriteRenderer.color = new Color(tetriBaseColor.r,tetriBaseColor.g,tetriBaseColor.b,spriteCommandTheBattle_Alpha);
+    }
     // 道具接口操作
     public bool Ray_TetriPairBlock()
     {
@@ -171,13 +238,19 @@ public class TetriObstacle : MonoBehaviour, ITetriProp
 
     public void ResetRotation()
     {
+        float fixStretch = 0;
         Transform target = checker.Find("Display");
         target.localRotation = Quaternion.Euler(Vector3.zero);
-        Vector3 directionToCamera = Camera.main.transform.position - target.position;
-        directionToCamera.x = 0f;
-        directionToCamera.z = -1f;
-        Quaternion rotationToCamera = Quaternion.LookRotation(directionToCamera);
-        target.rotation = rotationToCamera;
+        Vector3 cameraPos = Camera.main.transform.position;
+        Vector3 fixCameraPos = new Vector3(cameraPos.x + fixStretch, cameraPos.y, cameraPos.z);
+        Vector3 directionToCamera = fixCameraPos - Icon.transform.position;
+        // directionToCamera.x = 0f;
+        // directionToCamera.z = -1f;
+        // Quaternion rotationToCamera = Quaternion.LookRotation(directionToCamera);
+        // target.rotation = rotationToCamera;
+        target.transform.LookAt(fixCameraPos);
+        target.localRotation = Quaternion.Euler(target.localRotation.eulerAngles.x, target.localRotation.eulerAngles.y, 0);
+        SetSpriteAlpha(1.0f);
     }
 # endregion 数据操作
 }

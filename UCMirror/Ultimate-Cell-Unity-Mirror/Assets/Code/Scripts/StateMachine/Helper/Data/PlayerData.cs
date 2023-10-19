@@ -22,12 +22,14 @@ namespace UC_PlayerData
             yellow,
         }
         public const string Temp = "_Temp";
+        public const float MaxOccupyingTime = 6.5f;
+        public const float MinOccupyingTime = 1.5f;
     }
     public class Dispaly
     {
-        // 心流
         public const int FlowOrder = 1000;
         public const int NotFlowOrder = 14;
+        public const int NormalUnitOrder = 101;
         // 棋盘
         public const int MaxWidth = 20;
         public const int MaxHeight = 10;
@@ -61,6 +63,8 @@ namespace UC_PlayerData
     }
     public static class BlocksData
     {
+        public static float BlocksAlpha_watchingFight = 0.0f;
+        public static float BlocksAlpha_commandTheBattle = 1.0f;
         public static bool stopEventSend = false; 
         public static UnityAction<int> OnPlayer1BlocksNumbChange;
         public static int player1_numb = 20;
@@ -101,10 +105,14 @@ namespace UC_PlayerData
     }
     public static class Referee
     {
-        public static float currentTime = 0f; // 当前计时时间
-        public static float totalTime = 180f; // 当前计时时间
-        public static bool isTimerRunning = false; // 计时器是否正在运行
-        public static string timerText = "00:00"; // 计时器UI显示的文本
+        public const float InIdelbox_CreatFirstCountdown = 9f;
+        public const float InIdelbox_CreatCountdown = 3f;
+        public const float InIdelbox_UpLevelCountdown = 6f;
+        public static UnityAction OnTimeBeforStartFinish_FromKeyTimeCounter;
+        public const float TotalTime_ReverseOrder = 180f;
+        public static float currentTime_ReverseOrder = 0f;
+        public static bool isTimerRunning_ReverseOrder = false;
+        public static string timerText_ReverseOrder = "00:00";
         private static Player winner = Player.NotReady;
         public static Player Winner
         {
@@ -170,6 +178,117 @@ namespace UC_PlayerData
             Up,
             Down,
             NotReady,
+        }
+    }
+    public static class UIData
+    {
+        public const float MAX_MORALE = 500f;
+        public static float player1MoraleAccumulationAdditionContinuedTime = 12f;
+        public static float player2MoraleAccumulationAdditionContinuedTime = 12f;
+        public static bool player1isAdditioning = false;
+        public static bool player2isAdditioning = false;
+        private static float player1MoraleAccumulation = 0;
+        public static UnityAction<Player> OnPlayer1MoraleAccumulationMaxed;
+        public static UnityAction<Player> OnPlayer1MoraleAccumulationAdditionFinished;
+
+        public static float Player1MoraleAccumulation
+        {
+            get
+            {
+                return player1MoraleAccumulation;
+            }
+            set
+            {
+                player1MoraleAccumulation = value;
+                if(player1MoraleAccumulation <= MAX_MORALE)return;
+                player1MoraleAccumulation = MAX_MORALE;
+                if(player1isAdditioning)return;
+                OnPlayer1MoraleAccumulationMaxed?.Invoke(Player.Player1);
+                player1isAdditioning = true;
+            }
+        }
+        public static float Player1MoraleAccumulation_Normalized
+        {
+            get
+            {
+                return UC_Tool.Remap(player1MoraleAccumulation,0,MAX_MORALE,0,1);
+            }
+        }
+        private static float player2MoraleAccumulation = 0;
+        public static UnityAction<Player> OnPlayer2MoraleAccumulationMaxed;
+        public static UnityAction<Player> OnPlayer2MoraleAccumulationAdditionFinished;
+        public static float Player2MoraleAccumulation
+        {
+            get
+            {
+                return player2MoraleAccumulation;
+            }
+            set
+            {
+                player2MoraleAccumulation = value;
+                if(player2MoraleAccumulation <= MAX_MORALE)return;
+                player2MoraleAccumulation = MAX_MORALE;
+                if(player2isAdditioning)return;
+                OnPlayer2MoraleAccumulationMaxed?.Invoke(Player.Player2);
+                player2isAdditioning = true;
+            }
+        }
+        public static float Player2MoraleAccumulation_Normalized
+        {
+            get
+            {
+                return UC_Tool.Remap(player2MoraleAccumulation,0,MAX_MORALE,0,1);
+            }
+        }
+
+    }
+    public static class UserAction
+    {
+        public enum State
+        {
+            CommandTheBattle_IdeaBox,
+            CommandTheBattle_Buoy,
+            WatchingFight,
+            Loading,
+        }
+        public static UnityAction<State> OnPlayer1UserActionStateChanged;
+        public static UnityAction<State> OnPlayer2UserActionStateChanged;
+        private static State player1UserState = State.WatchingFight;
+        private static State player2UserState = State.WatchingFight;
+        public static State Player1UserState
+        {
+            get
+            {
+                return player1UserState;
+            }
+            set
+            {
+                if(player1UserState == value) return;
+                player1UserState = value;
+                OnPlayer1UserActionStateChanged?.Invoke(player1UserState);
+            }
+        }
+        public static State Player2UserState
+        {
+            get
+            {
+                return player2UserState;
+            }
+            set
+            {
+                if(player2UserState == value) return;
+                player2UserState = value;
+                OnPlayer2UserActionStateChanged?.Invoke(player2UserState);
+            }
+        }
+        
+    }
+    public class UC_Tool
+    {
+        public static float Remap(float input, float oldLow, float oldHigh, float newLow, float newHigh)
+        {
+            float t = Mathf.InverseLerp(oldLow, oldHigh, input);
+            return Mathf.Lerp(newLow, newHigh, t);
         }
     }
 }

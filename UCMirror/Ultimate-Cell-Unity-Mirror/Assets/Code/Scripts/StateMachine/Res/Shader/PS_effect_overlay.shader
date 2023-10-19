@@ -1,4 +1,4 @@
- Shader "Photoshop/Overlay"
+Shader "Photoshop/Overlay"
 {
      Properties
      {
@@ -45,8 +45,8 @@
                  float4 tex = tex2D(_MainTex, i.texcoord);
              
                  float4 final;            
-                 final.rgb = i.color.rgb * tex.rgb * i.color.a * tex.a;
-                 final.a = i.color.a * tex.a;
+                 final.rgba = i.color.rgba * tex.rgba * i.color.a * tex.a;
+                //  final.a = i.color.a * tex.a;
                  return final;
              
              }

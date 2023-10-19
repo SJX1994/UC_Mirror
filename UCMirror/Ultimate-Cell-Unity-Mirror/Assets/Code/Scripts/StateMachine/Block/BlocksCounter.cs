@@ -32,8 +32,8 @@ public class BlocksCounter : MonoBehaviour
     
     void Start()
     {
-        BlocksData.OnPlayer1BlocksNumbChange += GetP1BlockNumb;
-        BlocksData.OnPlayer2BlocksNumbChange += GetP2BlockNumb;    
+        BlocksData.OnPlayer1BlocksNumbChange += Event_GetP1BlockNumb;
+        BlocksData.OnPlayer2BlocksNumbChange += Event_GetP2BlockNumb;    
     }
     // 获取颜色砖块
     public List<BlockTetriHandler> GetOccupiedP1Blocks()
@@ -65,12 +65,12 @@ public class BlocksCounter : MonoBehaviour
         return blocks;
     }
     // 获取砖块变化
-    public void GetP1BlockNumb(int P1numb)
+    public void Event_GetP1BlockNumb(int P1numb)
     {
         P1BlocksNumb = P1numb;
         
     }
-    public void GetP2BlockNumb(int P2numb)
+    public void Event_GetP2BlockNumb(int P2numb)
     {
         P2BlocksNumb = P2numb;
     }
@@ -100,6 +100,7 @@ public class BlocksCounter : MonoBehaviour
         if(weakAssociationSoldiers.Count == 0)return;
         foreach (var soldier in weakAssociationSoldiers)
         {
+            if(soldier.UnitBase.IsDeadOrNull(soldier.UnitBase))continue;
             if(!soldier.WeakAssociation.Self) soldier.WeakAssociation.Start();
             soldier.WeakAssociation.soldiers = weakAssociationSoldiers;
             soldier.WeakAssociation.Active();
@@ -109,8 +110,8 @@ public class BlocksCounter : MonoBehaviour
     IEnumerator StopWeakAssociation(float waitTime)
     {
         BlocksData.stopEventSend = true;
-        BlocksData.OnPlayer1BlocksNumbChange -= GetP1BlockNumb;
-        BlocksData.OnPlayer2BlocksNumbChange -= GetP2BlockNumb;
+        BlocksData.OnPlayer1BlocksNumbChange -= Event_GetP1BlockNumb;
+        BlocksData.OnPlayer2BlocksNumbChange -= Event_GetP2BlockNumb;
         yield return new WaitForSeconds(waitTime);
         foreach (var soldier in weakAssociationSoldiers)
         {
@@ -119,8 +120,8 @@ public class BlocksCounter : MonoBehaviour
         }
         weakAssociationSoldiers.Clear();
         BlocksData.stopEventSend = false;
-        BlocksData.OnPlayer1BlocksNumbChange += GetP1BlockNumb;
-        BlocksData.OnPlayer2BlocksNumbChange += GetP2BlockNumb;
+        BlocksData.OnPlayer1BlocksNumbChange += Event_GetP1BlockNumb;
+        BlocksData.OnPlayer2BlocksNumbChange += Event_GetP2BlockNumb;
     }
     void AllSoldiers(Player playerIn = Player.NotReady)
     {
@@ -166,7 +167,9 @@ public class BlocksCounter : MonoBehaviour
                 BlocksEffects.LoadAttentionEffect(block,player);
                 TetriBuoySimple tetriBuoy = block.BlockBuoyHandler.tetriBuoySimple;
                 if(!tetriBuoy)continue;
-                tetriBuoy.TetriBlockSimple.TetriUnitSimple.haveUnit.BlocksMechanismDoing(BlocksData.BlocksMechanismType.ReachBottomLineGain);
+                tetriBuoy.TetriBlockSimple.TetriUnitSimple.haveUnit.Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType.ReachBottomLineGain);
+                // tetriBuoy.TetriBlockSimple.tetrisBlockSimple.Stop();
+                // MakeBlockToPeace(tetriBuoy.TetriBlockSimple.tetrisBlockSimple);
             }
         }
     }
@@ -208,11 +211,28 @@ public class BlocksCounter : MonoBehaviour
             if(!tetriBlock)continue;
             var haveUnit = tetriBlock.TetriUnitSimple.haveUnit;
             if(!haveUnit)continue;
-            haveUnit.BlocksMechanismDoing(BlocksData.BlocksMechanismType.FullRows);
+            haveUnit.Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType.FullRows);
         }
     }
     void DoFullRowsFail()
     {
         rowFullTetris.Clear();
+    }
+    void MakeBlockToPeace(TetrisBlockSimple group)
+    {
+        foreach (var tetri in group.ChildTetris)
+        {
+            if(!tetri)continue;
+            MakeBlockToPeace(tetri.PosId);
+        }
+    }
+    void MakeBlockToPeace(Vector2 posId)
+    {
+        var block = BlocksCreator.blocks.Find((block) => block.posId == posId);
+        if(!block)return;
+        var blockTetriHandler = block.GetComponent<BlockTetriHandler>();
+        if(!blockTetriHandler)return;
+        if(blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace)return;
+        blockTetriHandler.State = BlockTetriHandler.BlockTetriState.Peace;
     }
 }

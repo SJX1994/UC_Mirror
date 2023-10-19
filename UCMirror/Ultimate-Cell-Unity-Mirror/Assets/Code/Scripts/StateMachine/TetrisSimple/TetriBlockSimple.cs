@@ -57,7 +57,7 @@ public class TetriBlockSimple : MonoBehaviour
         }
     }
     public bool canCreate = false;
-    bool canDrop = false;
+    // bool canDrop = false;
     public BlockTetriHandler blockOccupying;
     SortingGroup cubeSortingGroup;
     Material sharedMaterial;
@@ -75,6 +75,7 @@ public class TetriBlockSimple : MonoBehaviour
             tetriUnitSimple = value;
         }
     }
+    Vector3 originalRotation = Vector3.zero;
     public UnityAction<TetriBlockSimple> tetriStuckEvent;
     // Start is called before the first frame update
     void Awake()
@@ -87,12 +88,16 @@ public class TetriBlockSimple : MonoBehaviour
         tetrisBlockSimple.OnTetrisMoveing += ()=>{CanMove = false;};
         cubeSortingGroup = transform.Find("Cube").GetComponent<SortingGroup>();
         sharedMaterial = cubeSortingGroup.transform.GetComponent<MeshRenderer>().sharedMaterial;
+        originalRotation = transform.localRotation.eulerAngles;
         Display_playerColor();
     }
     public void FailToCreat()
     {
+        tetrisBlockSimple.Stop();
         canCreate = false;
-        CancelInvoke(nameof(DoOccupied));
+        CanMove = false;
+        transform.localRotation = Quaternion.Euler(originalRotation);
+        if(IsInvoking(nameof(DoOccupied))){CancelInvoke(nameof(DoOccupied));}
     }
     public void SuccessToCreat()
     {
@@ -103,7 +108,7 @@ public class TetriBlockSimple : MonoBehaviour
         currentBlockTetriHandler = null;
         blockOccupying = null;
         CanMove = false;
-        canDrop = false;
+        // canDrop = false;
         canCreate = false;
     }
     public void Reset_OnDie()
@@ -111,8 +116,8 @@ public class TetriBlockSimple : MonoBehaviour
         bool lastOne = transform.parent.GetComponentsInChildren<TetriBlockSimple>().Length == 1;
         currentBlockTetriHandler = null;
         blockOccupying = null;
-        CanMove = true;
-        canDrop = true;
+        // CanMove = true;
+        // canDrop = true;
         canCreate = false;
         if(lastOne)Destroy(transform.parent.gameObject);
     }
@@ -284,14 +289,14 @@ public class TetriBlockSimple : MonoBehaviour
         {
             return false;
         }
-        if(block.State == BlockTetriHandler.BlockTetriState.Occupying)
-        {
-            return false;
-        }
-        if(block.tetriBlockSimpleHolder != null)
-        {
-            return false;
-        }
+        // if(block.State == BlockTetriHandler.BlockTetriState.Occupying)
+        // {
+        //     return false;
+        // }
+        // if(block.tetriBlockSimpleHolder != null)
+        // {
+        //     return false;
+        // }
         return true;   
     }
     
@@ -313,28 +318,26 @@ public class TetriBlockSimple : MonoBehaviour
         if(player == UC_PlayerData.Player.Player1 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
             block.State = BlockTetriHandler.BlockTetriState.Occupying;
-            Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.1f);
+            Invoke(nameof(DoOccupied), tetrisBlockSimple.OccupyingTime-0.1f);
         }
         else if(player == UC_PlayerData.Player.Player1 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player1)
         {
-            Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.5f);
+            Invoke(nameof(DoOccupied), tetrisBlockSimple.OccupyingTime-0.5f);
         }
         else if(player == UC_PlayerData.Player.Player2 && block.State!= BlockTetriHandler.BlockTetriState.Occupied_Player2)
         {
             
             block.State = BlockTetriHandler.BlockTetriState.Occupying;
-            Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.1f);
+            Invoke(nameof(DoOccupied), tetrisBlockSimple.OccupyingTime-0.1f);
         }
         else if(player == UC_PlayerData.Player.Player2 && block.State == BlockTetriHandler.BlockTetriState.Occupied_Player2)
         {
-            Invoke(nameof(DoOccupied), tetrisBlockSimple.occupyingTime-0.5f);
+            Invoke(nameof(DoOccupied), tetrisBlockSimple.OccupyingTime-0.5f);
         }
-        
-       
     }
     public void CancleOccupied()
     {
-        CancelInvoke(nameof(DoOccupied));
+        if(IsInvoking(nameof(DoOccupied)))CancelInvoke(nameof(DoOccupied));
         if(!blockOccupying)
         {
             blockOccupying = tetrisBlockSimple.blocksCreator.blocks.Find((block) => block.posId == new Vector2(PosId.x,PosId.y)).transform.GetComponent<BlockTetriHandler>();
@@ -392,14 +395,17 @@ public class TetriBlockSimple : MonoBehaviour
         // materialP2.color = PlayerData.Dispaly.Player2Color;
         materialP1.color = spriteColor;
         materialP2.color = spriteColor;
+        Color red = Color.red;
+        Color blue = Color.blue + Color.white*0.3f;
+
         if(player == Player.Player1)
         {
             cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP1;
-            tetriDisplayRange.SetColor(Color.red + Color.white*0.3f);
+            tetriDisplayRange.SetColor(red);
         }else if (player == Player.Player2)
         {
             cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP2;
-            tetriDisplayRange.SetColor(Color.blue + Color.white*0.3f);
+            tetriDisplayRange.SetColor(blue);
         }
     }
     public void Display_playerColor(bool Visible)
@@ -418,7 +424,7 @@ public class TetriBlockSimple : MonoBehaviour
         // materialP2.color = PlayerData.Dispaly.Player2Color;
         materialP1.color = spriteColor;
         materialP2.color = spriteColor;
-        Color red = Color.red + Color.white*0.3f;
+        Color red = Color.red;
         Color blue = Color.blue + Color.white*0.3f;
         
         if(player == Player.Player1)
@@ -444,5 +450,9 @@ public class TetriBlockSimple : MonoBehaviour
         }
         transform.GetComponent<SpriteRenderer>().color = new(spriteColor.r,spriteColor.g,spriteColor.b,Dispaly.HidenAlpha);
     }
-    
+    public void RotateForRecalculateDisplayRange(bool reverse)
+    {
+        float localRotationRotAngle = reverse ? 90f : -90f;
+        transform.RotateAround(transform.position,transform.forward,localRotationRotAngle);
+    }
 }

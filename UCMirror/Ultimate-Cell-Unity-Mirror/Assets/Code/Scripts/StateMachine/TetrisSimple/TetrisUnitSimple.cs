@@ -147,7 +147,7 @@ public class TetrisUnitSimple : MonoBehaviour
         for(int i = 0 ; i < TetriUnits.Count; i++)
         {
             if(!TetriUnits[i])continue;
-            TetriUnits[i].UnitDie(TetriUnits[i].haveUnit);
+            TetriUnits[i].Event_UnitDie(TetriUnits[i].haveUnit);
             if(i == TetriUnits.Count - 1)
             {
                 Destroy(gameObject);
@@ -168,11 +168,46 @@ public class TetrisUnitSimple : MonoBehaviour
             tetri.OnEndDragDisplay();
         }
     }
+    public void OnEditingStatusAfterSelection()
+    {
+        foreach(var tetri in TetriUnits)
+        {
+            tetri.OnEditingStatusAfterSelection();
+        }
+    }
     public void LevelUp(int level)
     {
         foreach(var tetri in TetriUnits)
         {
             tetri.LevelUp(level);
+        }
+    }
+    public void SetUnitSortingOrderToFlow()
+    {
+        foreach(var tetri in TetriUnits)
+        {
+            tetri.SetUnitSortingOrderToFlow();
+        }
+    }
+    public void SetUnitSortingOrderToNotNormal()
+    {
+        foreach(var tetri in TetriUnits)
+        {
+            tetri.SetUnitSortingOrderToNormal();
+        }
+    }
+    public void Display_ShowUnit()
+    {
+        foreach(var tetri in TetriUnits)
+        {
+            tetri.Display_ShowUnit();
+        }
+    }
+    public void Display_HideUnit()
+    {
+        foreach(var tetri in TetriUnits)
+        {
+            tetri.Display_HideUnit();
         }
     }
 }

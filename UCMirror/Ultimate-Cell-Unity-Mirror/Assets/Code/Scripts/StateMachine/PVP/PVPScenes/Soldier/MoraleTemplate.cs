@@ -1,13 +1,43 @@
 
 using UnityEngine;
 using UnityEditor;
+using UC_PlayerData;
 
 [CreateAssetMenu(fileName = "Morale_", menuName = "士气", order = 1)]
 
 public class MoraleTemplate : ScriptableObject{
-      // 士气值
+      public bool successCreated = false;
+      public Player player;
       public float morale;
-      
+      public float Morale
+      {
+            get
+            {
+                  return morale;
+            }
+            set
+            {
+                  morale = value;
+                  
+                  if(morale >= maxMorale)
+                  {
+                        morale = maxMorale;
+                        if(player == Player.Player1 && successCreated)
+                        {
+                              UIData.Player1MoraleAccumulation += 1;
+                              // Debug.Log("P1 士气值累计：" + UIData.Player1MoraleAccumulation);
+                        }else if(player == Player.Player2 && successCreated)
+                        {
+                              UIData.Player2MoraleAccumulation += 1;
+                              // Debug.Log("P2 士气值累计：" + UIData.Player2MoraleAccumulation);
+                        }
+                  }
+                  if(morale <= minMorale)
+                  {
+                        morale = minMorale;
+                  }
+            }
+      }
       public float maxMorale;
       public float minMorale;
       [HideInInspector]
@@ -30,13 +60,13 @@ public class MoraleTemplate : ScriptableObject{
       // 每个单位自身的基础属性都要乘以这个系数
       public void EffectByMorale( SoldierBehaviors soldier,ref float value )
       {
-            value = soldier.maxStrength * soldier.morale.morale;
+            value = soldier.maxStrength * soldier.morale.Morale;
       }
       // 基于心理学的 自我赋能感
       public void AddMorale(SoldierBehaviors soldier, float value, bool source = false)
       {
-            soldier.morale.morale += value;
-            soldier.morale.morale = soldier.morale.morale>=soldier.morale.maxMorale?soldier.morale.maxMorale : soldier.morale.morale;
+            soldier.morale.Morale += value;
+            soldier.morale.Morale = soldier.morale.Morale>=soldier.morale.maxMorale?soldier.morale.maxMorale : soldier.morale.Morale;
             if(!source)return;
             SoldierBehaviors[] soldiers = FindObjectsOfType<SoldierBehaviors>();
             Transform circleCenter = soldier.transform;
@@ -65,8 +95,8 @@ public class MoraleTemplate : ScriptableObject{
       }
       public void ReduceMorale(SoldierBehaviors soldier, float value, bool source = false)
       {
-            soldier.morale.morale -= value;
-            soldier.morale.morale = soldier.morale.morale <= soldier.morale.minMorale? soldier.morale.minMorale : soldier.morale.morale;
+            soldier.morale.Morale -= value;
+            soldier.morale.Morale = soldier.morale.Morale <= soldier.morale.minMorale? soldier.morale.minMorale : soldier.morale.Morale;
             if(!source)return;
             SoldierBehaviors[] soldiers = FindObjectsOfType<SoldierBehaviors>();
             Transform circleCenter = soldier.transform;

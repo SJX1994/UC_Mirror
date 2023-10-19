@@ -21,7 +21,11 @@ public class SoldierBehaviors : MonoBehaviour
     {
         get
         {
-            if(player == Player.NotReady)player = unitBase.unitTemplate.player;
+            if(player == Player.NotReady)
+            {
+                player = UnitBase.unitTemplate.player;
+                morale.player = player;
+            }
             return player;
         }
     }
@@ -40,7 +44,7 @@ public class SoldierBehaviors : MonoBehaviour
         {
             if(value == strength)return;
             strength = value;
-            Debug.Log(unitBase.transform.name +  "+++ StrengthChanging +++" + strength);
+            // Debug.Log(unitBase.transform.name +  "+++ StrengthChanging +++" + strength);
         }
     }
     public GameObject strengthBar;
@@ -120,7 +124,25 @@ public class SoldierBehaviors : MonoBehaviour
         }
     }
     [HideInInspector]
+    ParticleSystem levelUpEffect = new();
+    public ParticleSystem LevelUpEffect
+    {
+        get
+        {
+            if(!levelUpEffect)levelUpEffect=transform.Find("LevelUpEffect").GetComponent<ParticleSystem>();
+            return levelUpEffect;
+        }
+    }
+    [HideInInspector]
     public Unit unitBase;
+    public Unit UnitBase
+    {
+        get
+        {
+            if(!unitBase)unitBase = TryGetComponent(out UnitSimple unit) ? unit : null;
+            return unitBase;
+        }
+    }
     private UnitSimple unitSimple;
     public UnitSimple UnitSimple
     {
@@ -155,6 +177,7 @@ public class SoldierBehaviors : MonoBehaviour
     public void Start()
     {
         needRender = true;
+        morale.player = Player;
         morale.baseminMorale =  morale.minMorale;
         morale.EffectByMorale(this,ref strength);
         if(!needRender)
@@ -170,8 +193,8 @@ public class SoldierBehaviors : MonoBehaviour
         unitBase.selectionCircle.gameObject.SetActive(false);
         if(unitBase != null)
         {
-            unitBase.OnDie += OnEndCalculate;
-            unitBase.OnCollect += OnEndCalculate;
+            unitBase.OnDie += Event_OnEndCalculate;
+            unitBase.OnCollect += Event_OnEndCalculate;
             skinName = unitBase.SkeletonRenderer.Skeleton.Skin.Name;
             switch(skinName)
             {
@@ -196,7 +219,7 @@ public class SoldierBehaviors : MonoBehaviour
                     morale.soldierType = MoraleTemplate.SoldierType.Purple;
                 break;
             }
-            morale.morale = 1.0f;
+            morale.Morale = 1.0f;
             strength = 1f;
         }
         
@@ -210,7 +233,7 @@ public class SoldierBehaviors : MonoBehaviour
     {
         // 士气
         StrengthBar.transform.localScale = Vector3.one * strength;
-        if(morale.morale<=morale.minMorale)return;
+        if(morale.Morale<=morale.minMorale)return;
         morale.ReduceMorale(this,decreaseRate*Time.deltaTime , false);
         morale.EffectByMorale(this,ref strength);
     }
@@ -257,7 +280,42 @@ public class SoldierBehaviors : MonoBehaviour
     {
         morale.AddMorale(this, level * 0.5f, false);
         morale.EffectByMorale(this,ref strength);
-        PositiveEffect.Play();
+        LevelUpEffect.Play();
+    }
+    public void Behaviors_onEditingStatusAfterSelection()
+    {
+        morale.AddMorale(this, morale.maxMorale, false);
+        morale.EffectByMorale(this,ref strength);
+    }
+    public void Behaviors_OnBeginDragDisplay()
+    {
+        StrengthBar.gameObject.SetActive(false);
+    }
+    public void Behaviors_OnEndDragDisplay()
+    {
+        StrengthBar.gameObject.SetActive(true);
+    }
+    public void Behaviors_UserCommandTheBattle()
+    {
+        float commandTheBattleAlpha_FourDirectionsLinks = 0.0f;
+        float commandTheBattleAlpha_StrengthBar = 0.0f;
+        Color originalStrengthBarColor = StrengthBar.GetComponent<SpriteRenderer>().color;
+        StrengthBar.GetComponent<SpriteRenderer>().color = new Color(originalStrengthBarColor.r,originalStrengthBarColor.g,originalStrengthBarColor.b,commandTheBattleAlpha_StrengthBar);
+        FourDirectionsLinks.Sprit_North.color = new Color(FourDirectionsLinks.Sprit_North.color.r,FourDirectionsLinks.Sprit_North.color.g,FourDirectionsLinks.Sprit_North.color.b,commandTheBattleAlpha_FourDirectionsLinks);
+        FourDirectionsLinks.Sprit_East.color = new Color(FourDirectionsLinks.Sprit_East.color.r,FourDirectionsLinks.Sprit_East.color.g,FourDirectionsLinks.Sprit_East.color.b,commandTheBattleAlpha_FourDirectionsLinks);
+        FourDirectionsLinks.Sprit_South.color = new Color(FourDirectionsLinks.Sprit_South.color.r,FourDirectionsLinks.Sprit_South.color.g,FourDirectionsLinks.Sprit_South.color.b,commandTheBattleAlpha_FourDirectionsLinks);
+        FourDirectionsLinks.Sprit_West.color = new Color(FourDirectionsLinks.Sprit_West.color.r,FourDirectionsLinks.Sprit_West.color.g,FourDirectionsLinks.Sprit_West.color.b,commandTheBattleAlpha_FourDirectionsLinks);
+    }
+    public void Behaviors_UserWatchingFight()
+    {
+        float watchingFightAlpha_FourDirectionsLinks = 0.0f;
+        float watchingFightAlpha_StrengthBar = 0.5f;
+        Color originalStrengthBarColor = StrengthBar.GetComponent<SpriteRenderer>().color;
+        StrengthBar.GetComponent<SpriteRenderer>().color = new Color(originalStrengthBarColor.r,originalStrengthBarColor.g,originalStrengthBarColor.b,watchingFightAlpha_StrengthBar);
+        FourDirectionsLinks.Sprit_North.color = new Color(FourDirectionsLinks.Sprit_North.color.r,FourDirectionsLinks.Sprit_North.color.g,FourDirectionsLinks.Sprit_North.color.b,watchingFightAlpha_FourDirectionsLinks);
+        FourDirectionsLinks.Sprit_East.color = new Color(FourDirectionsLinks.Sprit_East.color.r,FourDirectionsLinks.Sprit_East.color.g,FourDirectionsLinks.Sprit_East.color.b,watchingFightAlpha_FourDirectionsLinks);
+        FourDirectionsLinks.Sprit_South.color = new Color(FourDirectionsLinks.Sprit_South.color.r,FourDirectionsLinks.Sprit_South.color.g,FourDirectionsLinks.Sprit_South.color.b,watchingFightAlpha_FourDirectionsLinks);
+        FourDirectionsLinks.Sprit_West.color = new Color(FourDirectionsLinks.Sprit_West.color.r,FourDirectionsLinks.Sprit_West.color.g,FourDirectionsLinks.Sprit_West.color.b,watchingFightAlpha_FourDirectionsLinks);
     }
 #endregion 数据关系
 #region 数据操作
@@ -285,7 +343,7 @@ public class SoldierBehaviors : MonoBehaviour
     //         break;
     //     }
     // }
-    void OnEndCalculate(Unit u)
+    void Event_OnEndCalculate(Unit u)
     {
         this.enabled = false;
     }

@@ -6,6 +6,7 @@ using UC_PlayerData;
 using DG.Tweening;
 public class TetriMoveDirection : MonoBehaviour , ITetriProp
 {
+    public Sprite sprite_Up,spirte_Down,sprite_Icon_Up,sprite_Icon_Down;
     [SerializeField]
     public bool MoveCollect{get;set;} = false;
     public Vector2 posId;
@@ -26,15 +27,22 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
         } 
     }
     public PropsData.MoveDirection moveDirection = PropsData.MoveDirection.NotReady;
-    Transform display;
     Transform checker;
+    Transform Checker
+    {
+        get
+        {
+            if(!checker)checker = transform.GetChild(0);
+            return checker;
+        }
+    }
     Player turn = Player.NotReady;
     private GameObject icon;
     public GameObject Icon
     {
         get
         {
-            if(!icon)icon = transform.GetChild(0).Find("Display").gameObject;
+            if(!icon)icon = Checker.Find("Display").gameObject;
             return icon;
         }
     }
@@ -50,12 +58,13 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
         {
             locked = value;
             if(locked)return;
+
             transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBounce).OnComplete(() => 
             {
+                SetCubeAlpha(0.0f);
                 bool getDataSuccess = Ray_TetriPairBlock();
                 while(!getDataSuccess) { Ray_TetriPairBlock(); }
             });
-            
         }
     }
     public PropTimer propTimer = new();
@@ -90,15 +99,74 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
             return Mathf.Lerp(newLow, newHigh, t);
         }
     }
+    Transform cube;
+    Transform Cube
+    {
+        get
+        {
+            if (!cube)cube = Checker.Find("Cube");
+            return cube;
+        }
+    }
     void Start()
     {
         checker = transform.GetChild(0);
-        display = checker.Find("Display"); 
+        UserAction.OnPlayer1UserActionStateChanged += Event_OnUserActionStateChanged;
+        UserAction.OnPlayer2UserActionStateChanged += Event_OnUserActionStateChanged;
+    }
+    void OnDisable()
+    {
+        UserAction.OnPlayer1UserActionStateChanged -= Event_OnUserActionStateChanged;
+        UserAction.OnPlayer2UserActionStateChanged -= Event_OnUserActionStateChanged;    
     }
     void LateUpdate()
     {
         propTimer.UpdateTimer();
         transform.localPosition = new Vector3(transform.localPosition.x, propTimer.NormalizedTime(), transform.localPosition.z);
+    }
+    void Event_OnUserActionStateChanged(UserAction.State UserActionStateChanged)
+    {
+        switch (UserActionStateChanged)
+        {
+            case UserAction.State.WatchingFight:
+                SetCubeAlpha(0.0f);
+                SetSpriteAlpha(1.0f);
+                break;
+            case UserAction.State.CommandTheBattle_IdeaBox:
+                SetCubeAlpha(0.72f);
+                SetSpriteAlpha(0.4f);
+                break;
+            case UserAction.State.CommandTheBattle_Buoy:
+                SetCubeAlpha(0.72f);
+                SetSpriteAlpha(0.4f);
+                break;
+            case UserAction.State.Loading:
+                SetCubeAlpha(0.0f);
+                break;
+        }
+    }
+    void SetCubeAlpha(float alpha)
+    {
+        if(!Cube)return;
+        float cubeCommandTheBattle_Alpha = alpha;
+        // MeshRenderer cubeMeshRenderer = Cube.GetComponent<MeshRenderer>();
+        // Color cubeBaseColor = cubeMeshRenderer.sharedMaterial.color;
+        // cubeMeshRenderer.sharedMaterial.color = new Color(cubeBaseColor.r,cubeBaseColor.g,cubeBaseColor.b,cubeCommandTheBattle_Alpha);
+        // Cube.GetComponent<Renderer>().sortingOrder = alpha >= 0.5f ? UC_PlayerData.Dispaly.FlowOrder : UC_PlayerData.Dispaly.NotFlowOrder;
+        checker.Find("Display_Range").GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(sr => {
+            sr.color = new Color(sr.color.r,sr.color.g,sr.color.b,cubeCommandTheBattle_Alpha);
+            sr.sortingOrder = alpha >= 0.5f ? UC_PlayerData.Dispaly.FlowOrder : UC_PlayerData.Dispaly.NotFlowOrder;
+        });
+        SpriteRenderer checkerSR = checker.GetComponent<SpriteRenderer>();
+        checkerSR.color = new Color(checkerSR.color.r,checkerSR.color.g,checkerSR.color.b,cubeCommandTheBattle_Alpha);
+        checkerSR.sortingOrder = alpha >= 0.5f ? UC_PlayerData.Dispaly.FlowOrder : UC_PlayerData.Dispaly.NotFlowOrder;
+    }
+    void SetSpriteAlpha(float alpha)
+    {
+        float spriteCommandTheBattle_Alpha = alpha;
+        SpriteRenderer tetriSpriteRenderer = Icon.GetComponent<SpriteRenderer>();
+        Color tetriBaseColor = tetriSpriteRenderer.color;
+        tetriSpriteRenderer.color = new Color(tetriBaseColor.r,tetriBaseColor.g,tetriBaseColor.b,spriteCommandTheBattle_Alpha);
     }
     public bool Ray_TetriPairBlock()
     {
@@ -121,13 +189,18 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
     // 看向摄像机
     public void ResetRotation()
     {
-        if(!display)Start();
-        display.localRotation = Quaternion.Euler(Vector3.zero);
-        Vector3 directionToCamera = Camera.main.transform.position - display.position;
-        directionToCamera.x = 0f;
-        Quaternion rotationToCamera = Quaternion.LookRotation(directionToCamera);
-        display.rotation = rotationToCamera;
         Display_Direction();
+        float fixStretch = 0;
+        Icon.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        Vector3 cameraPos = Camera.main.transform.position;
+        Vector3 fixCameraPos = new Vector3(cameraPos.x + fixStretch, cameraPos.y, cameraPos.z);
+        // Vector3 directionToCamera = fixCameraPos - Icon.transform.position;
+        // // directionToCamera.x = 0f;
+        // Quaternion rotationToCamera = Quaternion.LookRotation(directionToCamera);
+        // Icon.transform.rotation = rotationToCamera;
+        Icon.transform.LookAt(fixCameraPos);
+        Icon.transform.localRotation = Quaternion.Euler(Icon.transform.localRotation.eulerAngles.x, Icon.transform.localRotation.eulerAngles.y, 0);
+        SetSpriteAlpha(1.0f);
     }
     public bool Generate(Player turn)
     {
@@ -137,10 +210,14 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
         lockTime = Random.Range(1.5f, 3.0f);
         propTimer = new();
         Icon.SetActive(false);
-        propTimer.StartTimer(lockTime, () => {Locked = false;Icon.SetActive(true);});
-        return Generate();
+        propTimer.StartTimer(lockTime, (UnityAction)(() => { 
+            Locked = false; 
+            SetSpriteAlpha(0.0f);
+            this.Icon.SetActive(true);
+        }));
+        return Generate_ForPlayer();
     }
-    public bool Generate()
+    public bool Generate_ForPlayer()
     {
         transform.SetParent(BlocksCreator.transform);
         int width =  Random.Range(1,8); 
@@ -149,7 +226,7 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
         var block = BlocksCreator.blocks.Where(b => b.posId == checkId).FirstOrDefault();
         if(block.GetComponent<BlockBuoyHandler>().tetriBuoySimple || block.GetComponent<BlockPropsState>().propsState != PropsData.PropsState.None )
         {
-            Generate();
+            Generate_ForPlayer();
             return false;
         }
         transform.localPosition = new Vector3(block.posId.x, 0.3f, block.posId.y);
@@ -176,19 +253,28 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
     }
     void Display_Direction()
     {
-        // 旋转
-        if(!display)Start();
-        float zAngel = 0;
+        // float zAngel = 0;
         switch(moveDirection)
         {
             case PropsData.MoveDirection.Up:
-                zAngel = 90;
+                Checker.GetComponent<SpriteRenderer>().sprite = sprite_Icon_Up;
+                Icon.GetComponent<SpriteRenderer>().sprite = sprite_Up;
                 break;
             case PropsData.MoveDirection.Down:
-                zAngel = 270;
+                Checker.GetComponent<SpriteRenderer>().sprite = sprite_Icon_Down;
+                Icon.GetComponent<SpriteRenderer>().sprite = spirte_Down;
                 break;
         }
-        display.localRotation = Quaternion.Euler(new Vector3(display.localRotation.eulerAngles.x,display.localRotation.eulerAngles.y,zAngel));
+        // Debug.Log("Display_Direction" + posId);
+        bool Isleft = posId.x <= 9;
+        if(Isleft)
+        {
+            Icon.GetComponent<SpriteRenderer>().flipX = true;
+        }else
+        {
+            Icon.GetComponent<SpriteRenderer>().flipX = false;
+        }
+        // Icon.transform.localRotation = Quaternion.Euler(new Vector3(Icon.transform.localRotation.eulerAngles.x,Icon.transform.localRotation.eulerAngles.y,zAngel));
         
     }
 }

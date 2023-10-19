@@ -8,9 +8,9 @@ using UC_PlayerData;
 using UnityEngine.Events;
 public class ChangeLiquid : NetworkBehaviour
 {
-    /// <summary>
-    /// 液体
-    /// </summary>
+    float inIdelbox_UpLevelCountdown = Referee.InIdelbox_UpLevelCountdown;
+    float inIdelbox_CreatCountdown = Referee.InIdelbox_CreatCountdown;
+    float upLevelBlinkAnimationStrengthIncrement = 1f;
     public GameObject columnLiquid;
     public GameObject ColumnLiquid
     {
@@ -59,6 +59,7 @@ public class ChangeLiquid : NetworkBehaviour
     {
         get
         {
+            if(level == 0)level = 1;
             return level;
         }
         set
@@ -77,7 +78,7 @@ public class ChangeLiquid : NetworkBehaviour
     {
         get
         {
-            float maxStartBlinkIntensity = 0.72f;
+            float maxStartBlinkIntensity = 0.62f;
             if(startBlinkIntensity > maxStartBlinkIntensity)startBlinkIntensity = maxStartBlinkIntensity;
             return startBlinkIntensity;
         }
@@ -111,18 +112,20 @@ public class ChangeLiquid : NetworkBehaviour
     {
         get
         {
-            float maxHaloEndBlinkIntensity = 0.9f;
+            float maxHaloEndBlinkIntensity = 0.51f;
             if(haloEndBlinkIntensity > maxHaloEndBlinkIntensity)haloEndBlinkIntensity = maxHaloEndBlinkIntensity;
             return haloEndBlinkIntensity;
         }
     }
     Sequence blinkAnimationSequence;
     Sequence haloBlinkAnimationSequence;
-    Tween topTween;
-    Tween fillLiquidTween;
+    Tween topTween_levelUp;
+    Tween fillLiquidTween_levelUp;
+    Tween topTween_createInIdelBox;
+    Tween fillLiquidTween_createInIdelBox;
+    bool counting = false;
     void Start()
     {
-
         ReadyLight.SetActive(true);
         originPositionTop = TopLiquid.GetComponent<RectTransform>().anchoredPosition;
         ideaBox = transform.GetComponent<IdelBox>();
@@ -132,16 +135,29 @@ public class ChangeLiquid : NetworkBehaviour
         resetEndBlinkIntensity = EndBlinkIntensity;
         resetHaloStartBlinkIntensity = HaloStartBlinkIntensity;
         resetHaloEndBlinkIntensity = HaloEndBlinkIntensity;
+        blinkAnimationSequence = DOTween.Sequence();
+        haloBlinkAnimationSequence = DOTween.Sequence();
+        topTween_levelUp = DOTween.Sequence();
+        fillLiquidTween_levelUp = DOTween.Sequence();
+        topTween_createInIdelBox = DOTween.Sequence();
+        fillLiquidTween_createInIdelBox = DOTween.Sequence();
         UpLevelBlinkAnimation();
     }
-    void UpLevelBlinkAnimation(float strengthIncrement = 0.21f)
+    void UpLevelBlinkAnimation()
     {
-       
-        blinkAnimationSequence?.Kill();
-        haloBlinkAnimationSequence?.Kill();
+        if(blinkAnimationSequence!=null)
+        {
+            blinkAnimationSequence?.Kill();
+            blinkAnimationSequence = null;
+        }
+        if(blinkAnimationSequence!=null)
+        {
+            haloBlinkAnimationSequence?.Kill();
+            haloBlinkAnimationSequence = null;
+        }
         int loopForever = -1;
-        startBlinkIntensity += strengthIncrement * Level;
-        endBlinkIntensity += strengthIncrement * Level;
+        startBlinkIntensity += upLevelBlinkAnimationStrengthIncrement * Level;
+        endBlinkIntensity += upLevelBlinkAnimationStrengthIncrement * Level;
         blinkAnimationSequence = DOTween.Sequence();
         Image readyLightImage = ReadyLight.GetComponent<Image>();
         readyLightImage.color = new Color(readyLightImage.color.r,readyLightImage.color.g,readyLightImage.color.b,StartBlinkIntensity * Level);
@@ -151,60 +167,101 @@ public class ChangeLiquid : NetworkBehaviour
         if( ReadyLight.transform.childCount <= 0 )return;
         Image haloImage = Halo.GetComponent<Image>();
         haloImage.color = new Color(haloImage.color.r,haloImage.color.g,haloImage.color.b,HaloStartBlinkIntensity * Level);
-        haloStartBlinkIntensity += strengthIncrement * Level;
-        haloEndBlinkIntensity += strengthIncrement * Level;
+        haloStartBlinkIntensity += upLevelBlinkAnimationStrengthIncrement * Level;
+        haloEndBlinkIntensity += upLevelBlinkAnimationStrengthIncrement * Level;
         haloBlinkAnimationSequence = DOTween.Sequence();
         haloBlinkAnimationSequence.Append(haloImage.DOFade(HaloStartBlinkIntensity, haloblinkDuration / 2));
         haloBlinkAnimationSequence.Append(haloImage.DOFade(HaloEndBlinkIntensity, haloblinkDuration / 2));
         haloBlinkAnimationSequence.SetLoops(loopForever,LoopType.Yoyo); 
+        
     }
-    public void DoCount(float countdown = 6f)
+    public void DoCount()
     {
+        
+        if(counting)
+        {
+            if(!IsInvoking(nameof(DoCount)))
+            Invoke(nameof(DoCount),0.1f);
+            return;
+        }
+        counting = true;
+        if(IsInvoking(nameof(DoCount)))CancelInvoke(nameof(DoCount));
+        
         ResetLiquidLoader();
+        ResetLiquidLoader_UpLevel();
         TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
         ReadyLight.SetActive(false);
-        ideaBox.idelContainer.SetActive(false);
+        // ideaBox.idelContainer.SetActive(false);
         ideaBox.ClickEvent.SetActive(false);
-        Vector3 finallyReachesPosition = new Vector3(-46f,59f,0f);
+        Vector3 finallyReachesPosition = new Vector3(-28.3f,390f,0f);
         float fillAmountStart = 0;
         float fillAmountEnd = 1;
-        topTween = TopLiquid.GetComponent<RectTransform>().DOAnchorPos(finallyReachesPosition,countdown);
-        fillLiquidTween = DOVirtual.Float(fillAmountStart, fillAmountEnd, countdown, (TweenCallback<float>)((float value) =>
+        float preventionKillTweenWhenUsing = 0.1f;
+        topTween_createInIdelBox = TopLiquid.GetComponent<RectTransform>().DOAnchorPos(finallyReachesPosition,inIdelbox_CreatCountdown - preventionKillTweenWhenUsing);
+        fillLiquidTween_createInIdelBox = DOVirtual.Float(fillAmountStart, fillAmountEnd, inIdelbox_CreatCountdown, (TweenCallback<float>)((float value) =>
         {
             fade = value;
             this.ColumnLiquid.GetComponent<Image>().fillAmount = value;
         }));
-        fillLiquidTween.onComplete=() =>
+        fillLiquidTween_createInIdelBox.onComplete=() =>
         {
             ReadyLight.SetActive(true);
             ideaBox.ClickEvent.SetActive(true);
-            ideaBox.idelContainer.SetActive(true);
+            // ideaBox.idelContainer.SetActive(true);
             ideaBox.OnGameObjCreate();
-            DoCount_UpLevel();
+            Invoke(nameof(DoCount_UpLevel),preventionKillTweenWhenUsing);
         };
     }
-    public void DoCount_UpLevel(float countdown = 6f)
+    public void DoCount_UpLevel()
     {
-        topTween?.Kill();
-        fillLiquidTween?.Kill();
+        counting = false;
+        ResetLiquidLoader_UpLevel();
         int maxLevel = 3;
         if(level >= maxLevel)return;
-        TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
-        Vector3 finallyReachesPosition = new Vector3(-46f,59f,0f);
+        float preventionKillTweenWhenUsing = 0.1f;
+        // TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
+        // Vector3 finallyReachesPosition = new Vector3(-28.3f,390f,0f);
         float fillAmountStart = 0;
         float fillAmountEnd = 1;
-        topTween = TopLiquid.GetComponent<RectTransform>().DOAnchorPos(finallyReachesPosition,countdown);
-        fillLiquidTween = DOVirtual.Float(fillAmountStart, fillAmountEnd, countdown, (TweenCallback<float>)((float value) =>
+        // topTween_levelUp = TopLiquid.GetComponent<RectTransform>().DOAnchorPos(finallyReachesPosition,inIdelbox_UpLevelCountdown);
+        fillLiquidTween_levelUp = DOVirtual.Float(fillAmountStart, fillAmountEnd, inIdelbox_UpLevelCountdown, (TweenCallback<float>)((float value) =>
         {
-            fade = value;
-            this.ColumnLiquid.GetComponent<Image>().fillAmount = value;
+            // fade = value;
+            // this.ColumnLiquid.GetComponent<Image>().fillAmount = value;
         }));
-        fillLiquidTween.onComplete=() =>
+        Invoke(nameof(UpLevelBlinkAnimation),preventionKillTweenWhenUsing);
+        fillLiquidTween_levelUp.onComplete=() =>
         {
             Level++;
-            UpLevelBlinkAnimation();
-            DoCount_UpLevel(countdown);
+            Invoke(nameof(DoCount_UpLevel),preventionKillTweenWhenUsing);
         };
+    }
+    public void ResetLiquidLoader_UpLevel()
+    {
+        if(topTween_levelUp!=null)
+        {
+            topTween_levelUp?.Kill(); 
+            topTween_levelUp = null;
+        }
+        if(fillLiquidTween_levelUp!=null)
+        {
+            fillLiquidTween_levelUp?.Kill(); 
+            fillLiquidTween_levelUp = null;
+        }
+        if(fillLiquidTween_createInIdelBox!=null)
+        {
+            fillLiquidTween_createInIdelBox?.Kill(); 
+            fillLiquidTween_createInIdelBox = null;
+        }
+        if(topTween_createInIdelBox!=null)
+        {
+            topTween_createInIdelBox?.Kill(); 
+            topTween_createInIdelBox = null;
+        }
+        if(topTween_levelUp!=null || fillLiquidTween_levelUp!=null || fillLiquidTween_createInIdelBox!=null || topTween_createInIdelBox!=null)
+        {
+            ResetLiquidLoader_UpLevel();
+        }
     }
     public void ResetLiquidLoader()
     {
@@ -212,12 +269,14 @@ public class ChangeLiquid : NetworkBehaviour
         List<Tween> tweens = new List<Tween>();
         if(blinkAnimationSequence!=null){tweens.Add(blinkAnimationSequence);}
         if(haloBlinkAnimationSequence!=null){tweens.Add(haloBlinkAnimationSequence);}
-        if(topTween!=null){tweens.Add(topTween);}
-        if(fillLiquidTween!=null){tweens.Add(fillLiquidTween);}
-        foreach(var tween in tweens)
+        if(topTween_levelUp!=null){tweens.Add(topTween_levelUp);}
+        if(fillLiquidTween_levelUp!=null){tweens.Add(fillLiquidTween_levelUp);}
+        if(topTween_createInIdelBox!=null){tweens.Add(topTween_createInIdelBox);}
+        if(fillLiquidTween_createInIdelBox!=null){tweens.Add(fillLiquidTween_createInIdelBox);}
+        for(int i = 0; i < tweens.Count; i++)
         {
-            if(tween == null)continue;
-            if(tween.IsPlaying())tween?.Kill();
+            if(tweens[i] == null)continue;
+            if(tweens[i]!=null){tweens[i]?.Kill(); tweens[i]=null;}
         }
         startBlinkIntensity = resetStartBlinkIntensity;
         endBlinkIntensity = resetEndBlinkIntensity;
@@ -235,7 +294,7 @@ public class ChangeLiquid : NetworkBehaviour
     {
         TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
         ReadyLight.SetActive(false);
-        ideaBox.idelContainer.SetActive(false);
+        // ideaBox.idelContainer.SetActive(false);
         TopLiquid.GetComponent<RectTransform>().DOAnchorPos(new Vector3(-46f,59f,0f),6f);
         DOVirtual.Float(0, 1, 6.3f, (TweenCallback<float>)((float value) =>
         {
@@ -249,7 +308,7 @@ public class ChangeLiquid : NetworkBehaviour
         })).onComplete=() =>
         {
             ReadyLight.SetActive(true);
-            ideaBox.idelContainer.SetActive(true);
+            // ideaBox.idelContainer.SetActive(true);
             ideaBox.ClientGetTetrisGroupID();
         };
         

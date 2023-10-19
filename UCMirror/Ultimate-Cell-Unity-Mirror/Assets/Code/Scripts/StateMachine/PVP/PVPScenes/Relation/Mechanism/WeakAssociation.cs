@@ -73,6 +73,13 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
             SoldiersStartRelation(Self,to);
             active = true;
       }
+      void OnDisable()
+      {
+            if(lineRenderer==null)return;
+            {
+                  Destroy(lineRenderer.gameObject);
+            }
+      }
       public void Stop()
       {
             active = false;
@@ -101,6 +108,7 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       {
             needRender = true;
             if(from == null || to == null) return;
+            if(to.unitBase.IsDeadOrNull(to.unitBase) || from.unitBase.IsDeadOrNull(from.unitBase))return;
             to.PositiveEffect.Play();
             from.PositiveEffect.Play();
             associationSource = from;
@@ -146,6 +154,7 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       public void SoldiersUpdateRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             if(from == null || to == null) return;
+            if(to.unitBase.IsDeadOrNull(to.unitBase) || from.unitBase.IsDeadOrNull(from.unitBase))return;
             // 每当位置改变，更新抛物线
             if(from.transform.hasChanged || to.transform.hasChanged)
             {
@@ -155,6 +164,7 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       }
       public void SoldiersEndRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
+            if(to.unitBase.IsDeadOrNull(to.unitBase) || from.unitBase.IsDeadOrNull(from.unitBase))return;
             // UnitSimple 需要处理的事情
             to.WeakAssociation.weakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
             from.WeakAssociation.weakAssociationActive?.Invoke(BlocksData.BlocksMechanismType.WeakAssociation);
@@ -173,10 +183,6 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
       private void CreatePoints()
       {
             if(lineRenderer == null) return;
-
-            // PuppetEffectDataStruct p = new (PuppetEffectDataStruct.EffectType.WeakAssociationUpdate);
-            // self.weakAssociation.OnPlayEffect?.Invoke(p);
-
             // 创建抛物线上的所有点
             points = new Vector3[numberOfPoints];
             for (int i = 0; i < numberOfPoints; i++)

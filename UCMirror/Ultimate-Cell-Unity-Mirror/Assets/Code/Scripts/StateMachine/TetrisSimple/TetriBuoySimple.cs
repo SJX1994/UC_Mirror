@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UC_PlayerData;
 public class TetriBuoySimple : MonoBehaviour
 {
     public Vector2 posId;
@@ -55,7 +56,7 @@ public class TetriBuoySimple : MonoBehaviour
         Transform displayGo = transform.Find("Display_Range");
         if(!displayGo)return;
         tetriDisplayRange = displayGo.GetComponent<TetriDisplayRange>();
-        tetrisBuoySimple.tetrisBlockSimple.OnUpdatDisplay += Display_Evaluate;
+        tetrisBuoySimple.tetrisBlockSimple.OnUpdatDisplay += Event_Display_Evaluate;
     }
     public bool DoDropDragingCheck()
     {
@@ -67,13 +68,18 @@ public class TetriBuoySimple : MonoBehaviour
     }
     public bool DoDropCanPutCheck(List<TetriBuoySimple> BuoyTetriBuoys)
     {
-        // 发射射线向下进行检测
         Ray ray = new Ray(transform.position, Vector3.down);
-        RaycastHit hit;
+        // Debug.DrawLine(transform.position,transform.position + Vector3.down * 100,Color.white,1);
+        RaycastHit hit = new();
         if(!TetriBlockSimple)return false;
-        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, TetriBlockSimple.blockTargetMask);
-        if (!hitBlock)return false;
-        // 进一步的处理
+        bool hitBlock = false;
+        for(int i = 0 ; i < 3 ; i++)
+        {
+            hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, tetriBlockSimple.blockTargetMask);
+            if(hitBlock)break;
+        }
+        if(!hitBlock)Debug.LogError(transform.name + "没有检测到砖块!!" + (int)tetriBlockSimple.blockTargetMask);
+        if(!hitBlock)return false;
         BlockBuoyHandler block;
         hit.collider.transform.TryGetComponent(out block);
         if(!block)return false;
@@ -90,10 +96,10 @@ public class TetriBuoySimple : MonoBehaviour
         {
             return false;
         }
-        // if(block.blockTetriHandler.tetriBlockSimpleHolder)
-        // {
-        //     return false;
-        // }
+        if(block.blockTetriHandler.tetriBlockSimpleHolder)
+        {
+            return false;
+        }
         if((block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace) || (tetriBlockSimple.player == UC_PlayerData.Player.Player1 && block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace_Player1) || (tetriBlockSimple.player == UC_PlayerData.Player.Player2 && block.blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace_Player2))
         {
             return true;
@@ -154,17 +160,7 @@ public class TetriBuoySimple : MonoBehaviour
         }
         return true;
     }
-    public void InFlow()
-    {
-        if(!tetriDisplayRange)return;
-        tetriDisplayRange.SetSortingOrder(UC_PlayerData.Dispaly.FlowOrder+1);
-    }
-    public void OutFlow()
-    {
-        if(!tetriDisplayRange)return;
-        tetriDisplayRange.SetSortingOrder(UC_PlayerData.Dispaly.NotFlowOrder+1);
-    }
-    public void Display_Evaluate()
+    public void Event_Display_Evaluate()
     {
         if(!tetriDisplayRange)return;
         BlocksCreator_Main blocksCreator = tetrisBuoySimple.tetrisBlockSimple.blocksCreator;

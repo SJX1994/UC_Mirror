@@ -113,7 +113,7 @@ public class Building : MonoBehaviour
         selectionCircle.sortingOrder = Dispaly.FlowOrder;
         lastPos = transform.position;
         animator.SetFloat("Speed", 1f);
-        blocksCreator.FlowMask.color = new Color(0.0f,0.0f,0.0f,0.3f);
+        // blocksCreator.flowMask.color = new Color(0.0f,0.0f,0.0f,0.3f);
         foreach(BlockDisplay block in blocksCreator.blocks)
         {
             block.InFlow();
@@ -157,10 +157,10 @@ public class Building : MonoBehaviour
         // 效果
         foreach(BlockDisplay block in blocksCreator.blocks)
         {
-            block.OutFlow();
+            // block.OutFlow();
         }
         animator.SetFloat("Speed", 0f);
-        blocksCreator.FlowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);
+        // blocksCreator.flowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);
         skeletonRenderer.transform.localScale -= Vector3.one * 0.1f;
         selectionCircle.color = new Color(selectionCircle.color.r,selectionCircle.color.g,selectionCircle.color.b,0.5f);
         selectionCircle.sortingOrder = Dispaly.FlowOrder;

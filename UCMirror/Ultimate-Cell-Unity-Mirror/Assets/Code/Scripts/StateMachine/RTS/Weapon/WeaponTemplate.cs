@@ -24,7 +24,7 @@ public class WeaponTemplate: ScriptableObject
     public int healthBonus = 0;
     
     [Tooltip("武器类型")]
-    public WeaponType weaponType = WeaponType.Sword;
+    public WeaponType weaponType = WeaponType.Null;
     
     [Tooltip("武器抓握点位置纵向调整")]
     public  float pos_weaponX = 0;

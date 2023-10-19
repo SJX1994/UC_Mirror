@@ -70,7 +70,7 @@ public class TetrisBlocksManager : MonoBehaviour
         broadcastClass.G2C_GridInfoUpdate += G2C_GridInfoUpdate;
     }
 
-    private bool cencel = false;
+    // private bool cencel = false;
 
     /// <summary>
     /// 碰撞盒更新事件 -> 客户端/服务器
@@ -120,7 +120,7 @@ public class TetrisBlocksManager : MonoBehaviour
 
         FindObjectOfType<GlobalControlManager>().OnPause();
 
-        cencel = true;
+        // cencel = true;
     }
 
     private void Update()

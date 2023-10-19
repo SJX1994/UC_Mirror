@@ -59,7 +59,7 @@ public class BlocksUI : MonoBehaviour
     }
     void Dispaly_Timer()
     {
-        Tex_timer.text = Referee.timerText;
+        Tex_timer.text = Referee.timerText_ReverseOrder;
     }
     public void Display_Process()
     {
@@ -67,9 +67,13 @@ public class BlocksUI : MonoBehaviour
         progress_player2 = Remap(BlocksData.Player2_numb,0,200,0,1);
         Img_player1.fillAmount = progress_player1;
         Img_player2.fillAmount = progress_player2;
+        Image Img_player1Inner = Img_player1.transform.GetChild(0).GetComponent<Image>();
+        Image Img_player2Inner = Img_player2.transform.GetChild(0).GetComponent<Image>();
+        Img_player1Inner.fillAmount = Img_player1.fillAmount;
+        Img_player2Inner.fillAmount = Img_player2.fillAmount;
         Text_player1.text = BlocksData.Player1_numb.ToString() + "/" + BlocksData.max_numb.ToString();
         Text_player2.text = BlocksData.Player2_numb.ToString()+ "/" + BlocksData.max_numb.ToString();
-        Display_whoBetterAnimat();
+        // Display_whoBetterAnimat();
     }
     void Display_whoBetterAnimat()
     {

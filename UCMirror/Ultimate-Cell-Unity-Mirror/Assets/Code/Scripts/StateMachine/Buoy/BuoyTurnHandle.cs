@@ -21,10 +21,11 @@ public class BuoyTurnHandle : NetworkBehaviour
             centerOfControl = value; 
         }
     }
-    public float currentValue = 1f; // 初始值
+    
     public bool actived = false;
     List<TetrisBuoySimple> tetrisBuoysControled = new();
     List<BlockBuoyHandler> blocksScanned = new(); 
+    public float currentValue = 1f; // 初始值
     public float CurrentValue
     {
         get { return currentValue; }
@@ -105,7 +106,7 @@ public class BuoyTurnHandle : NetworkBehaviour
     }
     void InitRender()
     {
-        pointsToDraw = new Vector3[10];
+        pointsToDraw = new Vector3[5];
         buoyInfo.OnBuoyPosIDChange += (posId) =>
         {
             centerOfControl = posId;
@@ -268,12 +269,12 @@ public class BuoyTurnHandle : NetworkBehaviour
         pointsToDraw[2] = new Vector3(maxPoint.x, maxPoint.y, maxPoint.z);
         pointsToDraw[3] = new Vector3(maxPoint.x, maxPoint.y, minPoint.z);
         pointsToDraw[4] = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
-        maxPoint.y += 0.6f;
-        pointsToDraw[5] = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
-        pointsToDraw[6] = new Vector3(minPoint.x, maxPoint.y, maxPoint.z);
-        pointsToDraw[7] = new Vector3(maxPoint.x, maxPoint.y, maxPoint.z);
-        pointsToDraw[8] = new Vector3(maxPoint.x, maxPoint.y, minPoint.z);
-        pointsToDraw[9] = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
+        // maxPoint.y += 0.6f;
+        // pointsToDraw[5] = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
+        // pointsToDraw[6] = new Vector3(minPoint.x, maxPoint.y, maxPoint.z);
+        // pointsToDraw[7] = new Vector3(maxPoint.x, maxPoint.y, maxPoint.z);
+        // pointsToDraw[8] = new Vector3(maxPoint.x, maxPoint.y, minPoint.z);
+        // pointsToDraw[9] = new Vector3(minPoint.x, maxPoint.y, minPoint.z);
         
         lineRenderer.positionCount = pointsToDraw.Length;
         for (int i = 0; i < pointsToDraw.Length; i++)

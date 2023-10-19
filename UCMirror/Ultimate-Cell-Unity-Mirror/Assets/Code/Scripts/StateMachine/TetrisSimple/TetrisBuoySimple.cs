@@ -13,10 +13,8 @@ public class TetrisBuoySimple : NetworkBehaviour
     {
         get
         {
-            if(tetrisBlockSimple == null)
-            {
-                tetrisBlockSimple = GetComponent<TetrisBlockSimple>();
-            }
+            if(tetrisBlockSimple)return tetrisBlockSimple;
+            tetrisBlockSimple = GetComponent<TetrisBlockSimple>();
             return tetrisBlockSimple;
         }
         set
@@ -56,6 +54,21 @@ public class TetrisBuoySimple : NetworkBehaviour
         }
     }
     public List<TetriBuoySimple> childTetris;
+    public List<TetriBuoySimple> ChildTetris
+    {
+        get
+        {
+            if(childTetris.Count != 0)return childTetris;
+            foreach (Transform child in transform)
+            {
+                    TetriBuoySimple tetriBuoySimple= child.GetComponent<TetriBuoySimple>();
+                    childTetris.Add(tetriBuoySimple);
+                    tetriBuoySimple.tetrisBuoySimple = this;
+
+            }
+            return childTetris;
+        }
+    }
     public Tweener cantDropTweener;
     // 联网：
     public int serverID;
@@ -69,7 +82,6 @@ public class TetrisBuoySimple : NetworkBehaviour
             TetriBuoySimple tetriBuoySimple= child.GetComponent<TetriBuoySimple>();
             childTetris.Add(tetriBuoySimple);
             tetriBuoySimple.tetrisBuoySimple = this;
-            
         }
         tetrisBlockSimple = GetComponent<TetrisBlockSimple>();
         tetrisBlockSimple.OnCacheUpdateForBuoyMarkers += CacheUpdateForBuoyMarkers;
@@ -82,7 +94,6 @@ public class TetrisBuoySimple : NetworkBehaviour
             TetriBuoySimple tetriBuoySimple= child.GetComponent<TetriBuoySimple>();
             childTetris.Add(tetriBuoySimple);
             tetriBuoySimple.tetrisBuoySimple = this;
-            
         }
         tetrisBlockSimple = GetComponent<TetrisBlockSimple>();
         tetrisBlockSimple.OnCacheUpdateForBuoyMarkers += CacheUpdateForBuoyMarkers;
@@ -109,7 +120,7 @@ public class TetrisBuoySimple : NetworkBehaviour
     public bool DoDropDragingCheck()
     {
         List<bool> colliders = new();
-        foreach(var child in childTetris)
+        foreach(var child in ChildTetris)
         {
             bool check = child.DoDropDragingCheck();
             colliders.Add(check);
@@ -126,9 +137,8 @@ public class TetrisBuoySimple : NetworkBehaviour
     }
     public bool DoDropCanPutCheck(List<TetriBuoySimple> BuoyTetriBuoys)
     {
-        if(childTetris.Count == 0)Init();
         List<bool> colliders = new();
-        foreach(var child in childTetris)
+        foreach(var child in ChildTetris)
         {
             if(!child)continue;
             bool check = child.DoDropCanPutCheck(BuoyTetriBuoys);
@@ -148,13 +158,13 @@ public class TetrisBuoySimple : NetworkBehaviour
             TB_cache.Clear();
         }
         cantDropTweener.Kill();
+        
         return allTrue;
     }
     public bool DoDropCanPutCheck()
     {
-        if(childTetris.Count==0)Init();
         List<bool> colliders = new();
-        foreach(var child in childTetris)
+        foreach(var child in ChildTetris)
         {
             if(!child)continue;
             bool check = child.DoDropCanPutCheck();
@@ -188,17 +198,19 @@ public class TetrisBuoySimple : NetworkBehaviour
             }
             TB_cache.Clear();
         }
-        foreach(TetriBuoySimple tetriBuoy in childTetris)
+        foreach(TetriBuoySimple tetriBuoy in ChildTetris)
         {
+            if(!tetriBuoy)continue;
+            if(!buoyMarkers.ContainsKey(tetriBuoy))continue;
             tetriBuoy.blockBuoyHandler = buoyMarkers[tetriBuoy];
             tetriBuoy.blockBuoyHandler.tetriBuoySimple = tetriBuoy;
-            if (TB_cache.ContainsKey(tetriBuoy))return;
+            if (TB_cache.ContainsKey(tetriBuoy))continue;
             TB_cache.Add(tetriBuoy,buoyMarkers[tetriBuoy]);
         }
     }
     public TetriBuoySimple GetTetriTemp(int id)
     {
-        foreach(var child in childTetris)
+        foreach(var child in ChildTetris)
         {
             if(child.GetComponent<TetriUnitSimple>().tetriUnitTemplate.index == id)
             {
@@ -210,16 +222,15 @@ public class TetrisBuoySimple : NetworkBehaviour
     }
     public void Display_OnDragBuoy()
     {
-        if(childTetris.Count==0)Init();
-        foreach(var tetri in childTetris)
+        TetrisUnitSimple.OnBeginDragDisplay();
+        foreach(var tetri in ChildTetris)
         {
             tetri.transform.localScale = Vector3.one * 0.6f;
         }
     }
     public void Display_OnCantDragBuoy()
     {
-        if(childTetris.Count==0)Init();
-        foreach(var tetri in childTetris)
+        foreach(var tetri in ChildTetris)
         {
             tetri.transform.localScale = Vector3.one * 0.3f;
         }
@@ -230,9 +241,9 @@ public class TetrisBuoySimple : NetworkBehaviour
     }
     public void Display_Evaluate()
     {
-        foreach(var child in childTetris)
+        foreach(var child in ChildTetris)
         {
-            child.Display_Evaluate();
+            child.Event_Display_Evaluate();
         }
     }
     

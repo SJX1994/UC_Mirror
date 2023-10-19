@@ -7,6 +7,7 @@ using Spine.Unity.AttachmentTools;
 using UnityEngine.Events;
 using DG.Tweening;
 using UC_PlayerData;
+using System.Linq;
 public class Weapon : MonoBehaviour
 {
     #region 数据对象
@@ -17,7 +18,7 @@ public class Weapon : MonoBehaviour
     [HideInInspector]
     public float pos_weaponX, pos_weaponY, rot_weapon, scale_weapon = 0f;
     RegionAttachment attachment;
-    Slot spineSlot;
+    public Slot spineSlot;
     bool applyPMA;
     public WeaponTemplate.WeaponType thisWeaponType;
     [HideInInspector]
@@ -49,6 +50,15 @@ public class Weapon : MonoBehaviour
     public Sprite weaponSprite;
     [SpineSlot] public string slot;
     public List<WeaponTemplate> weaponTemplates;
+    SkeletonRenderer skeletonRenderer;
+    SkeletonRenderer SkeletonRenderer
+    {
+        get
+        {
+            if(!skeletonRenderer)skeletonRenderer = GetComponent<SkeletonRenderer>();
+            return skeletonRenderer;
+        }
+    }
     #endregion
 
     #endregion 数据对象
@@ -69,7 +79,7 @@ public class Weapon : MonoBehaviour
     {
         ISkeletonAnimation animatedSkeleton = GetComponent<ISkeletonAnimation>();
         if (animatedSkeleton != null)
-            animatedSkeleton.UpdateComplete -= AnimationOverrideSpriteAttach;
+            animatedSkeleton.UpdateComplete -= Event_AnimationOverrideSpriteAttach;
     }
 
     // public void SetWeapon(EventType.UnitColor color)
@@ -110,7 +120,6 @@ public class Weapon : MonoBehaviour
         if (!applyDifferenceAttribute) return;
         switch (color)
         {
-            // TODO 更多武器
             case UnitData.Color.red:
                 if (applyDifferenceAttribute.differenceAttributeTemplate_Red != null) break;
                 SetWeapon(WeaponTemplate.WeaponType.Sword);
@@ -133,10 +142,40 @@ public class Weapon : MonoBehaviour
                 break;
 
         }
+        SkeletonRenderer.OnMeshAndMaterialsUpdated += Event_OnMeshAndMaterialsUpdated;
         OnChangeWeapon?.Invoke(this);
+    }
+    void OnDisable()
+    {
+        SkeletonRenderer.OnMeshAndMaterialsUpdated -= Event_OnMeshAndMaterialsUpdated;
     }
     #endregion 数据关系
     #region 数据操作
+    void Event_OnMeshAndMaterialsUpdated(SkeletonRenderer skeletonRenderer)
+    {
+        if(thisWeaponType == WeaponTemplate.WeaponType.Null)return;
+        Material[] material = transform.GetComponent<Renderer>().sharedMaterials;
+        material.ToList().ForEach((mat) =>
+        {
+            if (!mat.name.Contains("Skeleton"))return;
+            
+            switch(thisWeaponType)
+            {
+                case WeaponTemplate.WeaponType.Sword:
+                    break;
+                case WeaponTemplate.WeaponType.Spear:
+                    break;
+                case WeaponTemplate.WeaponType.Shield:
+                    mat.renderQueue = 5000;
+                    break;
+                case WeaponTemplate.WeaponType.Bow:
+                    break;
+            }
+            
+            
+        });
+        // Debug.Log(material.Length);
+    }
 #if UNITY_EDITOR
     void OnValidate()
     {
@@ -286,7 +325,7 @@ public class Weapon : MonoBehaviour
         this.weaponDisplay = null;
     }
 
-    void AnimationOverrideSpriteAttach(ISkeletonAnimation animated)
+    void Event_AnimationOverrideSpriteAttach(ISkeletonAnimation animated)
     {
         if (overrideAnimation && isActiveAndEnabled)
             Attach();
@@ -312,8 +351,8 @@ public class Weapon : MonoBehaviour
                 ISkeletonAnimation animatedSkeleton = skeletonComponent as ISkeletonAnimation;
                 if (animatedSkeleton != null)
                 {
-                    animatedSkeleton.UpdateComplete -= AnimationOverrideSpriteAttach;
-                    animatedSkeleton.UpdateComplete += AnimationOverrideSpriteAttach;
+                    animatedSkeleton.UpdateComplete -= Event_AnimationOverrideSpriteAttach;
+                    animatedSkeleton.UpdateComplete += Event_AnimationOverrideSpriteAttach;
                 }
             }
             spineSlot = spineSlot ?? skeletonComponent.Skeleton.FindSlot(slot);

@@ -74,12 +74,14 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       Tween tween_SoldiersUpdateRelationFrom;
       Tween tween_SoldiersEndRelationTo;
       Tween tween_ChainTransfering;
+      Vector3 originLocalPosition;
       
       void Start()
       {
             needRender = true;
             chainDamage = 10;
             chainDamageTotal = 0;
+            originLocalPosition = transform.localPosition;
             Invoke(nameof(Init), 0.1f);
       }
       public void AllSoldiers()
@@ -118,6 +120,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             }else
             {
                   Debug.Log("少于一个单位，不能进行链式传递");
+                  
                   return false;
             }
       }
@@ -178,6 +181,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             }
             foreach (var soldier in soldiers)
             {     
+                  if(!soldier)continue;
                   gloableSoldiers[gloableIndex] = soldier;
                   gloableIndex += 1;
                   float tempDuration = soldier.ChainTransfer.duration;
@@ -209,22 +213,24 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             tweens.Add(tween_SoldiersUpdateRelationFrom);
             tweens.Add(tween_SoldiersEndRelationTo);
             tweens.Add(tween_ChainTransfering);
-            foreach(Tween tween in tweens)
+            for(int i = 0; i < tweens.Count; i++)
             {
-                  if(tween == null)continue;
-                  if(tween.IsPlaying())tween?.Kill();
+                  if(tweens[i] == null)continue;
+                  if(tweens[i]!=null){tweens[i]?.Kill(); tweens[i] = null;}
             }
       }
       public void SoldiersStartRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             if(from == null || to == null) return;
+            if(!from.UnitSimple || !to.UnitSimple) return;
             to.ChainTransfer.counted = true;
             Vector3 backPosition = from.transform.position;
             Vector3 targetPosition = to.transform.position;
 
             // 停止砖块移动
-            from.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Stop();
-            to.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Stop();
+            bool notCancleOccupied = false;
+            from.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Stop(notCancleOccupied);
+            to.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Stop(notCancleOccupied);
             // 停止状态机的移动
             NavMeshAgent agent;
             agent = from.transform.TryGetComponent<NavMeshAgent>(out agent) ? agent : null;
@@ -234,18 +240,16 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                   // from.unitBase.ExecuteCommand(stop);
                   // from.unitBase.controled = true;
             }
-            
-
             tween_SoldiersStartRelationFrom = from.transform.DOMove(targetPosition, from.ChainTransfer.duration/2);
             tween_SoldiersStartRelationFrom.onComplete = () =>
             {
                   
                   if(to.PositiveEffect)to.PositiveEffect.Play();
                   tween_SoldiersStartRelationFrom.Kill();
-                  tween_SoldiersStartRelationFrom = from.transform.DOLocalMove(Vector3.zero, from.ChainTransfer.duration/2);
+                  tween_SoldiersStartRelationFrom = from.transform.DOLocalMove(originLocalPosition, from.ChainTransfer.duration/2);
                   tween_SoldiersStartRelationFrom.onComplete = () =>
                   {  
-                        transform.localPosition = Vector3.zero;
+                        transform.localPosition = originLocalPosition;
                         Invoke(nameof(ResetPos),0.5f);
                         tween_SoldiersStartRelationFrom.Kill();
                   };
@@ -270,7 +274,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                   
                   to.PositiveEffect.Play();
                   tween_SoldiersUpdateRelationFrom.Kill();
-                  tween_SoldiersUpdateRelationFrom = from.transform.DOLocalMove(Vector3.zero, from.ChainTransfer.duration/2);
+                  tween_SoldiersUpdateRelationFrom = from.transform.DOLocalMove(originLocalPosition, from.ChainTransfer.duration/2);
                   tween_SoldiersUpdateRelationFrom.onComplete = () =>
                   {  
                         // 允许状态机的移动
@@ -291,7 +295,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       public void SoldiersEndRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             // 发出射线
-            targetPosition = Vector3.zero;
+            targetPosition = originLocalPosition;
             if (Physics.Raycast(from.transform.position, (to.transform.position - from.transform.position), out RaycastHit hit, Mathf.Infinity, targetLayer))
             {
                 // 如果射线与物体相交，则打印相交点和相交物体的名称
@@ -300,7 +304,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                 targetPosition = hit.point;
                 bombIsMoving = true;
             }
-            else if (targetPosition == Vector3.zero)
+            else if (targetPosition == originLocalPosition)
             {
                   // 计算延长线上的点
                   Vector3 direction = (to.transform.position - from.transform.position).normalized;
@@ -347,7 +351,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             tween_SoldiersEndRelationTo.onComplete = () =>
             {
                   tween_SoldiersEndRelationTo.Kill();
-                  tween_SoldiersEndRelationTo = to.transform.DOLocalMove(Vector3.zero,to.ChainTransfer.originDuration);
+                  tween_SoldiersEndRelationTo = to.transform.DOLocalMove(originLocalPosition,to.ChainTransfer.originDuration);
                   tween_SoldiersEndRelationTo.onComplete = () =>
                   {   
                         //复原
@@ -383,9 +387,9 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       }
       void ResetPos()
       {
-            while(transform.localPosition != Vector3.zero)
+            while(transform.localPosition != originLocalPosition)
             {
-                  transform.localPosition = Vector3.zero;
+                  transform.localPosition = originLocalPosition;
             }
       }
       void UnitBaseCollected(Unit u)

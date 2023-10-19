@@ -1,16 +1,19 @@
 Shader "Spine/Skeleton-processing" {
 	Properties {
 		_Color("Color", Color) = (1,1,1,1)
+		[PerRendererData]_BeenAttackedColor("BeenAttackedColor", Color) = (0,0,0,0)
+		[PerRendererData]_SelectOutlineColor ("Outline Color", Color) = (0,0,0,0)
+        _SelectOutlineWidth ("Outline Width", Range(0, 1)) = 0.005
 		_MaxPorcess("MaxPorcess", Float) = 1.0
 		_MinPorcess("MinPorcess", Float) = 0.0
 		_Amplitude("Amplitude", Float) = 1.0
-		_Alpha("Alpha", Range(0,1)) = 1.0
-		[PerRendererData]_Porcess("Porcess", Range(0,1)) = 0.0
+		[PerRendererData]_Alpha("Alpha", Range(0,1)) = 0.0
+		[PerRendererData]_Porcess("Porcess", Range(0,1)) = 1.0
 
 		[PerRendererData]_Foreshadow("Foreshadow", Range(0,1)) = 0.0
 		_ForeshadowWidth ("Foreshadow Width", Range(0.01, 1)) = 0.1
         _ForeshadowFrequency ("Foreshadow Frequency", Range(1, 10)) = 5
-
+		_ForeshadowStrength ("Foreshadow Strength", Range(0, 1)) = 0.3
 		_Cutoff ("Shadow alpha cutoff", Range(0,1)) = 0.1
 		[NoScaleOffset] _MainTex ("Main Texture", 2D) = "black" {}
 		
@@ -20,7 +23,7 @@ Shader "Spine/Skeleton-processing" {
 
 		// Outline properties are drawn via custom editor.
 		[HideInInspector] _OutlineWidth("Outline Width", Range(0,8)) = 3.0
-		[HideInInspector] _OutlineColor("Outline Color", Color) = (1,1,0,1)
+		[HideInInspector] _OutlineColor("Outline Color", Color) = (1,1,1,1)
 		[HideInInspector] _OutlineReferenceTexWidth("Reference Texture Width", Int) = 1024
 		[HideInInspector] _ThresholdEnd("Outline Threshold", Range(0,1)) = 0.25
 		[HideInInspector] _OutlineSmoothness("Outline Smoothness", Range(0,1)) = 1.0
@@ -43,11 +46,13 @@ Shader "Spine/Skeleton-processing" {
 			Comp[_StencilComp]
 			Pass Keep
 		}
-		
-
 		Pass {
 			Name "Normal"
-
+			Tags
+			{
+				"RenderPipeline" = "UniversalPipeline"
+				"LightMode" = "UniversalForward"
+			}
 			CGPROGRAM
 			#define PI 3.14159265358
 			#pragma shader_feature _ _STRAIGHT_ALPHA_INPUT
@@ -60,12 +65,17 @@ Shader "Spine/Skeleton-processing" {
 			fixed _Foreshadow;
 			fixed _ForeshadowWidth;
 			fixed _ForeshadowFrequency;
+			fixed _ForeshadowStrength;
+			fixed4 _BeenAttackedColor;
 			fixed _MaxPorcess;
 			fixed _MinPorcess;
+			float4 _SelectOutlineColor;
+			float _SelectOutlineWidth;
 			fixed _Porcess;
 			fixed _Amplitude;
 			fixed _Alpha;
 			fixed4 _Color;
+			
 			struct VertexInput {
 				float4 vertex : POSITION;
 				float2 uv : TEXCOORD0;
@@ -86,7 +96,6 @@ Shader "Spine/Skeleton-processing" {
         	    float alpha = step(width, d);
         	    return saturate(alpha);
         	}
-
 			VertexOutput vert (VertexInput v) {
 				VertexOutput o;
 				o.pos = UnityObjectToClipPos(v.vertex);
@@ -111,8 +120,10 @@ Shader "Spine/Skeleton-processing" {
 				texColor.rgb = lerp(texNoColor,texColor.rgb,objectYcolor);
 				texColor.rgb *= _Color;
 				float foreshadow = CalculateStripeAlpha(i.objectPos, _ForeshadowWidth * _Foreshadow, _ForeshadowFrequency);
-				texColor.rgb += texColor.a * _Foreshadow * foreshadow * 0.6f;
+				texColor.rgb += texColor.a * _Foreshadow * foreshadow * _ForeshadowStrength;
 				texColor.rgba *= foreshadow;
+				texColor.rgba *= _Alpha;
+				texColor.rgb += _BeenAttackedColor.rgb * texColor.a;
 				// 插值检查
 				//texColor.rgb = step(_MinPorcess,i.objectPos.y);
 				#if defined(_STRAIGHT_ALPHA_INPUT)
@@ -120,6 +131,76 @@ Shader "Spine/Skeleton-processing" {
 				#endif
 				
 				return (texColor * i.vertexColor);
+			}
+			ENDCG
+		}
+		Pass {
+			Name "OutLine"
+			Tags
+			{
+				"RenderPipeline" = "UniversalPipeline"
+				// 黑客行为
+			}
+			ZWrite Off
+			CGPROGRAM
+			#define PI 3.14159265358
+			#pragma shader_feature _ _STRAIGHT_ALPHA_INPUT
+			#pragma multi_compile_instancing // 单个材质多属性修改
+			#pragma vertex vert
+			#pragma fragment frag
+			#include "UnityCG.cginc"
+			#include "CGIncludes/Spine-Common.cginc"
+			sampler2D _MainTex;
+			float4 _SelectOutlineColor;
+			float _SelectOutlineWidth;
+			fixed _Alpha;
+			fixed4 _Color;
+			struct VertexInput {
+				float4 vertex : POSITION;
+				float2 uv : TEXCOORD0;
+				float4 vertexColor : COLOR;
+			};
+
+			struct VertexOutput {
+				float4 pos : SV_POSITION;
+				float4 objectPos:COLOR1;
+				float2 uv : TEXCOORD0;
+				float4 vertexColor : COLOR;
+			};
+			// 缩放矩阵
+        	float4 OutLine(float4 vertPos,float outLine)
+        	{
+        	    float4x4 scaleMat;
+				scaleMat[0][0] = 1.0 + outLine;
+				scaleMat[0][1] = 0.0;
+				scaleMat[0][2] = 0.0;
+				scaleMat[0][3] = 0.0;
+				scaleMat[1][0] = 0.0;
+				scaleMat[1][1] = 1.0 + outLine;
+				scaleMat[1][2] = 0.0;
+				scaleMat[1][3] = 0.0;
+				scaleMat[2][0] = 0.0;
+				scaleMat[2][1] = 0.0;
+				scaleMat[2][2] = 1.0 + outLine;
+				scaleMat[2][3] = 0.0;
+				scaleMat[3][0] = 0.0;
+				scaleMat[3][1] = 0.0;
+				scaleMat[3][2] = 0.0;
+				scaleMat[3][3] = 1.0 + outLine;
+        	    return mul(scaleMat,vertPos);
+        	}
+			VertexOutput vert (VertexInput v) {
+				VertexOutput o;
+				o.pos = UnityObjectToClipPos(OutLine(v.vertex,_SelectOutlineWidth));
+				o.uv = v.uv;
+				return o;
+			}
+
+			float4 frag (VertexOutput i) : SV_Target {
+				float4 texColor = tex2D(_MainTex, i.uv);
+				// float4 finalColor = smoothstep(texColor.a + 0.1f,texColor.a,_SelectOutlineColor);
+				float4 finalColor = texColor.a * _SelectOutlineColor * _Alpha;
+				return (finalColor);
 			}
 			ENDCG
 		}

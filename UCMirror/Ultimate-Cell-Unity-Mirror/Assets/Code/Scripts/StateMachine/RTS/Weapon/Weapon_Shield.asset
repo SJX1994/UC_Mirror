@@ -19,6 +19,6 @@ MonoBehaviour:
   healthBonus: 20
   weaponType: 3
   pos_weaponX: -1
-  pos_weaponY: 0.5
+  pos_weaponY: 0.1
   rot_weapon: 0
-  scale_weapon: 0.5
+  scale_weapon: 0.1

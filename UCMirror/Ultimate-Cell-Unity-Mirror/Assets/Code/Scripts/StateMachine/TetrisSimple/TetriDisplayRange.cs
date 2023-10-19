@@ -21,6 +21,13 @@ public class TetriDisplayRange : MonoBehaviour
         Left.color = color;
         Right.color = color;
     }
+    public void SetAlpha(float alpha)
+    {
+        Up.color = new Color(Up.color.r,Up.color.g,Up.color.b,alpha);
+        Down.color = new Color(Down.color.r,Down.color.g,Down.color.b,alpha);
+        Left.color = new Color(Left.color.r,Left.color.g,Left.color.b,alpha);
+        Right.color = new Color(Right.color.r,Right.color.g,Right.color.b,alpha);
+    }
     public void SetSortingOrder(int order)
     {
         Up.sortingOrder = order;

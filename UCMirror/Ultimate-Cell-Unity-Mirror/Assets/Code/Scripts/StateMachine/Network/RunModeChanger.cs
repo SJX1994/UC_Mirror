@@ -9,5 +9,7 @@ public class RunModeChanger : Singleton<RunModeChanger>
     void Awake()
     {
         RunModeData.ChangeRunMode(runMode);
+        UserAction.Player1UserState = UserAction.State.WatchingFight;
+        UserAction.Player2UserState = UserAction.State.WatchingFight;
     }
 }

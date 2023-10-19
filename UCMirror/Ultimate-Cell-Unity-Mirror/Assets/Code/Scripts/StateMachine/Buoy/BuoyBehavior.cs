@@ -55,9 +55,6 @@ public class BuoyBehavior : NetworkBehaviour
             // 单机
             originPos = transform.parent.localPosition;
             if(!buoyInfo.MouseButtonDown(false))return;
-            tsBuoyControled = buoyInfo.blockBuoyHandler.GetTetrisBuoy();
-            tsBuoyControleds = buoyInfo.buoyTurnHandle.GetControledTetris();
-            state = buoyInfo.buoyTurnHandle.GetControlState();
             Behavior_OnMouseDown();
             
         }else
@@ -99,12 +96,17 @@ public class BuoyBehavior : NetworkBehaviour
 # region 数据操作
     void Behavior_OnMouseDown()
     {
+        buoyInfo.OnBuoyDrag?.Invoke();
+        UserAction.Player1UserState = UserAction.State.CommandTheBattle_Buoy;
+        UserAction.Player2UserState = UserAction.State.CommandTheBattle_Buoy;
+        state = buoyInfo.buoyTurnHandle.GetControlState();
         if(state == BuoyTurnHandle.TurnHandleControlState.Scaning_1)
         {
+            tsBuoyControled = buoyInfo.blockBuoyHandler.GetTetrisBuoy();
             if(!tsBuoyControled)return;
             if(!buoyInfo.Local() && tsBuoyControled.tetrisBlockSimple.player != buoyInfo.player)return;
             if(tsBuoyControled.tetrisBlockSimple.tetrisCheckMode != TetrisBlockSimple.TetrisCheckMode.Normal) return;
-            tsBuoyControled.tetrisBlockSimple.Stop();
+            tsBuoyControled.tetrisBlockSimple.Stop(false);
             // Unit预示暂存
             TetrisUnitSimple tetrisUnitControled = tsBuoyControled.transform.GetComponent<TetrisUnitSimple>();
             tetrisUnitControled.NewTetrisUnit = false;
@@ -115,19 +117,19 @@ public class BuoyBehavior : NetworkBehaviour
             tetrisBuoySimpleTemp.name = tsBuoyControled.name.Replace("(Clone)",UnitData.Temp);
             tetrisBuoySimpleTemp.tetrisBuoyDragged = tsBuoyControled; // 自碰撞检测:自己可以被覆盖
             if(!tetrisBuoySimpleTemp.tetrisBuoyDragged)return;
-            // Unit预示加载
-            tetrisBuoySimpleTemp.transform.GetComponent<TetrisUnitSimple>().LoadUnits(indexPairColors);
+            // Units
+            TetrisUnitSimple tetrisUnitControledTemp = tetrisBuoySimpleTemp.transform.GetComponent<TetrisUnitSimple>();
+            tetrisUnitControledTemp.LoadUnits(indexPairColors);
             // 转成Buoy坐标系
             tetrisBuoySimpleTemp.transform.localPosition = tsBuoyControled.transform.localPosition -transform.parent.localPosition;
             tetrisBuoySimpleTemp.Display_OnDragBuoy();
-            // 监听Unit死亡事件
-            tsBuoyControled.TetrisBuoyTemp = tetrisBuoySimpleTemp; 
-            // 进入心流状态
-            buoyInfo.OnBuoyDrag?.Invoke();
+
+            tsBuoyControled.TetrisBuoyTemp = tetrisBuoySimpleTemp;
             
         }
         else if (state == BuoyTurnHandle.TurnHandleControlState.Scaning_9 || state == BuoyTurnHandle.TurnHandleControlState.Scaning_25 )
         {
+            tsBuoyControleds = buoyInfo.buoyTurnHandle.GetControledTetris();
             AddScanedTetrisToTemp();
         }
     }
@@ -142,10 +144,11 @@ public class BuoyBehavior : NetworkBehaviour
         hit.collider.transform.TryGetComponent(out block);
         if(!block)return;
         transform.parent.localPosition = new Vector3( block.posId.x, 0, block.posId.y);
-        // 不能放置的表现
         if(state == BuoyTurnHandle.TurnHandleControlState.Scaning_1)
         {
             if(!tetrisBuoySimpleTemp)return;
+            TetrisUnitSimple tetrisUnitControledTemp = tetrisBuoySimpleTemp.transform.GetComponent<TetrisUnitSimple>();
+            tetrisUnitControledTemp.SetUnitSortingOrderToFlow();
             tetrisBuoySimpleTemp.DoDropDragingCheck();
         }
         else if(state == BuoyTurnHandle.TurnHandleControlState.Scaning_9 || state == BuoyTurnHandle.TurnHandleControlState.Scaning_25)
@@ -165,6 +168,8 @@ public class BuoyBehavior : NetworkBehaviour
     }
     void Behavior_OnMouseUp()
     {
+        UserAction.Player1UserState = UserAction.State.WatchingFight;
+        UserAction.Player2UserState = UserAction.State.WatchingFight;
         if(state == BuoyTurnHandle.TurnHandleControlState.Scaning_1)
         {
             if(!tsBuoyControled || !tetrisBuoySimpleTemp)return;
@@ -243,12 +248,11 @@ public class BuoyBehavior : NetworkBehaviour
             tetrisBuoySimpleTemps.Add(tetrisControledTemp);
             // 转成Buoy坐标系
             Vector2 idChanger = tetrisBuoySimple.tetrisBlockSimple.posId - buoyInfo.CurrentPosID;
-            tetrisControledTemp.transform.localPosition = new Vector3(idChanger.x,0,idChanger.y);
+            float littleUpForRayCheck = 0.3f;
+            tetrisControledTemp.transform.localPosition = new Vector3(idChanger.x,littleUpForRayCheck,idChanger.y);
             tetrisControledTemp.Display_OnDragBuoy();
         }
         if(tetrisBuoySimpleTemps.Count==0)return;
-        // 进入心流状态
-        buoyInfo.OnBuoyDrag?.Invoke();
     }
     //--------------------联网--------------------
     [Client]
@@ -642,14 +646,20 @@ public class BuoyBehavior : NetworkBehaviour
             // 放置相关
             transform.parent.localPosition = originPos;
             tsBuoyControled.tetrisBlockSimple.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Drop;
-            tsBuoyControled.tetrisBlockSimple.Move();
+            tsBuoyControled.tetrisBlockSimple.Stop();
+            tsBuoyControled.tetrisBlockSimple.Active_X();
+            // tsBuoyControled.tetrisBlockSimple.Move();
+            
             DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
         }else
         {
             if(!isServer)return;
             transform.parent.localPosition = originPos_PVP;
             tsBuoyControled.tetrisBlockSimple.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Drop;
-            tsBuoyControled.tetrisBlockSimple.Move();
+            tsBuoyControled.tetrisBlockSimple.Stop();
+            tsBuoyControled.tetrisBlockSimple.Active_X();
+            // tsBuoyControled.tetrisBlockSimple.Move();
+            
             DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
         }
         
@@ -669,7 +679,7 @@ public class BuoyBehavior : NetworkBehaviour
         tsBuoyControled.tetrisBlockSimple.Active();
         // 机制检测
         TetrisBlockSimple tetrisBlockSimple = tsBuoyControled.TetrisBlockSimple;
-        tetrisBlockSimple.BlocksCreator.BlocksCounterInvoke();
+        tetrisBlockSimple.BlocksCreator.Event_BlocksCounterInvoke();
         
         if(buoyInfo.Local())
         {

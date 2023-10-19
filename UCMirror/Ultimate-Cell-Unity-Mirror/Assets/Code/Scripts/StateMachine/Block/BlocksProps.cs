@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UC_PlayerData;
 public class BlocksProps : MonoBehaviour
 {
-    int obstacleCount = 15;
+    int obstacleCount = 15; // 满格20格
     TetriObstacle tetriObstacle;
     public TetriObstacle TetriObstacle
     {
@@ -28,7 +28,7 @@ public class BlocksProps : MonoBehaviour
             return tetriMoveDirection;
         }
     }
-    Player ChainBallSwitcher = Player.NotReady;
+    // Player ChainBallSwitcher = Player.NotReady;
     Player MoveDirectionChangerSwitcher;
     void Start()
     {
@@ -39,14 +39,13 @@ public class BlocksProps : MonoBehaviour
         switch(propsState)
         {
             case PropsData.PropsState.ChainBall:
-                Invoke(nameof(GenerateChainBall),3.1f);
+                Invoke(nameof(GenerateChainBall_First),9.1f);
             break;
             case PropsData.PropsState.MoveDirectionChanger:
                 Invoke(nameof(GenerateMoveDirectionChanger),1.1f);
                 Invoke(nameof(GenerateMoveDirectionChanger),2.1f);
             break;
             case PropsData.PropsState.Obstacle:
-                // 满格20格
                 Invoke(nameof(GenerateObstacle),0.5f);
             break;
         }
@@ -72,16 +71,25 @@ public class BlocksProps : MonoBehaviour
             Invoke(nameof(GenerateMoveDirectionChanger),0.1f);
         };
     }
-    void GenerateChainBall()
+    void GenerateChainBall_First()
     {
-        ChainBallSwitcher = Switcher(ChainBallSwitcher);
+        // ChainBallSwitcher = Switcher(ChainBallSwitcher);
         tetriBall = Instantiate(TetriBall);
         tetriBall.BlocksCreator = transform.GetComponent<BlocksCreator_Main>();
-        tetriBall.Generate(ChainBallSwitcher);
+        // tetriBall.Generate(ChainBallSwitcher);
+        tetriBall.Generate(Player.NotReady);
+        bool continuousGeneration = false;
+        if(!continuousGeneration)return;
         tetriBall.OnTetriBallCollected += (TetriBall ball) => 
         {
-            Invoke(nameof(GenerateChainBall),0.1f);
+            Invoke(nameof(GenerateChainBall_First),0.1f);
         };
+    }
+    public void Event_GenerateChainBall_MoraleAccumulationMaxed(Player whoMax)
+    {
+        tetriBall = Instantiate(TetriBall);
+        tetriBall.BlocksCreator = transform.GetComponent<BlocksCreator_Main>();
+        tetriBall.Generate(whoMax);
     }
     Player Switcher(Player player)
     {

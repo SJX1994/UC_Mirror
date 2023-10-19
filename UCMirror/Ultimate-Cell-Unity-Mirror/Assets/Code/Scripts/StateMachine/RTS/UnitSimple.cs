@@ -1,6 +1,7 @@
 using UnityEngine;
 using UC_PlayerData;
 using DG.Tweening;
+using Spine.Unity;
 
 public class UnitSimple : Unit
 {
@@ -11,7 +12,7 @@ public class UnitSimple : Unit
         get
         {
             if(!tetriUnitSimple.TetrisBlockSimple)return 0f;
-            if(durationRunning!=tetriUnitSimple.TetrisBlockSimple.occupyingTime)durationRunning = tetriUnitSimple.TetrisBlockSimple.occupyingTime;
+            if(durationRunning!=tetriUnitSimple.TetrisBlockSimple.OccupyingTime)durationRunning = tetriUnitSimple.TetrisBlockSimple.OccupyingTime;
             return durationRunning;
         }
         set
@@ -27,7 +28,7 @@ public class UnitSimple : Unit
         get
         {
             if(!tetriUnitSimple.TetrisBlockSimple)return 0f;
-            if(runningSpeed!=tetriUnitSimple.TetrisBlockSimple.occupyingTime)runningSpeed = 1/tetriUnitSimple.TetrisBlockSimple.occupyingTime;
+            if(runningSpeed!=tetriUnitSimple.TetrisBlockSimple.OccupyingTime)runningSpeed = 1/tetriUnitSimple.TetrisBlockSimple.OccupyingTime;
             return runningSpeed;
         }
     }
@@ -40,7 +41,7 @@ public class UnitSimple : Unit
             return runningDelay;
         }
     }
-    public Tween runningTween;
+    public Tween tween_running;
     // 机制相关
     SoldierBehaviors soldier;
     public SoldierBehaviors Soldier
@@ -61,7 +62,7 @@ public class UnitSimple : Unit
     // 可视化
     Vector3 startPoint;
     Vector3 endPoint;
-    public LineRenderer lineRenderer;
+    public LineRenderer attackDirectionLineRenderer;
     int faceDirection = 1;
     ParticlesController bloodEffectLoad;
     ParticlesController bloodEffect;
@@ -77,33 +78,76 @@ public class UnitSimple : Unit
     float originalScaleweapon;
     int originalAttackPower;
     int originalHealth;
+    public Tween tween_OnEndDragDisplay;
+    public Tween tween_DieScale;
+    public Tween tween_BeenAttack;
+    int foreshadowOpen = 0;
+    int ForeshadowOpen
+    {
+        get
+        {
+            return foreshadowOpen;
+        }
+        set
+        {
+            foreshadowOpen = value;
+            if(foreshadowOpen>1)foreshadowOpen = 1;
+            UpdateMatForeshadow(foreshadowOpen);
+        }
+    }
+    bool enableSelectEffect = false;
+    public bool EnableSelectEffect
+    {
+        get
+        {
+            return enableSelectEffect;
+        }
+        set
+        {
+            
+            if(enableSelectEffect == value)return;
+            enableSelectEffect = value;
+            if(enableSelectEffect)
+            {
+                Color enablePlayer1 = new Color32(29, 255, 254, 255);
+                Color enablePlayer2 = new Color32(29, 255, 254, 255);
+                Color enableColor = Soldier.Player == Player.Player1 ? Color.white :Soldier.Player == Player.Player2 ? Color.white : Color.white;
+                UpdateMatSelectEffect(enableColor);
+            }
+            else
+            {
+                UpdateMatSelectEffect(Color.clear);
+            }
+        }
+    }
+    Vector3 playerLineRendererOffset = new Vector3(0,1,0);
 # endregion 数据对象
 # region 数据关系
     public override void Awake()
     {
         base.Awake();
+        // ShaderInit();
     }
     public override void Start() {
         base.Start();
-        lineRenderer = GetComponent<LineRenderer>();
+        attackDirectionLineRenderer = GetComponent<LineRenderer>();
         soldier = GetComponent<SoldierBehaviors>();
         if(!soldier.WeakAssociation)soldier.Start();
-        soldier.WeakAssociation.weakAssociationActive += BlocksMechanismDoing;
+        soldier.WeakAssociation.weakAssociationActive += Event_BlocksMechanismDoing;
         originalScaleweapon = Weapon.WeaponTemplate.scale_weapon;
         originalAttackPower = Weapon.WeaponTemplate.attackPowerBonus;
         originalHealth = Weapon.WeaponTemplate.healthBonus;
         DifferentPlayerInit();
-        ShaderInit();
     }
     public override void Update()
     {
         targetOfAttack = AttackChecker();
-        startPoint = transform.position;
-        endPoint = targetOfAttack ? targetOfAttack.transform.position : startPoint;
+        startPoint = transform.position + playerLineRendererOffset;
+        endPoint = targetOfAttack ? new( targetOfAttack.transform.position.x - playerLineRendererOffset.x,targetOfAttack.transform.position.y + playerLineRendererOffset.y,targetOfAttack.transform.position.z+ playerLineRendererOffset.z) : startPoint;
         Attack(targetOfAttack);
     }
-    // blocks 机制行为表现
-    public void BlocksMechanismDoing(BlocksData.BlocksMechanismType MechNeedUnit)
+
+    public void Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType MechNeedUnit)
     {
         switch(MechNeedUnit)
         {
@@ -133,8 +177,11 @@ public class UnitSimple : Unit
             case PropsData.PropsState.MoveDirectionChanger:
                 Display_onMoveDirectionChanger();
             break;
+            case PropsData.PropsState.Obstacle:
+                Display_onObstacle();
+            break;
         }
-        OnTetrisMoveing();
+        Event_OnTetrisMoveing();
         return propState;
     }
     // 道具行为表现
@@ -158,65 +205,96 @@ public class UnitSimple : Unit
     
 # endregion 数据关系
 # region 数据操作
+    public void SetUnitSortingOrderToFlow()
+    {
+        Renderer sotingOrderRender =  SkeletonRenderer.gameObject.GetComponent<SkeletonMecanim>().GetComponent<Renderer>();
+        if(sotingOrderRender.sortingOrder == UC_PlayerData.Dispaly.FlowOrder)return;
+        sotingOrderRender.sortingOrder = UC_PlayerData.Dispaly.FlowOrder;
+        
+    }
+
+    public void SetUnitSortingOrderToNormal()
+    {
+        Renderer sotingOrderRender =  SkeletonRenderer.gameObject.GetComponent<SkeletonMecanim>().GetComponent<Renderer>();
+        if(sotingOrderRender.sortingOrder == UC_PlayerData.Dispaly.NormalUnitOrder)return;
+        sotingOrderRender.sortingOrder = UC_PlayerData.Dispaly.NormalUnitOrder;
+        
+    }
    
     // 着色器初始化
-    void ShaderInit()
+    public void ShaderInit()
     {
         localScale = transform.localScale;
-        UpdateMatForeshadow(0);
+        float disable = 0f;
+        float enable = 1f;
+        Color disableColor = Color.clear;
+        Speechless.color = disableColor;
+        UpdateBeenAttackedEffect(disableColor);
+        UpdateMatHealth(enable);
+        UpdateMatAlpha(enable);
+        UpdateMatForeshadow(disable);
+        EnableSelectEffect = true;
+        Display_HideUnit();
+        Display_HideMorale();
     }
     // 玩家差异
     public void DifferentPlayerInit()
     {
-        if(!lineRenderer)lineRenderer = GetComponent<LineRenderer>();
+        if(!attackDirectionLineRenderer)attackDirectionLineRenderer = GetComponent<LineRenderer>();
         if(!soldier)soldier = GetComponent<SoldierBehaviors>();
-        Color lineRendererColor = Color.clear;
+        Color attackDirectionLineRendererColor = Color.clear;
         Color moraleColor = Color.clear;
-        
         // 差异
         if(unitTemplate.player == Player.Player1)
         {
-            // 指向标渲染
-            lineRendererColor = Color.red + Color.white * 0.3f;
-            // 朝向赋值
+            attackDirectionLineRendererColor = new Color32(208,101,83,255); 
             faceDirection = 1;
-            // 士气颜色
             moraleColor = Color.red + Color.white * 0.3f;
-            // 流血颜色
             bloodColor = Color.red + Color.white * 0.2f;
-            
-
+            bloodColor = new Color(bloodColor.r,bloodColor.g,bloodColor.b,0.5f);
+            playerLineRendererOffset = new Vector3(0,1,0);
         }else if(unitTemplate.player == Player.Player2)
         {
-            // 指向标渲染
-            lineRendererColor = Color.blue + Color.white * 0.3f;
-            // 朝向赋值
+            attackDirectionLineRendererColor = new Color32(83,115,208,255);
             faceDirection = -1;
-            // 士气颜色
             moraleColor = Color.blue + Color.white * 0.3f;
-            // 流血颜色
             bloodColor = Color.blue + Color.white * 0.2f;
+            bloodColor = new Color(bloodColor.r,bloodColor.g,bloodColor.b,0.5f);
+            playerLineRendererOffset = new Vector3(-0,1,0);
+            
         }
-        // 共有
-        lineRenderer.startColor = lineRendererColor;
-        lineRenderer.endColor = lineRendererColor;
-        lineRenderer.endWidth = 0.0f;
+        attackDirectionLineRenderer.startColor = attackDirectionLineRendererColor;
+        attackDirectionLineRenderer.endColor = attackDirectionLineRendererColor;
+        float width = 0.21f;
+        attackDirectionLineRenderer.startWidth = width;
+        attackDirectionLineRenderer.endWidth = width;
         moraleColor.a = 0.666f;
         soldier.StrengthBar.GetComponent<SpriteRenderer>().color = moraleColor;
         if(!bloodEffectLoad)bloodEffectLoad = Resources.Load<ParticlesController>("Effect/BeenAttackBlood");
-        OnBeenAttacked += OnBeenAttackedBlood;
+        OnBeenAttacked += Event_OnBeenAttackedBlood;
     }
     // 被攻击
-    void OnBeenAttackedBlood(int damage)
+    void Event_OnBeenAttackedBlood(int damage)
     {
+        tween_BeenAttack?.Kill();
+        Color startColor = bloodColor;
+        Color endColor = Color.clear;
+        Color beenAttackColor = bloodColor;
+        UpdateBeenAttackedEffect(endColor);
+        tween_BeenAttack = DOVirtual.Color(startColor, endColor, 0.5f, (TweenCallback<Color>)((Color value) =>
+        {
+            beenAttackColor = value;
+            UpdateBeenAttackedEffect(beenAttackColor);
+        }));
+        
         for (int i = 0; i < damage; i++)
         {
             bloodEffect = Instantiate(bloodEffectLoad,transform); 
             bloodEffect.paintColor = bloodColor;
-            var main = bloodEffect.GetComponent<ParticleSystem>().main;
-            main.startColor = bloodColor;
-            var particleSystemMain = bloodEffect.GetComponent<ParticleSystem>().main;
-            particleSystemMain.startColor = bloodColor;
+            // var main = bloodEffect.GetComponent<ParticleSystem>().main;
+            // main.startColor = bloodColor;
+            // var particleSystemMain = bloodEffect.GetComponent<ParticleSystem>().main;
+            // particleSystemMain.startColor = bloodColor;
         }
     }
     // 攻击
@@ -234,51 +312,118 @@ public class UnitSimple : Unit
         if (!target)return;       
         if (IsDeadOrNull(target))return;
         DrawLine();
-        if (runningTween != null) runningTween.Kill();
+        if (tween_running != null) tween_running.Kill();
         animator.speed = Random.Range(0.95f, 1.15f);
         StartCoroutine(DealAttackSimple());
     }
-    public void OnTetriPosIdChanged(Vector2 posId)
+    public void Event_OnTetriPosIdChanged(Vector2 posId)
     {
         Invoke(nameof(DrawLine), 0.3f);
     }
     private void DrawLine()
     {
-        lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, startPoint);
-        lineRenderer.SetPosition(1, startPoint);
-        if(!targetOfAttack)return;
-        lineRenderer.SetPosition(1, endPoint);
+        attackDirectionLineRenderer.positionCount = 2;
+        attackDirectionLineRenderer.SetPosition(0, startPoint);
+        attackDirectionLineRenderer.SetPosition(1, startPoint);
+        Vector3 lineRenderEndPoint = targetOfAttack ? endPoint : startPoint;
+        attackDirectionLineRenderer.SetPosition(1, lineRenderEndPoint);
     }
     // 旋转
-    public void OnRotate(bool Reverse)
+    public void Event_OnRotate(bool Reverse)
     {
-        ResetRotationRot();
+        ResetRotationWhenPrussRot();
     }
     // 移动监听
-    public void OnTetrisMoveing()
+    public void Event_OnTetrisMoveing()
     {
         PropDoing();
         DrawLine();
         ResetRotation();
+        bool canAddToMoraleAccumulation = true;
+        Soldier.morale.successCreated = canAddToMoraleAccumulation;
     }
-    // 被玩家从培养皿
-    // 夹起的表现
+    // 选中后的编辑状态表现
+    public void Display_OnEditingStatusAfterSelection()
+    {
+        EnableSelectEffect = true;
+
+        Soldier.Behaviors_onEditingStatusAfterSelection();
+    }
+    // 拖拽的表现
     public void Display_OnBeginDragDisplay()
     {
-        UpdateMatForeshadow(1);
+        ForeshadowOpen = 1;
+        EnableSelectEffect = false;
+        Soldier.Behaviors_OnBeginDragDisplay();
         transform.localScale = LocalScale + Vector3.one * 0.15f;
     }
     // 放下的表现
     public void Display_OnEndDragDisplay()
     {
-        UpdateMatForeshadow(0);
-        transform.localScale = LocalScale;
+        ForeshadowOpen = 0;
+        tween_OnEndDragDisplay = transform.DOScale(LocalScale, 0.3f).SetEase(Ease.OutBounce);
+        tween_OnEndDragDisplay.OnComplete(() => {
+            animator.SetTrigger("DoWin");
+            Soldier.Behaviors_OnEndDragDisplay();
+            tween_OnEndDragDisplay.Kill();
+        });
+        
+        // transform.localScale = LocalScale;
     }
     // 当砖块Z向移动到顶后的表现
-    public void Display_OnTetriStuck(TetriBlockSimple tetriBlock)
+    public void Event_Display_OnTetriStuck(TetriBlockSimple tetriBlock)
     {
         Display_AllWin(tetriBlock);
+    }
+    // 链式传递表现
+    public void Display_onChainBall()
+    {
+        // 链式传递
+        Soldier.Behaviors_ChainTransfer();
+        // 首个砖块获得加成
+        animator.SetTrigger("DoWin");
+        tetriUnitSimple.PlayBlockEffect();
+        SufferAddHealthSimple((int)maxHealth);
+    }
+    public void Display_UserCommandTheBattle()
+    {
+        // SkeletonRenderer.transform.GetComponent<MeshRenderer>().sharedMaterial.SetFloat("_Alpha", 0.6f);
+        float commandTheBattle = 0.4f;
+        UpdateMatAlpha(commandTheBattle);
+        Weapon.spineSlot.A = commandTheBattle;
+        Soldier.Behaviors_UserCommandTheBattle();
+    }
+    public void Display_UserWatchingFight()
+    {
+        // SkeletonRenderer.transform.GetComponent<MeshRenderer>().sharedMaterial.SetFloat("_Alpha", 1f);
+        float userWatchingFight = 1f;
+        UpdateMatAlpha(userWatchingFight);
+        Weapon.spineSlot.A = userWatchingFight;
+        Soldier.Behaviors_UserWatchingFight();
+    }
+    public void Display_HideMorale()
+    {
+        Soldier.Behaviors_UserCommandTheBattle();
+    }
+    public void Display_ShowMorale()
+    {
+        Soldier.Behaviors_UserWatchingFight();
+    }
+    public void Display_HideUnit()
+    {
+        float hide = 0.0f;
+        UpdateMatAlpha(hide);
+        if(!Weapon)return;
+        if(Weapon.spineSlot == null)return;
+        Weapon.spineSlot.A = hide;
+    }
+    public void Display_ShowUnit()
+    {
+        float show = 1.0f;
+        UpdateMatAlpha(show);
+        if(!Weapon)return;
+        if(Weapon.spineSlot == null)return;
+        Weapon.spineSlot.A = show;
     }
     // 抵达对方底线后的表现
     void Display_onReachBottomLine()
@@ -287,14 +432,15 @@ public class UnitSimple : Unit
         Display_AllWin(tetriUnitSimple.TetriBlock);
         Soldier.Behaviors_onReachBottomLine();
         SufferAddHealthSimple((int)maxHealth);
-        SkeletonRenderer.transform.DOScale(Vector3.one * 1.2f, tetriUnitSimple.TetrisBlockSimple.occupyingTime).SetEase(Ease.OutExpo).onComplete = () => {
+        tween_DieScale = SkeletonRenderer.transform.DOScale(Vector3.one * 1.2f, 1f + 0.1f).SetEase(Ease.OutExpo);
+        tween_DieScale.onComplete = () => {
+            tetriUnitSimple.TetriBlock.tetrisBlockSimple.Stop();
             tetriUnitSimple.TetrisUnitSimple.KillAllUnits();
         };
     }
     void Display_onReachBottomLineGain()
     {
         Display_AllWin(tetriUnitSimple.TetriBlock);
-        
         // 整组增强
         tetriUnitSimple.TetrisBlockSimple.childTetris.ForEach((tetri) => {
             tetri.TetriUnitSimple.PlayBlockEffect();
@@ -306,7 +452,7 @@ public class UnitSimple : Unit
     void Display_onObstacle()
     {
         tetriUnitSimple.PlayBlockEffect();
-        tetriUnitSimple.TetrisSpeedDown(1.5f);
+        tetriUnitSimple.TetrisSpeedModify(1.5f);
         SufferAttackSimple((int)currentHP/2);
         Soldier.Behaviors_onObstacle();
     }
@@ -326,16 +472,7 @@ public class UnitSimple : Unit
         SufferAddHealthSimple((int)maxHealth);
         unitTemplate.attackSpeed *= soldier.strength;
     }
-    // 链式传递表现
-    public void Display_onChainBall()
-    {
-        // 链式传递
-        Soldier.Behaviors_ChainTransfer();
-        // 首个砖块获得加成
-        animator.SetTrigger("DoWin");
-        tetriUnitSimple.PlayBlockEffect();
-        SufferAddHealthSimple((int)maxHealth);
-    }
+    
     // 满行增强士气
     void Display_onFullRows()
     {
@@ -347,7 +484,7 @@ public class UnitSimple : Unit
         Soldier.Behaviors_OnFullRows();
         SufferAddHealthSimple((int)maxHealth);
         unitTemplate.attackSpeed *= soldier.strength;
-        if(runningTween != null)runningTween.Kill();
+        if(tween_running != null)tween_running.Kill();
     }
     // 弱势关联表现
     void Display_onWeakAssociation()
@@ -359,31 +496,31 @@ public class UnitSimple : Unit
         Soldier.Behaviors_WeakAssociation();
         SufferAddHealthSimple((int)maxHealth);
         unitTemplate.attackSpeed *= soldier.strength;
-        if(runningTween != null)runningTween.Kill();
+        if(tween_running != null)tween_running.Kill();
     }
     // 跑步动画
-    public void Display_StartRunning()
+    public void Event_Display_StartRunning()
     {
         ResetRotation();
         animator.speed = Random.Range(1.05f, 1.15f);
         runningValue = 0f;
         animator.SetFloat("Speed", 0f);
-        if(runningTween != null)runningTween.Kill();
+        if(tween_running != null)tween_running.Kill();
         DOVirtual.DelayedCall(RunningDelay, Display_delayCallRunning);
     }
     void Display_delayCallRunning()
     {
         float endValue = RunningSpeed;
         float duration = DurationRunning - RunningDelay;
-        if(!animator){runningTween.Kill(); return;}
-        runningTween = DOVirtual.Float(0, animator.speed + endValue, duration, (float value) =>
+        if(!animator){tween_running.Kill(); return;}
+        tween_running = DOVirtual.Float(0, animator.speed + endValue, duration, (float value) =>
         {
             runningValue = value;
             if(!animator)return;
             animator.speed = value;
             animator.SetFloat("Speed", runningValue);
         });
-        runningTween.onComplete=() =>
+        tween_running.onComplete=() =>
         {
             runningValue = 0f;
             if(!animator)return;
@@ -402,6 +539,7 @@ public class UnitSimple : Unit
             display.GetComponent<TetriUnitSimple>().haveUnit.animator.SetTrigger("DoWin");
         }
     }
+    
     // 朝向
     public void SetFlip()
     {
@@ -411,30 +549,64 @@ public class UnitSimple : Unit
     // 看向摄像机
     public void ResetRotation()
     {
+        // transform.localRotation = Quaternion.Euler(Vector3.zero);
+        // Vector3 CameraPos = Camera.main.transform.position;
+        // Vector3 directionToCamera = CameraPos - transform.position;
+        // directionToCamera.x = 0f;
+        // directionToCamera.z = -1f;
+        // float fixStretch = -13f;
+        // directionToCamera.y += fixStretch;
+        // Quaternion rotationToCamera = Quaternion.LookRotation(directionToCamera);
+        // transform.rotation = rotationToCamera;
         transform.localRotation = Quaternion.Euler(Vector3.zero);
-        Vector3 directionToCamera = Camera.main.transform.position - transform.position;
+        Vector3 stretchCorrectionPrussRot = new Vector3(0,3f,-3f);
+        Vector3 CameraPos = Camera.main.transform.position;
+        Vector3 directionToCamera = transform.forward; //CameraPos - transform.position;
         directionToCamera.x = 0f;
         directionToCamera.z = -1f;
+        float fixStretch = 6f;
+        directionToCamera.y += fixStretch;
         Quaternion rotationToCamera = Quaternion.LookRotation(directionToCamera);
         transform.rotation = rotationToCamera;
+        transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + stretchCorrectionPrussRot);
+        // skeletonRenderer.transform.LookAt(CameraPos);
+        // skeletonRenderer.transform.localRotation = Quaternion.Euler(new Vector3(transform.localRotation.eulerAngles.x,transform.localRotation.eulerAngles.y,0));
     }
     // 看向摄像机
-    public void ResetRotationRot()
+    public void ResetRotationWhenPrussRot()
     {
-        transform.localRotation = Quaternion.Euler(Vector3.zero);
-        Vector3 directionToCamera = Camera.main.transform.position - transform.position;
-        directionToCamera.x = -1f;
-        directionToCamera.z = 0f;
-        Quaternion rotationToCamera = Quaternion.LookRotation(directionToCamera);
-        transform.rotation = rotationToCamera;
+        // transform.localRotation = Quaternion.Euler(Vector3.zero);
+        // Vector3 stretchCorrectionPrussRot = new Vector3(0,3f,-6f);
+        // // Vector3 CameraPos =  Camera.main.transform.position;
+        // Vector3 directionToCamera = transform.forward; //CameraPos - transform.position;
+        // directionToCamera.x = -1f;
+        // directionToCamera.z = 0f;
+        // float fixStretch = 4f;
+        // directionToCamera.y += fixStretch;
+        // Quaternion rotationToCamera = Quaternion.LookRotation(directionToCamera);
+        // transform.rotation = rotationToCamera;
+        // transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + stretchCorrectionPrussRot);
+        
     }
     // 升级表现
     public void LevelUpDisplay(int level,float growth = 0.21f)
     {   
-        Weapon.WeaponTemplate.scale_weapon = originalScaleweapon + growth * level;
+        switch(level)
+        {
+            case 1:
+                skeletonRenderer.transform.localScale = Vector3.one * 0.6f;
+            break;
+            case 2:
+                skeletonRenderer.transform.localScale = Vector3.one * 0.8f;
+            break;
+            case 3:
+                skeletonRenderer.transform.localScale = Vector3.one * 1.0f;
+            break;
+        }
+        // Weapon.WeaponTemplate.scale_weapon = originalScaleweapon - growth * level;
         Weapon.ResetWeaponDispaly();
         Weapon.WeaponTemplate.attackPowerBonus = originalAttackPower + level;
-        Weapon.WeaponTemplate.healthBonus = originalHealth + level * 2;
+        Weapon.WeaponTemplate.healthBonus = originalHealth + level * 10;
         animator.SetTrigger("DoWin");
         Soldier.Behaviors_onLevelUp(level);
     }

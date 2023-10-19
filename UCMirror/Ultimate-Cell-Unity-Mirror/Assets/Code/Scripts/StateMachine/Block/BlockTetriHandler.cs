@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UC_PlayerData;
 public class BlockTetriHandler : MonoBehaviour
 {
+    float bugCheckerForOccupyingForever = 0;
     public enum BlockTetriState
     {
         Peace,
@@ -38,6 +40,7 @@ public class BlockTetriHandler : MonoBehaviour
     void Awake()
     {
         blockDisplay = GetComponent<BlockDisplay>();
+        bugCheckerForOccupyingForever = UnitData.MaxOccupyingTime;
     }
     void Start()
     {
@@ -59,26 +62,31 @@ public class BlockTetriHandler : MonoBehaviour
     }
     void BlockTetriStateChanged()
     {
-        if(!blockDisplay.spriteRenderer_Bright.gameObject.activeInHierarchy)blockDisplay.spriteRenderer_Bright.gameObject.SetActive(true);
+        if(!blockDisplay.SpriteRenderer_ExpressOccupation.gameObject.activeInHierarchy)blockDisplay.SpriteRenderer_ExpressOccupation.gameObject.SetActive(true);
         switch (State)
         {
             case BlockTetriState.Occupying:
-                blockDisplay.spriteRenderer_Bright.color = Color.yellow;
+                blockDisplay.SetColor_ExpressOccupation(BlockTetriState.Occupying);
+                bugCheckerForOccupyingForever -= Time.deltaTime;
+                if(bugCheckerForOccupyingForever > 0)return;
+                Debug.Log("出现占领超时砖块:"+ posId +" _已重置");
+                bugCheckerForOccupyingForever = UnitData.MaxOccupyingTime;
+                State = BlockTetriState.Peace;
                 break;
             case BlockTetriState.Occupied_Player1:
-                blockDisplay.spriteRenderer_Bright.color = Color.red;
+                blockDisplay.SetColor_ExpressOccupation(BlockTetriState.Occupied_Player1);
                 break;
             case BlockTetriState.Occupied_Player2:
-                blockDisplay.spriteRenderer_Bright.color = Color.blue + Color.white * 0.3f;
+                blockDisplay.SetColor_ExpressOccupation(BlockTetriState.Occupied_Player2);
                 break;
             case BlockTetriState.Peace:
-                blockDisplay.spriteRenderer_Bright.color = blockDisplay.blockColorDark;
+                blockDisplay.SetColor_ExpressOccupation(BlockTetriState.Peace);
                 break;
             case BlockTetriState.Peace_Player1:
-                blockDisplay.spriteRenderer_Bright.color = Color.red * 0.6f;
+                blockDisplay.SetColor_ExpressOccupation(BlockTetriState.Peace_Player1);
                 break;
             case BlockTetriState.Peace_Player2:
-                blockDisplay.spriteRenderer_Bright.color = Color.blue * 0.6f;
+                blockDisplay.SetColor_ExpressOccupation(BlockTetriState.Peace_Player2);
                 break;
             default:
                 break;

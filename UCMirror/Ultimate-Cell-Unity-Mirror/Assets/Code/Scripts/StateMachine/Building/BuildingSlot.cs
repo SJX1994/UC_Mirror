@@ -33,7 +33,7 @@ public class BuildingSlot : MonoBehaviour
       private void BuildingChanged(Building building)
       {
             
-            blockDisplay.Bright(this,false);
+            // blockDisplay.Bright(this,false);
             
             if(OnBuildingStateChanged!=null)
             {
@@ -70,10 +70,10 @@ public class BuildingSlot : MonoBehaviour
             BuildingSlot[] slots = FindObjectsOfType<BuildingSlot>().Where(slot => slot.theLastStayBuilding == build).ToArray();
             foreach (var s in slots)
             {
-                s.blockDisplay.NotBright(s);
+                // s.blockDisplay.NotBright(s);
             }
             theLastStayBuilding = build;
-            blockDisplay.Bright(this,true);
+            // blockDisplay.Bright(this,true);
         }
     }
 }

@@ -4,7 +4,6 @@ using UnityEngine;
 using UC_PlayerData;
 using System;
 using DG.Tweening;
-using System.Linq;
 public class TetriUnitSimple : MonoBehaviour
 {
     [SerializeField]
@@ -110,20 +109,21 @@ public class TetriUnitSimple : MonoBehaviour
         unit.SkeletonRenderer.Skeleton.SetSkin(unit.skinName);
         unit.idV2 = tetriBlock.PosId;
         UnitSimple unitSimple = unit as UnitSimple;
+        unitSimple.ShaderInit();
         unitSimple.tetriUnitSimple = this;
-        unitSimple.DurationRunning = tetriBlock.tetrisBlockSimple.occupyingTime;
+        unitSimple.DurationRunning = tetriBlock.tetrisBlockSimple.OccupyingTime;
         unitSimple.ResetRotation();
         unitSimple.SetFlip();
         indexPairColor = new KeyValuePair<int, UnitData.Color>(tetriUnitIndex,type);
         // 事件监听 Unit
-        unit.OnDie += UnitDie;
+        unit.OnDie += Event_UnitDie;
         // 事件监听 Tetri
-        tetriBlock.tetrisBlockSimple.OnRotate += unitSimple.OnRotate;
-        tetriBlock.tetrisBlockSimple.OnStartMove += unitSimple.Display_StartRunning;
-        tetriBlock.tetrisBlockSimple.OnTetrisMoveing += unitSimple.OnTetrisMoveing;
-        tetriBlock.TetriPosIdChanged += unitSimple.OnTetriPosIdChanged;
-        tetriBlock.tetriStuckEvent += unitSimple.Display_OnTetriStuck;
-        tetriBuoy.OnTetriTempChange += GetTetriTemp;
+        tetriBlock.tetrisBlockSimple.OnRotate += unitSimple.Event_OnRotate;
+        tetriBlock.tetrisBlockSimple.OnStartMove += unitSimple.Event_Display_StartRunning;
+        tetriBlock.tetrisBlockSimple.OnTetrisMoveing += unitSimple.Event_OnTetrisMoveing;
+        tetriBlock.TetriPosIdChanged += unitSimple.Event_OnTetriPosIdChanged;
+        tetriBlock.tetriStuckEvent += unitSimple.Event_Display_OnTetriStuck;
+        tetriBuoy.OnTetriTempChange += Event_GetTetriTemp;
     
         
         // 武器
@@ -145,19 +145,20 @@ public class TetriUnitSimple : MonoBehaviour
         unit.SkeletonRenderer.Skeleton.SetSkin(unit.skinName);
         unit.idV2 = tetriBlock.PosId;
         UnitSimple unitSimple = unit as UnitSimple;
-        unitSimple.DurationRunning = tetriBlock.tetrisBlockSimple.occupyingTime;
+        unitSimple.ShaderInit();
+        unitSimple.DurationRunning = tetriBlock.tetrisBlockSimple.OccupyingTime;
         unitSimple.ResetRotation();
         unitSimple.SetFlip();
         indexPairColor = new KeyValuePair<int, UnitData.Color>(tetriUnitIndex,type);
         // 事件监听 Unit
-        unit.OnDie += UnitDie;
+        unit.OnDie += Event_UnitDie;
         // 事件监听 Tetri
-        tetriBlock.tetrisBlockSimple.OnRotate += unitSimple.OnRotate;
-        tetriBlock.tetrisBlockSimple.OnStartMove += unitSimple.Display_StartRunning;
-        tetriBlock.tetrisBlockSimple.OnTetrisMoveing += unitSimple.OnTetrisMoveing;
-        tetriBlock.TetriPosIdChanged += unitSimple.OnTetriPosIdChanged;
-        tetriBlock.tetriStuckEvent += unitSimple.Display_OnTetriStuck;
-        tetriBuoy.OnTetriTempChange += GetTetriTemp;
+        tetriBlock.tetrisBlockSimple.OnRotate += unitSimple.Event_OnRotate;
+        tetriBlock.tetrisBlockSimple.OnStartMove += unitSimple.Event_Display_StartRunning;
+        tetriBlock.tetrisBlockSimple.OnTetrisMoveing += unitSimple.Event_OnTetrisMoveing;
+        tetriBlock.TetriPosIdChanged += unitSimple.Event_OnTetriPosIdChanged;
+        tetriBlock.tetriStuckEvent += unitSimple.Event_Display_OnTetriStuck;
+        tetriBuoy.OnTetriTempChange += Event_GetTetriTemp;
         // 武器
         Weapon weapon;
         if (!unit.SkeletonRenderer.transform.TryGetComponent(out weapon))return null;
@@ -169,16 +170,16 @@ public class TetriUnitSimple : MonoBehaviour
     {
         haveUnit.LevelUpDisplay(level);
     }
-    public void TetrisSpeedDown(float slowDown)
+    public void TetrisSpeedModify(float slowDown)
     {
-        TetrisBlockSimple.occupyingTime += slowDown;
-        TetrisBlockSimple.Stop();
+        TetrisBlockSimple.OccupyingTime += slowDown;
+        TetrisBlockSimple.Stop(false);
         TetrisBlockSimple.Move();
     }
     public void TetrisSpeedNormal()
     {
-        TetrisBlockSimple.occupyingTime = 3.0f;
-        TetrisBlockSimple.Stop();
+        float normalSpeed = 3.0f;
+        TetrisBlockSimple.OccupyingTime = normalSpeed;
         TetrisBlockSimple.Move();
     }
     public void PlayBlockEffect()
@@ -188,16 +189,30 @@ public class TetriUnitSimple : MonoBehaviour
         BlocksEffects bE =  TetrisBlockSimple.blocksCreator.BlocksEffects;
         bE.LoadAttentionEffect(blockDisplay,TetrisBlockSimple.player);
     }
-    void GetTetriTemp(TetriBuoySimple temp)
+    void Event_GetTetriTemp(TetriBuoySimple temp)
     {
         if(temp==null)return;
         tetriTemp = temp;
     }
-    public void UnitDie(Unit whoDie)
+    public void Event_UnitDie(Unit whoDie)
     {
-        
+        float timeToDestory = 1.0f;
         // 取消Dotween
-        haveUnit.runningTween?.Kill();
+        if(haveUnit.tween_running!=null)
+        {
+            haveUnit.tween_running?.Kill();
+            haveUnit.tween_running = null;
+        }
+        if(haveUnit.tween_DieScale!=null)
+        {
+            haveUnit.tween_DieScale?.Kill();
+            haveUnit.tween_DieScale = null;
+        }
+        if(haveUnit.tween_OnEndDragDisplay!=null)
+        {
+            haveUnit.tween_OnEndDragDisplay?.Kill();
+            haveUnit.tween_OnEndDragDisplay = null;
+        }
         UnitSimple unitSimple = whoDie as UnitSimple;
         // 取消协程
         unitSimple.Soldier.ChainTransfer.ClearChainTransferBeforDie();
@@ -212,32 +227,32 @@ public class TetriUnitSimple : MonoBehaviour
         dieParticle.Play();
         Destroy(dieParticle.gameObject, 1.0f);
         // 恢复砖块状态
-        tetriBlock.canCreate = false;
+        // tetriBlock.canCreate = false;
         tetriBlock.CancleOccupied();
-        TetrisBlockSimple.Move();
+        // TetrisBlockSimple.Move();
         // 取消后续事件检测
         tetrisUnitSimple.TetriUnits.Remove(this);
         tetrisUnitSimple.GetComponent<TetrisBlockSimple>().childTetris.Remove(this.GetComponent<TetriBlockSimple>());
-        tetrisUnitSimple.GetComponent<TetrisBuoySimple>().childTetris.Remove(this.GetComponent<TetriBuoySimple>());
-        tetriBlock.tetrisBlockSimple.pioneerTetris.Remove(this.GetComponent<TetriBlockSimple>());
-        tetriBlock.tetrisBlockSimple.EvaluatePioneers_X();
+        tetrisUnitSimple.GetComponent<TetrisBuoySimple>().ChildTetris.Remove(this.GetComponent<TetriBuoySimple>());
+        EvaluatePioneersWhenUnitDie();
         // 取消事件监听
-        tetriBuoy.OnTetriTempChange -= GetTetriTemp;
-        tetriBlock.tetrisBlockSimple.OnRotate -= unitSimple.OnRotate;
-        tetriBlock.tetrisBlockSimple.OnStartMove -= unitSimple.Display_StartRunning;
-        tetriBlock.tetrisBlockSimple.OnTetrisMoveing -= unitSimple.OnTetrisMoveing;
-        tetriBlock.tetriStuckEvent -= unitSimple.Display_OnTetriStuck;
+        tetriBuoy.OnTetriTempChange -= Event_GetTetriTemp;
+        tetriBlock.tetrisBlockSimple.OnRotate -= unitSimple.Event_OnRotate;
+        tetriBlock.tetrisBlockSimple.OnStartMove -= unitSimple.Event_Display_StartRunning;
+        tetriBlock.tetrisBlockSimple.OnTetrisMoveing -= unitSimple.Event_OnTetrisMoveing;
+        tetriBlock.tetriStuckEvent -= unitSimple.Event_Display_OnTetriStuck;
         tetriBlock.tetrisBlockSimple.childTetris.Remove(this.GetComponent<TetriBlockSimple>());
         tetriBlock.tetrisBlockSimple.sequence?.Kill();
         tetriBlock.Reset_OnDie();
         tetriBuoy.Reset();
         dead = true;
-        Destroy(gameObject,1.0f);
+        Destroy(gameObject,timeToDestory);
     }
     public void FailToCreat()
     {
         if(!haveUnit)return;
         haveUnit.ResetRotation();
+        haveUnit.EnableSelectEffect = true;
     }
     public void UnitTemp()
     {
@@ -292,8 +307,52 @@ public class TetriUnitSimple : MonoBehaviour
     {
         haveUnit.Display_OnBeginDragDisplay();
     }
+    public void OnEditingStatusAfterSelection()
+    {
+        haveUnit.Display_OnEditingStatusAfterSelection();
+    }
     public void OnEndDragDisplay()
     {
         haveUnit.Display_OnEndDragDisplay();
+    }
+    public void Display_UserCommandTheBattle()
+    {
+        haveUnit.Display_UserCommandTheBattle();
+    }
+    public void Display_UserWatchingFight()
+    {
+        haveUnit.Display_UserWatchingFight();
+    }
+    public void Display_HideUnit()
+    {
+        haveUnit.Display_HideUnit();
+    }
+    public void Display_ShowUnit()
+    {
+        haveUnit.Display_ShowUnit();
+    }
+    public void SetUnitSortingOrderToFlow()
+    {
+        haveUnit.SetUnitSortingOrderToFlow();
+    }
+    public void SetUnitSortingOrderToNormal()
+    {
+        haveUnit.SetUnitSortingOrderToNormal();
+    }
+    void EvaluatePioneersWhenUnitDie()
+    {
+        tetriBlock.tetrisBlockSimple.pioneerTetris.Remove(this.GetComponent<TetriBlockSimple>());
+        tetriBlock.tetrisBlockSimple.Stop(false);
+        tetriBlock.tetrisBlockSimple.EvaluatePioneers_X();
+        tetriBlock.tetrisBlockSimple.Move();
+        // if(tetriBlock.tetrisBlockSimple.moveStepX!=0)
+        // {
+           
+        // }else if(tetriBlock.tetrisBlockSimple.moveStepZ != 0)
+        // {
+        //     tetriBlock.tetrisBlockSimple.Stop(false);
+        //     tetriBlock.tetrisBlockSimple.EvaluatePioneers_Z();
+        //     tetriBlock.tetrisBlockSimple.Move();
+        // }
     }
 }

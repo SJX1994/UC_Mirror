@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7176782933014934473
 Transform:
   m_ObjectHideFlags: 0
@@ -100,7 +100,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1012565128415295743
 Transform:
   m_ObjectHideFlags: 0
@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 2812555988143833653}
   - component: {fileID: 1860405883507612873}
   m_Layer: 0
-  m_Name: BlockBright
+  m_Name: Block_ExpressOccupation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -220,7 +220,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6fc7df645f9c53d44a24e914d83f73fd, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 5334146669657459807}
   - component: {fileID: 4885154787925768263}
   - component: {fileID: -2097501611608527784}
+  - component: {fileID: 8261596703404515139}
   - component: {fileID: 4325501496576908595}
   m_Layer: 9
   m_Name: Block
@@ -376,30 +377,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   posId: {x: 0, y: 0}
-  spriteRenderer_Bright: {fileID: 1860405883507612873}
+  sprite_player1_ExpressOccupation: {fileID: 21300000, guid: e49b0ed4a8cfd904996faa6e381355ba,
+    type: 3}
+  sprite_player2_ExpressOccupation: {fileID: 21300000, guid: f48dea38018dfa94c854c6a5293cef76,
+    type: 3}
+  sprite_Default_ExpressOccupation: {fileID: 21300000, guid: f0590704decaf9a48b4dbcb476f29b96,
+    type: 3}
+  spriteRenderer_ExpressOccupation: {fileID: 1860405883507612873}
   spriteRenderer_Weapon: {fileID: 6791634136982264794}
   spriteRenderer_Faction: {fileID: 2380630525504975114}
   sprite_Sword: {fileID: 21300000, guid: b86223c024d694a42a08b48d4b27441e, type: 3}
   sprite_Bow: {fileID: 21300000, guid: e6ccac9dbcc37ee4196e0e48c4782907, type: 3}
   sprite_Spear: {fileID: 21300000, guid: a9cdc59f0c18b5040b825c011487d1c4, type: 3}
   sprite_Shield: {fileID: 21300000, guid: 992cf417a4e06e04b8bf040730f66d26, type: 3}
-  sprite_Environmentalism: {fileID: 21300000, guid: 341257d7ecbe7ba44b29fd0623cc10f1,
-    type: 3}
-  sprite_Socialism: {fileID: 21300000, guid: 341257d7ecbe7ba44b29fd0623cc10f1, type: 3}
-  sprite_Capitalism: {fileID: 21300000, guid: 341257d7ecbe7ba44b29fd0623cc10f1, type: 3}
-  sprite_Technological: {fileID: 21300000, guid: 341257d7ecbe7ba44b29fd0623cc10f1,
-    type: 3}
-  sprite_Cthulhuism: {fileID: 21300000, guid: 341257d7ecbe7ba44b29fd0623cc10f1, type: 3}
   finalHigh: 0
   isOccupy: 0
-  blockColorLight: {r: 1, g: 1, b: 1, a: 1}
   blockColorDark: {r: 1, g: 1, b: 1, a: 0}
-  blockColorRed: {r: 1, g: 0, b: 0, a: 0.5}
-  blockColorBlue: {r: 0, g: 0, b: 1, a: 0.5}
-  blockColorGreen: {r: 0, g: 1, b: 0, a: 0.5}
-  blockColorPurple: {r: 1, g: 0, b: 0.5, a: 0.5}
-  blockColorYellow: {r: 1, g: 0, b: 1, a: 1}
-  _renderer: {fileID: 0}
+  spriteRenderer_ExpressUser_CommandTheBattleState_DataDisplay: {fileID: 0}
 --- !u!114 &3252238316002773928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,6 +457,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a9acc5fd6a8a2174dba5a34dbc930e3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8261596703404515139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5664357317081196537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 303f65e0de9f05b44bb2a219bcdb0c3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!65 &4325501496576908595

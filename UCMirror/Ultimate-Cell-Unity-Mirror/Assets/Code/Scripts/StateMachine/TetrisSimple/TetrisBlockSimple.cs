@@ -11,6 +11,20 @@ public class TetrisBlockSimple : NetworkBehaviour
     [SyncVar]
     public Vector2 posId;
     public float occupyingTime = 3f;
+    public float OccupyingTime
+    {
+        get
+        {
+            return occupyingTime;
+        }
+        set
+        {
+            
+            if(value<=UnitData.MinOccupyingTime){value= UnitData.MinOccupyingTime;}
+            if(value>=UnitData.MaxOccupyingTime){value= UnitData.MaxOccupyingTime;}
+            occupyingTime = value;
+        }
+    }
     public Player player = Player.NotReady;
     public Player Player
     {
@@ -45,6 +59,19 @@ public class TetrisBlockSimple : NetworkBehaviour
     public Vector3 rotationPoint;
     public List<TetriBlockSimple> pioneerTetris;
     public List<TetriBlockSimple> childTetris;
+    public List<TetriBlockSimple> ChildTetris
+    {
+        get
+        {
+            if(childTetris.Count != 0) return childTetris;
+            foreach (Transform child in transform)
+            {
+                    TetriBlockSimple tetriBuoySimple = child.GetComponent<TetriBlockSimple>();
+                    childTetris.Add(tetriBuoySimple);
+            }
+            return childTetris;
+        }
+    }
     public UnityAction OnTetrisMoveing;
     public BlocksCreator_Main blocksCreator;
     public BlocksCreator_Main BlocksCreator
@@ -75,7 +102,7 @@ public class TetrisBlockSimple : NetworkBehaviour
             // Debug.Log($"移动方向改变：moveUp:{moveUp}");
             // if(moveUp == value)return;
             moveUp = value;
-            Stop_X();
+            Stop();
             Active_Z();
             Move_Z();
         }
@@ -151,11 +178,22 @@ public class TetrisBlockSimple : NetworkBehaviour
        foreach (Transform child in transform)
        {
            childTetris.Add(child.GetComponent<TetriBlockSimple>());
-           child.GetComponent<TetriBlockSimple>().CantPutCallback += CantPutAction;
+           child.GetComponent<TetriBlockSimple>().CantPutCallback += Event_CantPutAction;
            child.GetComponent<TetriBlockSimple>().player = player;
        }
        positionStack = new Stack<Vector3>();
        TB_cache = new();
+       if(player == Player.Player1)
+       {
+            UIData.OnPlayer1MoraleAccumulationMaxed += (Player player) => {
+                OccupyingTime/=2;
+            };
+       }else if (player == Player.Player2)
+       {
+            UIData.OnPlayer2MoraleAccumulationMaxed += (Player player) => {
+                OccupyingTime/=2;
+            };
+       }
        if(Local())return;
        if(!isServer)return;
        if(!autoID)return;
@@ -171,7 +209,7 @@ public class TetrisBlockSimple : NetworkBehaviour
        foreach (Transform child in transform)
        {
            childTetris.Add(child.GetComponent<TetriBlockSimple>());
-           child.GetComponent<TetriBlockSimple>().CantPutCallback += CantPutAction;
+           child.GetComponent<TetriBlockSimple>().CantPutCallback += Event_CantPutAction;
            child.GetComponent<TetriBlockSimple>().player = player;
        }
        positionStack = new Stack<Vector3>();
@@ -280,11 +318,11 @@ public class TetrisBlockSimple : NetworkBehaviour
             child.SuccessToCreat();
         }
     }
-    void CantPutAction(TetriBlockSimple tetriBlock)
+    void Event_CantPutAction(TetriBlockSimple tetriBlock)
     {
         RollbackPosition();
     }
-    void CantPutAction()
+    public void CantPutAction()
     {
         RollbackPosition();
     }
@@ -321,8 +359,8 @@ public class TetrisBlockSimple : NetworkBehaviour
             blockCurrent.tetriBlockSimpleHolder = tetriBlock;
             tetriBlock.currentBlockTetriHandler = blockCurrent;
             // 可视化
-            // blockCurrent.transform.localScale -= Vector3.one*0.3f;
-            // tetriBlock.transform.localScale -= Vector3.one*0.3f;
+            // blockCurrent.transform.localScale -= Vector3.one*0.1f;
+            // tetriBlock.transform.localScale -= Vector3.one*0.1f;
             if (TB_cache.ContainsKey(tetriBlock))continue;
             TB_cache.Add(tetriBlock,blockCurrent);
             TetriBuoySimple t = tetriBlock.GetComponent<TetriBuoySimple>();
@@ -330,7 +368,6 @@ public class TetrisBlockSimple : NetworkBehaviour
             BlockBuoyHandler b = blockCurrent.GetComponent<BlockBuoyHandler>();
             b.posId = blockCurrent.posId;
             buoyMarkersTemp.Add(t,b);
-            
         }
         OnCacheUpdateForBuoyMarkers?.Invoke(buoyMarkersTemp);
         OnUpdatDisplay?.Invoke();
@@ -391,19 +428,23 @@ public class TetrisBlockSimple : NetworkBehaviour
         //     pioneerBlock.transform.localScale += 0.2f * Vector3.one;
         // }
     }
-    public void Stop()
+    public void Stop(bool cancleOccupied = true)
     {
         Stop_X();
         Stop_Z();
+        if(!cancleOccupied)return;
+        CancleOccupied();
     }
     public void Stop_X()
     {
         moveStepX = 0;
+        if(!IsInvoking(nameof(MoveActive_X)))return;
         CancelInvoke(nameof(MoveActive_X));
     }
     public void Stop_Z()
     {
         moveStepZ = 0;
+        if(!IsInvoking(nameof(MoveActive_Z)))return;
         CancelInvoke(nameof(MoveActive_Z));
     }
     public void Move()
@@ -414,15 +455,16 @@ public class TetrisBlockSimple : NetworkBehaviour
     public void Move_X()
     {
         moveStepX = 1;
-        InvokeRepeating(nameof(MoveActive_X),0,occupyingTime);
+        InvokeRepeating(nameof(MoveActive_X),0,OccupyingTime);
     }
     public void Move_Z()
     {
         moveStepZ = MoveUp ? 1 : -1;
-        InvokeRepeating(nameof(MoveActive_Z),0,occupyingTime);
+        InvokeRepeating(nameof(MoveActive_Z),0,OccupyingTime);
     }
     void MoveActive_X()
     {
+        // Debug.Log($"moveStepX!!!:{ValidMove_X()}");
         if(!ValidMove_X())return;
         OnStartMove?.Invoke();
         foreach (TetriBlockSimple child in childTetris)
@@ -441,6 +483,7 @@ public class TetrisBlockSimple : NetworkBehaviour
         posId = new Vector2(transform.localPosition.x,transform.localPosition.z);
         OnTetrisMoveing?.Invoke();
         EvaluateCollision();
+        // EvaluatePioneers_X();
         
     }
     void MoveActive_Z()
@@ -457,6 +500,7 @@ public class TetrisBlockSimple : NetworkBehaviour
         posId = new Vector2(transform.localPosition.x,transform.localPosition.z);
         OnTetrisMoveing?.Invoke();
         EvaluateCollision();
+        // EvaluatePioneers_Z();
         
     }
     public bool IsMoving()
@@ -465,13 +509,26 @@ public class TetrisBlockSimple : NetworkBehaviour
     }
     public void Rotate(Vector3 axis)
     {
-        OnRotate?.Invoke(true);
+        bool reverse = false;
+        OnRotate?.Invoke(reverse);
         transform.RotateAround(transform.TransformPoint(rotationPoint), axis, 90);
+        foreach (TetriBlockSimple child in ChildTetris)
+        {
+            if(!child)continue;
+            child.RotateForRecalculateDisplayRange(reverse);
+        }
+        
     }
     public void RotateReverse(Vector3 axis)
     {
-        OnRotate?.Invoke(false);
+        bool reverse = true;
+        OnRotate?.Invoke(reverse);
         transform.RotateAround(transform.TransformPoint(rotationPoint), axis, -90);
+        foreach (TetriBlockSimple child in ChildTetris)
+        {
+            if(!child)continue;
+            child.RotateForRecalculateDisplayRange(reverse);
+        }
     }
     bool ValidMove_X()
     {
@@ -517,12 +574,14 @@ public class TetrisBlockSimple : NetworkBehaviour
         foreach(var pineer in pioneerTetris)
         {
             if(!pineer)continue;
+            // pineer.transform.localScale = Vector3.one*3f;
             BlockTetriHandler blockCurrent = pineer.CurrentBlock();
             condition.Add(blockCurrent);
             BlockTetriHandler blockNext = pineer.NextBlock_X();
             condition.Add(blockNext);
             condition.Add(pineer.CanMove);
             condition.Add(pineer.BlockNextCheckBuoy(blockNext));
+            // Debug.Log($"cccccc:{pineer.CanMove}");
         }
         bool allTrue = condition.All(b => b);
         return allTrue;
@@ -568,8 +627,8 @@ public class TetrisBlockSimple : NetworkBehaviour
     public void Display_AfterCreate()
     {
         sequence = DOTween.Sequence();
-        sequence.Append(transform.DOLocalMoveY(0.2f, occupyingTime/4).SetEase(Ease.Linear));
-        sequence.Append(transform.DOLocalMoveY(0f, occupyingTime/4).SetEase(Ease.Linear));
+        sequence.Append(transform.DOLocalMoveY(0.2f, OccupyingTime/4).SetEase(Ease.Linear));
+        sequence.Append(transform.DOLocalMoveY(0f, OccupyingTime/4).SetEase(Ease.Linear));
         sequence.SetLoops(-1, LoopType.Yoyo);
     }
     public bool OnBuoyDrop()
@@ -589,6 +648,13 @@ public class TetrisBlockSimple : NetworkBehaviour
        
         bool allTrue = buoyDrop.All(b => b);
         return allTrue;
+    }
+    void CancleOccupied()
+    {
+        foreach(var tetri in childTetris)
+        {
+            tetri.CancleOccupied();
+        }
     }
     public void Reset()
     {
