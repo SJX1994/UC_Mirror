@@ -8,6 +8,7 @@ using UC_PlayerData;
 using UnityEngine.Events;
 public class ChangeLiquid : NetworkBehaviour
 {
+#region 数据对象
     float inIdelbox_UpLevelCountdown = Referee.InIdelbox_UpLevelCountdown;
     float inIdelbox_CreatCountdown = Referee.InIdelbox_CreatCountdown;
     float upLevelBlinkAnimationStrengthIncrement = 1f;
@@ -52,7 +53,16 @@ public class ChangeLiquid : NetworkBehaviour
             return null;
         }
     }
-    private IdelBox ideaBox;
+    private IdelBox idelBox;
+    IdelBox IdelBox
+    {
+        get
+        {
+            if(idelBox)return idelBox;
+            idelBox = transform.GetComponent<IdelBox>();
+            return idelBox;
+        }
+    }
     float fade;
     int level = 0;
     int Level
@@ -124,13 +134,15 @@ public class ChangeLiquid : NetworkBehaviour
     Tween topTween_createInIdelBox;
     Tween fillLiquidTween_createInIdelBox;
     bool counting = false;
+#endregion 数据对象
+#region 数据关系
     void Start()
     {
-        ReadyLight.SetActive(true);
+        ReadyLight.SetActive(false);
         originPositionTop = TopLiquid.GetComponent<RectTransform>().anchoredPosition;
-        ideaBox = transform.GetComponent<IdelBox>();
+        idelBox = IdelBox;
         TopLiquid.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-        ColumnLiquid.GetComponent<Image>().fillAmount = 1;
+        ColumnLiquid.GetComponent<Image>().fillAmount = 0;
         resetStartBlinkIntensity = StartBlinkIntensity;
         resetEndBlinkIntensity = EndBlinkIntensity;
         resetHaloStartBlinkIntensity = HaloStartBlinkIntensity;
@@ -143,6 +155,8 @@ public class ChangeLiquid : NetworkBehaviour
         fillLiquidTween_createInIdelBox = DOTween.Sequence();
         UpLevelBlinkAnimation();
     }
+#endregion 数据关系
+#region 数据操作
     void UpLevelBlinkAnimation()
     {
         if(blinkAnimationSequence!=null)
@@ -177,40 +191,47 @@ public class ChangeLiquid : NetworkBehaviour
     }
     public void DoCount()
     {
-        
-        if(counting)
+        if(Local())
         {
-            if(!IsInvoking(nameof(DoCount)))
-            Invoke(nameof(DoCount),0.1f);
-            return;
+            if(counting)
+            {
+                if(!IsInvoking(nameof(DoCount)))
+                Invoke(nameof(DoCount),0.1f);
+                return;
+            }
+            counting = true;
+            if(IsInvoking(nameof(DoCount)))CancelInvoke(nameof(DoCount));
+            
+            ResetLiquidLoader();
+            ResetLiquidLoader_UpLevel();
+            TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
+            ReadyLight.SetActive(false);
+            // ideaBox.idelContainer.SetActive(false);
+            IdelBox.ClickEvent.SetActive(false);
+            Vector3 finallyReachesPosition = new Vector3(-28.3f,390f,0f);
+            float fillAmountStart = 0;
+            float fillAmountEnd = 1;
+            float preventionKillTweenWhenUsing = 0.1f;
+            topTween_createInIdelBox = TopLiquid.GetComponent<RectTransform>().DOAnchorPos(finallyReachesPosition,inIdelbox_CreatCountdown - preventionKillTweenWhenUsing);
+            fillLiquidTween_createInIdelBox = DOVirtual.Float(fillAmountStart, fillAmountEnd, inIdelbox_CreatCountdown, (TweenCallback<float>)((float value) =>
+            {
+                fade = value;
+                this.ColumnLiquid.GetComponent<Image>().fillAmount = value;
+            }));
+            fillLiquidTween_createInIdelBox.onComplete=() =>
+            {
+                ReadyLight.SetActive(true);
+                IdelBox.ClickEvent.SetActive(true);
+                // ideaBox.idelContainer.SetActive(true);
+                IdelBox.OnGameObjCreate();
+                Invoke(nameof(DoCount_UpLevel),preventionKillTweenWhenUsing);
+            };
+        }else
+        {
+            if(!isServer)return;
+            ServerDoCount();
         }
-        counting = true;
-        if(IsInvoking(nameof(DoCount)))CancelInvoke(nameof(DoCount));
         
-        ResetLiquidLoader();
-        ResetLiquidLoader_UpLevel();
-        TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
-        ReadyLight.SetActive(false);
-        // ideaBox.idelContainer.SetActive(false);
-        ideaBox.ClickEvent.SetActive(false);
-        Vector3 finallyReachesPosition = new Vector3(-28.3f,390f,0f);
-        float fillAmountStart = 0;
-        float fillAmountEnd = 1;
-        float preventionKillTweenWhenUsing = 0.1f;
-        topTween_createInIdelBox = TopLiquid.GetComponent<RectTransform>().DOAnchorPos(finallyReachesPosition,inIdelbox_CreatCountdown - preventionKillTweenWhenUsing);
-        fillLiquidTween_createInIdelBox = DOVirtual.Float(fillAmountStart, fillAmountEnd, inIdelbox_CreatCountdown, (TweenCallback<float>)((float value) =>
-        {
-            fade = value;
-            this.ColumnLiquid.GetComponent<Image>().fillAmount = value;
-        }));
-        fillLiquidTween_createInIdelBox.onComplete=() =>
-        {
-            ReadyLight.SetActive(true);
-            ideaBox.ClickEvent.SetActive(true);
-            // ideaBox.idelContainer.SetActive(true);
-            ideaBox.OnGameObjCreate();
-            Invoke(nameof(DoCount_UpLevel),preventionKillTweenWhenUsing);
-        };
     }
     public void DoCount_UpLevel()
     {
@@ -289,33 +310,33 @@ public class ChangeLiquid : NetworkBehaviour
         ColumnLiquid.GetComponent<Image>().fillAmount = 0;
         TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
     }
-    [Client]
-    public void Client_DoCount()
-    {
-        TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
-        ReadyLight.SetActive(false);
-        // ideaBox.idelContainer.SetActive(false);
-        TopLiquid.GetComponent<RectTransform>().DOAnchorPos(new Vector3(-46f,59f,0f),6f);
-        DOVirtual.Float(0, 1, 6.3f, (TweenCallback<float>)((float value) =>
-        {
-            fade = value;
-            this.ColumnLiquid.GetComponent<Image>().fillAmount = value;
-            foreach(var tetris in FindObjectsOfType<TetrisBlockSimple>())
-            {
-                if(tetris.player != Player.NotReady)return;
-                // 是否需要在 客户端idelBox 还没获取的时候 隐藏 俄罗斯方块组
-            }
-        })).onComplete=() =>
-        {
-            ReadyLight.SetActive(true);
-            // ideaBox.idelContainer.SetActive(true);
-            ideaBox.ClientGetTetrisGroupID();
-        };
+    // [Client]
+    // public void Client_DoCount()
+    // {
+    //     TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
+    //     ReadyLight.SetActive(false);
+    //     // ideaBox.idelContainer.SetActive(false);
+    //     TopLiquid.GetComponent<RectTransform>().DOAnchorPos(new Vector3(-46f,59f,0f),6f);
+    //     DOVirtual.Float(0, 1, 6.3f, (TweenCallback<float>)((float value) =>
+    //     {
+    //         fade = value;
+    //         this.ColumnLiquid.GetComponent<Image>().fillAmount = value;
+    //         foreach(var tetris in FindObjectsOfType<TetrisBlockSimple>())
+    //         {
+    //             if(tetris.player != Player.NotReady)return;
+    //             // 是否需要在 客户端idelBox 还没获取的时候 隐藏 俄罗斯方块组
+    //         }
+    //     })).onComplete=() =>
+    //     {
+    //         ReadyLight.SetActive(true);
+    //         // ideaBox.idelContainer.SetActive(true);
+    //         IdelBox.ClientGetTetrisGroupID();
+    //     };
         
-    }
+    // }
     public void ChangeColor(Color color)
     {
-        if(!ideaBox.idelUI.hiden)
+        if(!IdelBox.idelUI.hiden)
         {
             ColumnLiquid.GetComponent<Image>().DOColor(color,0.5f);
             TopLiquid.GetComponent<Image>().DOColor(color,0.5f);
@@ -327,8 +348,80 @@ public class ChangeLiquid : NetworkBehaviour
         }
         
     }
-    
-
-
-  
+    bool IsCountingChecker()
+    {
+        if(counting)
+        {
+            if(!IsInvoking(nameof(DoCount)))
+            Invoke(nameof(DoCount),0.1f);
+            return false;
+        }
+        counting = true;
+        if(IsInvoking(nameof(DoCount)))CancelInvoke(nameof(DoCount));
+        return true;
+    }
+#endregion 数据操作
+#region 联网数据操作
+    bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+    [Server]
+    void ServerDoCount()
+    {
+        if(!IsCountingChecker())return;
+        // Start
+        ResetLiquidLoader();
+        ResetLiquidLoader_UpLevel();
+        TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
+        ReadyLight.SetActive(false);
+        // // IdelBox.idelContainer.SetActive(false);
+        IdelBox.ClickEvent.SetActive(false);
+        ClientDoCountStart();
+        // Counting
+        Vector3 finallyReachesPosition = new Vector3(-28.3f,390f,0f);
+        float fillAmountStart = 0;
+        float fillAmountEnd = 1;
+        float preventionKillTweenWhenUsing = 0.1f;
+        topTween_createInIdelBox = TopLiquid.GetComponent<RectTransform>().DOAnchorPos(finallyReachesPosition,inIdelbox_CreatCountdown - preventionKillTweenWhenUsing);
+        fillLiquidTween_createInIdelBox = DOVirtual.Float(fillAmountStart, fillAmountEnd, inIdelbox_CreatCountdown, (TweenCallback<float>)((float value) =>
+        {
+            fade = value;
+            ClientDoCount(fade,TopLiquid.GetComponent<RectTransform>().anchoredPosition);
+            this.ColumnLiquid.GetComponent<Image>().fillAmount = value;
+        }));
+        // OnComplete
+        fillLiquidTween_createInIdelBox.onComplete=() =>
+        {
+            ReadyLight.SetActive(true);
+            IdelBox.ClickEvent.SetActive(true);
+            ClientDoCountOnComplete();
+            // // ideaBox.idelContainer.SetActive(true);
+            IdelBox.OnGameObjCreate();
+            Invoke(nameof(DoCount_UpLevel),preventionKillTweenWhenUsing);
+        };
+    }
+    [ClientRpc]
+    void ClientDoCountStart()
+    {
+        ResetLiquidLoader();
+        ResetLiquidLoader_UpLevel();
+        TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
+        ReadyLight.SetActive(false);
+        IdelBox.ClickEvent.SetActive(false);
+    }
+    [ClientRpc]
+    void ClientDoCount(float fade,Vector3 finallyReachesPosition)
+    {
+        TopLiquid.GetComponent<RectTransform>().anchoredPosition = finallyReachesPosition;
+        this.ColumnLiquid.GetComponent<Image>().fillAmount = fade;
+    }
+    [ClientRpc]
+    void ClientDoCountOnComplete()
+    {
+        ReadyLight.SetActive(true);
+        IdelBox.ClickEvent.SetActive(true);
+    }
+#endregion 联网数据操作
 }

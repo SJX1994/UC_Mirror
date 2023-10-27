@@ -706,8 +706,6 @@ MonoBehaviour:
   playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 470015492767617478, guid: 053ab9262ad679b499f4f6013eb26986, type: 3}
-  - {fileID: 2668756216071858016, guid: 5d0b3b90a1e20454384e144a3afc0ada, type: 3}
-  - {fileID: 5359268592990649344, guid: a0443c46670c88e428e9ac4ccdb6367e, type: 3}
   - {fileID: 7926015163490431455, guid: 4337a4424519f624e9a5ad58196ecbcd, type: 3}
   - {fileID: 7250696363613272848, guid: 3e8cdc4aecd2667489697df02d935450, type: 3}
   - {fileID: 6198534605848676226, guid: 36bf6ae58dd15ae4583bf565953e0303, type: 3}
@@ -716,6 +714,14 @@ MonoBehaviour:
   - {fileID: 3097495885099341015, guid: 6699892b141fd74488410a521baa605d, type: 3}
   - {fileID: 5933914586323795205, guid: 75e033c3058aee24894606586660cb3e, type: 3}
   - {fileID: 5439442933408414500, guid: cab159e8b1b7cbb45b367a42c1d2f056, type: 3}
+  - {fileID: 2668756216071858016, guid: 5c67d411d927e43449ba309cac340c1d, type: 3}
+  - {fileID: 3782013920980339463, guid: 6e2acbee018a03a44a274be2db83c1a1, type: 3}
+  - {fileID: 7431250054182911986, guid: f6015dd712a78184c96a4f1a2fc01517, type: 3}
+  - {fileID: 7250696363613272848, guid: 8f511d7b5ba44654ba1f5d186340ebbf, type: 3}
+  - {fileID: 7250696363613272848, guid: d1c2af4576b65374198d636ba50dbd19, type: 3}
+  - {fileID: 7250696363613272848, guid: 4029077ca3226904ebfa364bc4e917eb, type: 3}
+  - {fileID: 4859299981933158961, guid: 1ca0ba340e17ec9428cfbf64b1e7f94a, type: 3}
+  - {fileID: 1786632381914272521, guid: 316273e7fa1c3cc4e989ceef333f1e3c, type: 3}
   snapshotSettings:
     bufferTimeMultiplier: 2
     bufferLimit: 32
@@ -733,6 +739,8 @@ MonoBehaviour:
   buoyPlayer2Spawn: {fileID: 505745779}
   blocksCreator: {fileID: 470015492767617479, guid: 053ab9262ad679b499f4f6013eb26986,
     type: 3}
+  avatarUI: {fileID: 0}
+  blocksUI: {fileID: 0}
   canvasManager_StayMachine: {fileID: 0}
   buoyPlayer: {fileID: 2503343723517980850, guid: da39fe95a267f4f44a5f1268e63282c6,
     type: 3}
@@ -765,4 +773,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 470435eb1b64037418e14e03d291533a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runMode: 1
+  runMode: 0

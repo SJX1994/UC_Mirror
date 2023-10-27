@@ -2,7 +2,7 @@ using UnityEngine;
 using UC_PlayerData;
 using DG.Tweening;
 using Spine.Unity;
-
+using Mirror;
 public class UnitSimple : Unit
 {
 # region 数据对象
@@ -63,6 +63,14 @@ public class UnitSimple : Unit
     Vector3 startPoint;
     Vector3 endPoint;
     public LineRenderer attackDirectionLineRenderer;
+    LineRenderer AttackDirectionLineRenderer
+    {
+        get
+        {
+            if(!attackDirectionLineRenderer)attackDirectionLineRenderer = GetComponent<LineRenderer>();
+            return attackDirectionLineRenderer;
+        }
+    }
     int faceDirection = 1;
     ParticlesController bloodEffectLoad;
     ParticlesController bloodEffect;
@@ -125,6 +133,26 @@ public class UnitSimple : Unit
 # region 数据关系
     public override void Awake()
     {
+        if(Local())
+        {
+            if(transform.TryGetComponent(out NetworkTransformBase networkTransform))
+            networkTransform.enabled = false;
+            if(transform.TryGetComponent(out NetworkIdentity networkIdentity))
+            networkIdentity.enabled = false;
+            DestroyImmediate(networkIdentity,true);
+        }else
+        {
+            transform.TryGetComponent(out NetworkTransformBase networkTransform);
+            if(!networkTransform.enabled)
+            networkTransform.enabled = true;
+            if(!transform.TryGetComponent(out NetworkIdentity networkIdentity))
+            {
+                NetworkIdentity networkIdentityTemp = gameObject.AddComponent<NetworkIdentity>();
+                networkIdentityTemp.serverOnly = false;
+                networkIdentityTemp.visible = Visibility.Default;
+            }
+            
+        }
         base.Awake();
         // ShaderInit();
     }
@@ -141,10 +169,21 @@ public class UnitSimple : Unit
     }
     public override void Update()
     {
-        targetOfAttack = AttackChecker();
-        startPoint = transform.position + playerLineRendererOffset;
-        endPoint = targetOfAttack ? new( targetOfAttack.transform.position.x - playerLineRendererOffset.x,targetOfAttack.transform.position.y + playerLineRendererOffset.y,targetOfAttack.transform.position.z+ playerLineRendererOffset.z) : startPoint;
-        Attack(targetOfAttack);
+        if(Local())
+        {
+            targetOfAttack = AttackChecker();
+            startPoint = transform.position + playerLineRendererOffset;
+            endPoint = targetOfAttack ? new( targetOfAttack.transform.position.x - playerLineRendererOffset.x,targetOfAttack.transform.position.y + playerLineRendererOffset.y,targetOfAttack.transform.position.z+ playerLineRendererOffset.z) : startPoint;
+            Attack(targetOfAttack);
+        }else
+        {
+            if(!isServer)return;
+            targetOfAttack = AttackChecker();
+            startPoint = transform.position + playerLineRendererOffset;
+            endPoint = targetOfAttack ? new( targetOfAttack.transform.position.x - playerLineRendererOffset.x,targetOfAttack.transform.position.y + playerLineRendererOffset.y,targetOfAttack.transform.position.z+ playerLineRendererOffset.z) : startPoint;
+            Attack(targetOfAttack);
+        }
+        
     }
 
     public void Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType MechNeedUnit)
@@ -207,10 +246,9 @@ public class UnitSimple : Unit
 # region 数据操作
     public void SetUnitSortingOrderToFlow()
     {
-        Renderer sotingOrderRender =  SkeletonRenderer.gameObject.GetComponent<SkeletonMecanim>().GetComponent<Renderer>();
+        Renderer sotingOrderRender = SkeletonRenderer.gameObject.GetComponent<SkeletonMecanim>().GetComponent<Renderer>();
         if(sotingOrderRender.sortingOrder == UC_PlayerData.Dispaly.FlowOrder)return;
         sotingOrderRender.sortingOrder = UC_PlayerData.Dispaly.FlowOrder;
-        
     }
 
     public void SetUnitSortingOrderToNormal()
@@ -236,42 +274,51 @@ public class UnitSimple : Unit
         EnableSelectEffect = true;
         Display_HideUnit();
         Display_HideMorale();
+        HideForPlayerScreen();
     }
     // 玩家差异
     public void DifferentPlayerInit()
     {
-        if(!attackDirectionLineRenderer)attackDirectionLineRenderer = GetComponent<LineRenderer>();
-        if(!soldier)soldier = GetComponent<SoldierBehaviors>();
-        Color attackDirectionLineRendererColor = Color.clear;
-        Color moraleColor = Color.clear;
-        // 差异
-        if(unitTemplate.player == Player.Player1)
+        if(Local())
         {
-            attackDirectionLineRendererColor = new Color32(208,101,83,255); 
-            faceDirection = 1;
-            moraleColor = Color.red + Color.white * 0.3f;
-            bloodColor = Color.red + Color.white * 0.2f;
-            bloodColor = new Color(bloodColor.r,bloodColor.g,bloodColor.b,0.5f);
-            playerLineRendererOffset = new Vector3(0,1,0);
-        }else if(unitTemplate.player == Player.Player2)
+            if(!attackDirectionLineRenderer)attackDirectionLineRenderer = GetComponent<LineRenderer>();
+            if(!soldier)soldier = GetComponent<SoldierBehaviors>();
+            Color attackDirectionLineRendererColor = Color.clear;
+            Color moraleColor = Color.clear;
+            // 差异
+            if(unitTemplate.player == Player.Player1)
+            {
+                attackDirectionLineRendererColor = new Color32(208,101,83,255); 
+                faceDirection = 1;
+                moraleColor = Color.red + Color.white * 0.3f;
+                bloodColor = Color.red + Color.white * 0.2f;
+                bloodColor = new Color(bloodColor.r,bloodColor.g,bloodColor.b,0.5f);
+                playerLineRendererOffset = new Vector3(0,1,0);
+            }else if(unitTemplate.player == Player.Player2)
+            {
+                attackDirectionLineRendererColor = new Color32(83,115,208,255);
+                faceDirection = -1;
+                moraleColor = Color.blue + Color.white * 0.3f;
+                bloodColor = Color.blue + Color.white * 0.2f;
+                bloodColor = new Color(bloodColor.r,bloodColor.g,bloodColor.b,0.5f);
+                playerLineRendererOffset = new Vector3(-0,1,0);
+                
+            }
+            attackDirectionLineRenderer.startColor = attackDirectionLineRendererColor;
+            attackDirectionLineRenderer.endColor = attackDirectionLineRendererColor;
+            float width = 0.21f;
+            attackDirectionLineRenderer.startWidth = width;
+            attackDirectionLineRenderer.endWidth = width;
+            moraleColor.a = 0.666f;
+            soldier.StrengthBar.GetComponent<SpriteRenderer>().color = moraleColor;
+            if(!bloodEffectLoad)bloodEffectLoad = Resources.Load<ParticlesController>("Effect/BeenAttackBlood");
+            OnBeenAttacked += Event_OnBeenAttackedBlood;
+        }else
         {
-            attackDirectionLineRendererColor = new Color32(83,115,208,255);
-            faceDirection = -1;
-            moraleColor = Color.blue + Color.white * 0.3f;
-            bloodColor = Color.blue + Color.white * 0.2f;
-            bloodColor = new Color(bloodColor.r,bloodColor.g,bloodColor.b,0.5f);
-            playerLineRendererOffset = new Vector3(-0,1,0);
-            
+            if(!isServer)return;
+            Server_DifferentPlayerInit();
         }
-        attackDirectionLineRenderer.startColor = attackDirectionLineRendererColor;
-        attackDirectionLineRenderer.endColor = attackDirectionLineRendererColor;
-        float width = 0.21f;
-        attackDirectionLineRenderer.startWidth = width;
-        attackDirectionLineRenderer.endWidth = width;
-        moraleColor.a = 0.666f;
-        soldier.StrengthBar.GetComponent<SpriteRenderer>().color = moraleColor;
-        if(!bloodEffectLoad)bloodEffectLoad = Resources.Load<ParticlesController>("Effect/BeenAttackBlood");
-        OnBeenAttacked += Event_OnBeenAttackedBlood;
+        
     }
     // 被攻击
     void Event_OnBeenAttackedBlood(int damage)
@@ -356,6 +403,7 @@ public class UnitSimple : Unit
         EnableSelectEffect = false;
         Soldier.Behaviors_OnBeginDragDisplay();
         transform.localScale = LocalScale + Vector3.one * 0.15f;
+        SetUnitSortingOrderToFlow();
     }
     // 放下的表现
     public void Display_OnEndDragDisplay()
@@ -367,7 +415,7 @@ public class UnitSimple : Unit
             Soldier.Behaviors_OnEndDragDisplay();
             tween_OnEndDragDisplay.Kill();
         });
-        
+        SetUnitSortingOrderToNormal();
         // transform.localScale = LocalScale;
     }
     // 当砖块Z向移动到顶后的表现
@@ -442,11 +490,11 @@ public class UnitSimple : Unit
     {
         Display_AllWin(tetriUnitSimple.TetriBlock);
         // 整组增强
-        tetriUnitSimple.TetrisBlockSimple.childTetris.ForEach((tetri) => {
+        tetriUnitSimple.TetrisBlockSimple.ChildTetris.ForEach((System.Action<TetriBlockSimple>)((tetri) => {
             tetri.TetriUnitSimple.PlayBlockEffect();
-            tetri.TetriUnitSimple.haveUnit.Soldier.Behaviors_onReachBottomLine();
-            tetri.TetriUnitSimple.haveUnit.SufferAddHealthSimple((int)maxHealth);
-        });
+            tetri.TetriUnitSimple.HaveUnit.Soldier.Behaviors_onReachBottomLine();
+            tetri.TetriUnitSimple.HaveUnit.SufferAddHealthSimple((int)maxHealth);
+        }));
     }
     // 障碍物表现
     void Display_onObstacle()
@@ -460,7 +508,7 @@ public class UnitSimple : Unit
     void Display_onMoveDirectionChanger()
     {
         // 整组播放特效
-        tetriUnitSimple.TetrisBlockSimple.childTetris.ForEach((tetri) => {
+        tetriUnitSimple.TetrisBlockSimple.ChildTetris.ForEach((tetri) => {
             tetri.TetriUnitSimple.PlayBlockEffect();
         });
         // 移动方向改变
@@ -489,14 +537,23 @@ public class UnitSimple : Unit
     // 弱势关联表现
     void Display_onWeakAssociation()
     {
-        ResetRotation();
-        tetriUnitSimple.PlayBlockEffect();
-        animator.SetFloat("Speed", 0f);
-        animator.SetTrigger("DoWin");
-        Soldier.Behaviors_WeakAssociation();
-        SufferAddHealthSimple((int)maxHealth);
-        unitTemplate.attackSpeed *= soldier.strength;
-        if(tween_running != null)tween_running.Kill();
+        if(Local())
+        {
+            ResetRotation();
+            tetriUnitSimple.PlayBlockEffect();
+            animator.SetFloat("Speed", 0f);
+            animator.SetTrigger("DoWin");
+            Soldier.Behaviors_WeakAssociation();
+            SufferAddHealthSimple((int)maxHealth);
+            unitTemplate.attackSpeed *= soldier.strength;
+            if(tween_running != null)tween_running.Kill();
+        }else
+        {
+            if(!isServer)return;
+            Server_Display_onWeakAssociation();
+            
+        }
+        
     }
     // 跑步动画
     public void Event_Display_StartRunning()
@@ -532,18 +589,18 @@ public class UnitSimple : Unit
     // 全体庆祝
     void Display_AllWin(TetriBlockSimple tetriBlock)
     {
-        foreach(var display in tetriBlock.tetrisBlockSimple.childTetris)
+        foreach(var display in tetriBlock.tetrisBlockSimple.ChildTetris)
         {
             if(!display)continue;
-            if(!display.GetComponent<TetriUnitSimple>().haveUnit)continue;
-            display.GetComponent<TetriUnitSimple>().haveUnit.animator.SetTrigger("DoWin");
+            if(!display.GetComponent<TetriUnitSimple>().HaveUnit)continue;
+            display.GetComponent<TetriUnitSimple>().HaveUnit.animator.SetTrigger("DoWin");
         }
     }
     
     // 朝向
     public void SetFlip()
     {
-        DifferentPlayerInit();
+        // DifferentPlayerInit();
         SetFlip(faceDirection);
     } 
     // 看向摄像机
@@ -611,4 +668,118 @@ public class UnitSimple : Unit
         Soldier.Behaviors_onLevelUp(level);
     }
 # endregion 数据操作
+# region 联网数据操作
+    public bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+    struct ServerToClient_Unit
+    {
+        public Color moraleColor;
+        public Color attackDirectionLineRendererColor;
+        public Color bloodColor;
+        public int faceDirection;
+        public Vector3 playerLineRendererOffset;
+
+    }
+    [Server]
+    void Server_DifferentPlayerInit()
+    {
+        if(!attackDirectionLineRenderer)attackDirectionLineRenderer = GetComponent<LineRenderer>();
+        if(!soldier)soldier = GetComponent<SoldierBehaviors>();
+        Color attackDirectionLineRendererColor = Color.clear;
+        Color moraleColor = Color.clear;
+        // 差异
+        if(unitTemplate.player == Player.Player1)
+        {
+            attackDirectionLineRendererColor = new Color32(208,101,83,255); 
+            faceDirection = 1;
+            moraleColor = Color.red + Color.white * 0.3f;
+            bloodColor = Color.red + Color.white * 0.2f;
+            bloodColor = new Color(bloodColor.r,bloodColor.g,bloodColor.b,0.5f);
+            playerLineRendererOffset = new Vector3(0,1,0);
+        }else if(unitTemplate.player == Player.Player2)
+        {
+            attackDirectionLineRendererColor = new Color32(83,115,208,255);
+            faceDirection = -1;
+            moraleColor = Color.blue + Color.white * 0.3f;
+            bloodColor = Color.blue + Color.white * 0.2f;
+            bloodColor = new Color(bloodColor.r,bloodColor.g,bloodColor.b,0.5f);
+            playerLineRendererOffset = new Vector3(-0,1,0);
+            
+        }
+        attackDirectionLineRenderer.startColor = attackDirectionLineRendererColor;
+        attackDirectionLineRenderer.endColor = attackDirectionLineRendererColor;
+        float width = 0.21f;
+        attackDirectionLineRenderer.startWidth = width;
+        attackDirectionLineRenderer.endWidth = width;
+        moraleColor.a = 0.666f;
+        soldier.StrengthBar.GetComponent<SpriteRenderer>().color = moraleColor;
+        if(!bloodEffectLoad)bloodEffectLoad = Resources.Load<ParticlesController>("Effect/BeenAttackBlood");
+        OnBeenAttacked += Event_OnBeenAttackedBlood;
+        ServerToClient_Unit serverToClient_Unit = new();
+        serverToClient_Unit.moraleColor = moraleColor;
+        serverToClient_Unit.attackDirectionLineRendererColor = attackDirectionLineRendererColor;
+        serverToClient_Unit.bloodColor = bloodColor;
+        serverToClient_Unit.faceDirection = faceDirection;
+        serverToClient_Unit.playerLineRendererOffset = playerLineRendererOffset;
+        ShaderInit();
+        ResetRotation();
+        SetFlip();
+        Client_DifferentPlayerInit(serverToClient_Unit);
+    }
+    [ClientRpc]
+    void Client_DifferentPlayerInit(ServerToClient_Unit serverToClient_Unit_In)
+    {
+        Color attackDirectionLineRendererColor = Color.clear;
+        Color moraleColor = Color.clear;
+        attackDirectionLineRendererColor = serverToClient_Unit_In.attackDirectionLineRendererColor; 
+        faceDirection = serverToClient_Unit_In.faceDirection;
+        moraleColor = serverToClient_Unit_In.moraleColor;
+        bloodColor = serverToClient_Unit_In.bloodColor;
+        playerLineRendererOffset = serverToClient_Unit_In.playerLineRendererOffset;
+        AttackDirectionLineRenderer.startColor = attackDirectionLineRendererColor;
+        AttackDirectionLineRenderer.endColor = attackDirectionLineRendererColor;
+        moraleColor.a = 0.666f;
+        Soldier.StrengthBar.GetComponent<SpriteRenderer>().color = moraleColor;
+        ShaderInit();
+        ResetRotation();
+        SetFlip();
+    }
+    [Server]
+    void Server_Display_onWeakAssociation()
+    {
+        ResetRotation();
+        tetriUnitSimple.PlayBlockEffect();
+        animator.SetFloat("Speed", 0f);
+        animator.SetTrigger("DoWin");
+        Soldier.Behaviors_WeakAssociation();
+        SufferAddHealthSimple((int)maxHealth);
+        unitTemplate.attackSpeed *= soldier.strength;
+        if(tween_running != null)tween_running.Kill();
+        Client_Display_onWeakAssociation();
+    }
+    [ClientRpc]
+    void Client_Display_onWeakAssociation()
+    {
+        ResetRotation();
+        tetriUnitSimple.PlayBlockEffect();
+        animator.SetFloat("Speed", 0f);
+        animator.SetTrigger("DoWin");
+        if(tween_running != null)tween_running.Kill();
+    }
+    void HideForPlayerScreen()
+    {
+        SkeletonRenderer.transform.GetComponent<MeshRenderer>().enabled = false;
+        soldier.StrengthBar.GetComponent<SpriteRenderer>().enabled = false;
+        soldier.LevelUpEffect.GetComponent<Renderer>().enabled = false;
+    }
+    public void ShowForPlayerScreen()
+    {
+        SkeletonRenderer.transform.GetComponent<MeshRenderer>().enabled = true;
+        soldier.StrengthBar.GetComponent<SpriteRenderer>().enabled = true;
+        soldier.LevelUpEffect.GetComponent<Renderer>().enabled = true;
+    }
+# endregion 联网数据操作
 }

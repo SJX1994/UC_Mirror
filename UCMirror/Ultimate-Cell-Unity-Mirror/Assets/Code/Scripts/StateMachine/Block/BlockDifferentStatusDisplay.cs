@@ -12,7 +12,7 @@ public class BlockDifferentStatusDisplay : MonoBehaviour
     {
         get
         {
-            if (!blockDisplay)transform.TryGetComponent<BlockDisplay>(out blockDisplay);
+            if (!blockDisplay)blockDisplay = transform.GetComponent<BlockDisplay>();
             return blockDisplay;
         }
     }

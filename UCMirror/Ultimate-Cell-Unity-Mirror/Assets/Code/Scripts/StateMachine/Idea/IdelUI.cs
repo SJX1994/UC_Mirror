@@ -6,8 +6,8 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UC_PlayerData;
-
-public class IdelUI : MonoBehaviour
+using Mirror;
+public class IdelUI : NetworkBehaviour
 {
     #region 数据对象
     public IdelHolder idelHolder;
@@ -44,9 +44,14 @@ public class IdelUI : MonoBehaviour
     {
         foreach (var Info in BoxInfo)
         {
-            ChangeHideColorRecursive(Info.transform);
+            // ChangeHideColorRecursive(Info.transform);
         }
+        RectTransform rectTransform = transform.GetComponent<RectTransform>();
+        Vector2 newPosition = new Vector2(-3f, rectTransform.anchoredPosition.y);
+        rectTransform.anchoredPosition = newPosition;
         hiden = true;
+        Button refalshButton = transform.Find("RefreshButton").GetComponent<Button>();
+        refalshButton.interactable  = false;
     }
     #endregion
 

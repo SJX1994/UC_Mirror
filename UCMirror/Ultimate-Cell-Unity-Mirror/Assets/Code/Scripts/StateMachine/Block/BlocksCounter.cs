@@ -167,7 +167,7 @@ public class BlocksCounter : MonoBehaviour
                 BlocksEffects.LoadAttentionEffect(block,player);
                 TetriBuoySimple tetriBuoy = block.BlockBuoyHandler.tetriBuoySimple;
                 if(!tetriBuoy)continue;
-                tetriBuoy.TetriBlockSimple.TetriUnitSimple.haveUnit.Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType.ReachBottomLineGain);
+                tetriBuoy.TetriBlockSimple.TetriUnitSimple.HaveUnit.Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType.ReachBottomLineGain);
                 // tetriBuoy.TetriBlockSimple.tetrisBlockSimple.Stop();
                 // MakeBlockToPeace(tetriBuoy.TetriBlockSimple.tetrisBlockSimple);
             }
@@ -209,7 +209,7 @@ public class BlocksCounter : MonoBehaviour
             if(!tetri)continue;
             var tetriBlock = tetri.tetriBlockSimple;
             if(!tetriBlock)continue;
-            var haveUnit = tetriBlock.TetriUnitSimple.haveUnit;
+            var haveUnit = tetriBlock.TetriUnitSimple.HaveUnit;
             if(!haveUnit)continue;
             haveUnit.Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType.FullRows);
         }

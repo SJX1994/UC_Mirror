@@ -8,23 +8,12 @@ using UnityEngine.Events;
 using System.Linq;
 using Mirror;
 using UC_PlayerData;
-public struct Server_BockChanged
-{
-    public Vector2 PosId;
-    public int State;
-}
+
 public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
 {
 
 #region 数据对象
-    // 通讯对象
-    // private GameObject sceneLoader;
-    // private CommunicationInteractionManager CommunicationManager;
-    // private BroadcastClass broadcastClass;
     public UnityAction OnBlocksInitEnd;
-    /// <summary>
-    /// 心流模式遮罩
-    /// </summary>
     public SpriteRenderer flowMask;
     public SpriteRenderer FlowMask
     {
@@ -38,19 +27,9 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
             flowMask = value;
         }
     }
-    /// <summary>
-    /// 单个砖块表现类
-    /// </summary>
     public BlockDisplay block;
-    /// <summary>
-    /// 宽
-    /// </summary>
     public int x = 10;
-    /// <summary>
-    /// 长
-    /// </summary>
     public int z = 20;
-    Vector2 pos = new Vector2(0,3);
     public List<BlockDisplay> blocks = new();
     Vector3 originPos = Vector3.zero;
     private Tweener inflowTweener;
@@ -100,30 +79,36 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
             return blocksReferee;
         }
     }
+#endregion 数据对象
+#region 联网数据对象
+    public struct Server_BockChanged
+    {
+        public Vector2 PosId;
+        public int State;
+    }
     [Header("联网")]
     [SyncVar(hook = nameof(OnBlockNeedChange))]
     public Server_BockChanged sync_blockChanged;
     Server_BockChanged server_blockChanged;
     private Stack<Server_BockChanged> dataStack;
-#endregion 数据对象
+#endregion 联网数据对象
 #region 数据关系
-    private void Start()
+    public void Start()
     {   
-        flowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);
+        FlowMask.color = new Color(0.0f,0.0f,0.0f,0.0f);
         dataStack = new Stack<Server_BockChanged>();
         CreateBlocks();
 
         Invoke(nameof(LateStart),0.1f);
         OnBlocksInitEnd += () =>
         {
+            
             // 初始化可放置区域
             InitPutzone();
-            Event_ReflashPlayerBlocksOccupied();
-            // 开始计时
-            BlocksReferee.Active();
-            // 监听砖块变化事件
-            if(RunModeData.CurrentRunMode == RunMode.Local)
+            if(Local())
             {
+                Event_ReflashPlayerBlocksOccupied();
+                BlocksReferee.Active();
                 blocks.ForEach((block) => {
                     block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += Event_ReflashPlayerBlocksOccupied;
                     // block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += BlocksReferee.CheckLose;
@@ -138,9 +123,21 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
             }else
             {
                 if(!isServer)return;
+                Event_ReflashPlayerBlocksOccupied();
                 blocks.ForEach((block) => {
                     block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += Server_Event_OnBlockTetriStateChanged;
                 });
+                blocks.ForEach((block) => {
+                    block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += Event_ReflashPlayerBlocksOccupied;
+                });
+                blocks.ForEach((block) => {
+                    block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += Event_BlocksCounterInvoke;
+                });
+                // 道具生成
+                BlocksProps.Generate(PropsData.PropsState.ChainBall);
+                BlocksProps.Generate(PropsData.PropsState.MoveDirectionChanger);
+                BlocksProps.Generate(PropsData.PropsState.Obstacle);
+
                 InvokeRepeating(nameof(ProcessDataFromStack),0.1f,0.1f);
             }
         };
@@ -180,7 +177,7 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
             buoy.OnBuoyEndDrag += Event_OnListenBlocksMoveEnd;
         });
     }
-    void Event_OnListenBlocksMoveStart()
+    public void Event_OnListenBlocksMoveStart()
     {
         if(outflowTweener!=null){outflowTweener.Kill(); outflowTweener = null;}
         flowMask.color = new Color(0.0f,0.0f,0.0f,0.55f);
@@ -195,7 +192,7 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
         transform.position = originPos;
         inflowTweener = transform.DOMoveY(originPos.y+0.1f,0.5f).SetEase(Ease.OutCirc);
     }
-    void Event_OnListenBlocksMoveEnd()
+    public void Event_OnListenBlocksMoveEnd()
     {
         if(inflowTweener!=null){inflowTweener.Kill(); inflowTweener = null;}
         if(!FlowMask)return;
@@ -285,7 +282,19 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
             }
         }
     }
-    // ------------------联网------------------
+    
+#endregion 数据操作
+#region 联网数据操作
+    public bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+    public void BlocksUIActive()
+    {
+        if(!isServer)return;
+        BlocksReferee.Active();
+    }
     [Client]
     void OnBlockNeedChange(Server_BockChanged previousData, Server_BockChanged newData)
     {
@@ -308,5 +317,5 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
         if(dataStack.Count == 0) return;
         sync_blockChanged = dataStack.Pop();
     }
-#endregion 数据操作
+#endregion 联网数据操作
 }

@@ -69,7 +69,7 @@ public class TetrisUnitSimple : MonoBehaviour
         TU_pair = new();
         foreach(var tetriUnit in TetriUnits)
         {
-            UnitSimple unitSimple = tetriUnit.haveUnit;
+            UnitSimple unitSimple = tetriUnit.HaveUnit;
             if(TU_pair.ContainsKey(tetriUnit))continue;
             TU_pair.Add(tetriUnit,unitSimple);
         }
@@ -90,6 +90,25 @@ public class TetrisUnitSimple : MonoBehaviour
             if(!tetriUnit)continue;
             KeyValuePair<int, UnitData.Color> indexPairColor = indexPairColors.Find(x => x.Key == tetriUnit.tetriUnitIndex);
             tetriUnit.LoadUnit(indexPairColor);
+        }
+    }
+    public void Server_LoadUnits(List<KeyValuePair<int, UnitData.Color>> indexPairColors, float unitRotationDifferent)
+    {
+        foreach(var tetriUnit in TetriUnits)
+        {
+            if(!tetriUnit)continue;
+            KeyValuePair<int, UnitData.Color> indexPairColor = indexPairColors.Find(x => x.Key == tetriUnit.tetriUnitIndex);
+            tetriUnit.Server_LoadCellUnit(indexPairColor.Value.ToString());
+            tetriUnit.transform.RotateAround(tetriUnit.transform.position,tetriUnit.transform.forward,- unitRotationDifferent);
+        }
+    }
+    public void Client_LoadUnits(float unitRotationDifferent)
+    {
+        
+        foreach(var tetriUnit in TetriUnits)
+        {
+            if(!tetriUnit)continue;
+            tetriUnit.transform.RotateAround(tetriUnit.transform.position,tetriUnit.transform.forward,- unitRotationDifferent);
         }
     }
     public void FailToCreat()
@@ -136,7 +155,7 @@ public class TetrisUnitSimple : MonoBehaviour
         foreach(var tetriUnit in TetriUnits)
         {
             if(!tetriUnit)continue;
-            PropsData.PropsState propChecker = tetriUnit.haveUnit.InitPropDoing();
+            PropsData.PropsState propChecker = tetriUnit.HaveUnit.InitPropDoing();
             if(propChecker != PropsData.PropsState.None)return;
         }
         transform.GetComponent<TetrisBlockSimple>().Active_X();
@@ -147,7 +166,7 @@ public class TetrisUnitSimple : MonoBehaviour
         for(int i = 0 ; i < TetriUnits.Count; i++)
         {
             if(!TetriUnits[i])continue;
-            TetriUnits[i].Event_UnitDie(TetriUnits[i].haveUnit);
+            TetriUnits[i].Event_UnitDie(TetriUnits[i].HaveUnit);
             if(i == TetriUnits.Count - 1)
             {
                 Destroy(gameObject);
@@ -208,6 +227,13 @@ public class TetrisUnitSimple : MonoBehaviour
         foreach(var tetri in TetriUnits)
         {
             tetri.Display_HideUnit();
+        }
+    }
+    public void Display_ShowForPlayerScreen()
+    {
+        foreach(var tetri in TetriUnits)
+        {
+            tetri.Display_ShowForPlayerScreen();
         }
     }
 }

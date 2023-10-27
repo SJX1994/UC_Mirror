@@ -180,13 +180,15 @@ public class BuoyInfo : NetworkBehaviour
             player_local = player;
             if(Local())return;
             if(!isLocalPlayer)return;
-            CmdChangePlayerSkin(true);
+            bool isPlayer1 = true;
+            CmdChangePlayerSkin(isPlayer1);
         }else
         {
             player_local = player;
             if(Local())return;
             if(!isLocalPlayer)return;
-            CmdChangePlayerSkin(false);
+            bool isPlayer1 = false;
+            CmdChangePlayerSkin(isPlayer1);
         }
     }
     /// <summary>

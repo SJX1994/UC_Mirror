@@ -229,15 +229,30 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
 
       void Start()
       {
-            active = false;
-            died = false;
-            NeedRender = true;
-            Self.TetriMechanism.TetrisBlockSimple.OnUpdatDisplay += ()=>{ if(!active)active = true;};
-            Self.unitBase.OnDie += (Unit unit)=>{this.StopAllCoroutines();died = true;};
-            InitLevel();
-            // linkMinStrengthIncrease = 0.2f;
-            // 联结表现          
-            Invoke(nameof(SetSkine), 0.1f);
+            if(Self.Local())
+            {
+                  active = false;
+                  died = false;
+                  NeedRender = true;
+                  Self.TetriMechanism.TetrisBlockSimple.OnUpdatDisplay += ()=>{ if(!active)active = true;};
+                  Self.unitBase.OnDie += (Unit unit)=>{this.StopAllCoroutines();died = true;};
+                  InitLevel();
+                  // linkMinStrengthIncrease = 0.2f;
+                  // 联结表现          
+                  Invoke(nameof(SetSkine), 0.1f);
+            }else
+            {
+                  if(!Self.isServer)return;
+                  active = false;
+                  died = false;
+                  NeedRender = true;
+                  Self.TetriMechanism.TetrisBlockSimple.OnUpdatDisplay += ()=>{ if(!active)active = true;};
+                  Self.unitBase.OnDie += (Unit unit)=>{this.StopAllCoroutines();died = true;};
+                  InitLevel();
+                  // linkMinStrengthIncrease = 0.2f;
+                  // 联结表现          
+                  Invoke(nameof(SetSkine), 0.1f);
+            }
             
       }
       public void LateUpdate()
@@ -246,8 +261,16 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
       }
       public void Active()
       {
-            LinkChecker();
-            UpdateLevel();
+            if(self.Local())
+            {
+                  LinkChecker();
+                  UpdateLevel();
+            }else
+            {
+                  if(!self.isServer)return;
+                  LinkChecker();
+                  UpdateLevel();
+            }
       }
       void LinkChecker()
       {   
@@ -261,9 +284,9 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
             var WestTetri = WestBlock ? WestBlock.BlockBuoyHandler.tetriBuoySimple : null;
             if (NorthTetri)
             {
-                  if(North != NorthTetri.TetriUnitSimple.haveUnit.Soldier)
+                  if(North != NorthTetri.TetriUnitSimple.HaveUnit.Soldier)
                   {
-                        North = NorthTetri.TetriUnitSimple.haveUnit.Soldier;
+                        North = NorthTetri.TetriUnitSimple.HaveUnit.Soldier;
                         SoldiersStartRelation(Self,North);
                   }else
                   {
@@ -277,9 +300,9 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
             }
             if (EastTetri)
             {
-                  if(East != EastTetri.TetriUnitSimple.haveUnit.Soldier)
+                  if(East != EastTetri.TetriUnitSimple.HaveUnit.Soldier)
                   {
-                        East = EastTetri.TetriUnitSimple.haveUnit.Soldier;
+                        East = EastTetri.TetriUnitSimple.HaveUnit.Soldier;
                         SoldiersStartRelation(Self,East);
                   }else
                   {
@@ -292,9 +315,9 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
             }
             if (WestTetri)
             {
-                  if(West != WestTetri.TetriUnitSimple.haveUnit.Soldier)
+                  if(West != WestTetri.TetriUnitSimple.HaveUnit.Soldier)
                   {
-                        West = WestTetri.TetriUnitSimple.haveUnit.Soldier;
+                        West = WestTetri.TetriUnitSimple.HaveUnit.Soldier;
                         SoldiersStartRelation(Self,West);
                   }else
                   {
@@ -307,9 +330,9 @@ public class FourDirectionsLink: MonoBehaviour, ISoldierRelation
             }
             if (SouthTetri)
             {
-                  if(South != SouthTetri.TetriUnitSimple.haveUnit.Soldier)
+                  if(South != SouthTetri.TetriUnitSimple.HaveUnit.Soldier)
                   {
-                        South = SouthTetri.TetriUnitSimple.haveUnit.Soldier;
+                        South = SouthTetri.TetriUnitSimple.HaveUnit.Soldier;
                         SoldiersStartRelation(Self,South);
                   }else
                   {

@@ -47,8 +47,8 @@ public class TetriMechanism : MonoBehaviour
             BlocksCounter.DoReachBottomLineGain(posId);
             // Unit 表现
             TetriUnitSimple tus = GetComponent<TetriUnitSimple>();
-            if(!tus.haveUnit)return;
-            tus.haveUnit.Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType.ReachBottomLine);
+            if(!tus.HaveUnit)return;
+            tus.HaveUnit.Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType.ReachBottomLine);
         }
     }
     void OnPlayerChanged(Player player)

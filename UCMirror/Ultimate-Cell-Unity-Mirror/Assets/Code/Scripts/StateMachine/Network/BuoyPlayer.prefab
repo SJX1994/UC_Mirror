@@ -985,8 +985,8 @@ MonoBehaviour:
   syncDirection: 1
   syncMode: 0
   syncInterval: 0
-  currentValue: 1
   actived: 0
+  currentValue: 1
 --- !u!65 &2503343723301077252
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1595,8 +1595,8 @@ MonoBehaviour:
   syncDirection: 1
   syncMode: 0
   syncInterval: 0
-  currentValue: 1
   actived: 0
+  currentValue: 1
 --- !u!65 &3006999852533032597
 BoxCollider:
   m_ObjectHideFlags: 0

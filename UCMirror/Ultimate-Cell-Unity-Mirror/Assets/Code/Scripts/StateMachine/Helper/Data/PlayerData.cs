@@ -130,6 +130,8 @@ namespace UC_PlayerData
     }
     public static class ServerLogic
     {
+        // 道具Id
+        // private static int PropsID = 10_0000_0;
         // 俄罗斯砖块组ID
         private static int TetrisGroupID = 10_0000;
         // 俄罗斯砖块预示ID
@@ -139,6 +141,10 @@ namespace UC_PlayerData
         private static int Tetris = 1_0000;
         // 砖块ID
         private static int Block = 1000;
+        // public static int GetPropsID()
+        // {
+        //     return PropsID++;
+        // }
         public static int GetTetrisGroupID()
         {
             return TetrisGroupID++;
@@ -162,6 +168,16 @@ namespace UC_PlayerData
             }
             
         }
+        public static string[] tetrominoesName = new string[]
+        {
+            "I Tetromino",
+            "J Tetromino",
+            "L Tetromino",
+            "O Tetromino",
+            "S Tetromino",
+            "T Tetromino",
+            "Z Tetromino",
+        };
     }
     public class PropsData
     {
@@ -283,12 +299,22 @@ namespace UC_PlayerData
         }
         
     }
-    public class UC_Tool
+    public static class UC_Tool
     {
         public static float Remap(float input, float oldLow, float oldHigh, float newLow, float newHigh)
         {
             float t = Mathf.InverseLerp(oldLow, oldHigh, input);
             return Mathf.Lerp(newLow, newHigh, t);
         }
+        
+        public static Quaternion Diff(this Quaternion to, Quaternion from)
+        {
+            return to * Quaternion.Inverse(from);
+        }
+        public static Quaternion Add(this Quaternion start, Quaternion diff)
+        {
+            return diff * start;
+        }
+
     }
 }

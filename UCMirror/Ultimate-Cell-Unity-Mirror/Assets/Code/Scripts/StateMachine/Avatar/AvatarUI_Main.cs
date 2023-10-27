@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UC_PlayerData;
 using DG.Tweening;
-
-public class AvatarUI_Main : MonoBehaviour
+using Mirror;
+public class AvatarUI_Main : NetworkBehaviour
 {
+#region 数据对象
     Tween player1MaxFadeAway;
     Tween player2MaxFadeAway;
     Transform player1AvatarSet;
@@ -62,6 +63,11 @@ public class AvatarUI_Main : MonoBehaviour
             return player2AvatarSlider;
         }
     }
+#endregion 数据对象
+#region 联网数据对象
+
+#endregion 联网数据对象
+#region 数据关系
     // Start is called before the first frame update
     void Start()
     {
@@ -82,9 +88,23 @@ public class AvatarUI_Main : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        Player2AvatarSlider.SetSliderValue(UIData.Player2MoraleAccumulation_Normalized);
-        Player1AvatarSlider.SetSliderValue(UIData.Player1MoraleAccumulation_Normalized);
+        if(Local())
+        {
+            Player2AvatarSlider.SetSliderValue(UIData.Player2MoraleAccumulation_Normalized);
+            Player1AvatarSlider.SetSliderValue(UIData.Player1MoraleAccumulation_Normalized);
+        }else
+        {
+            if(!isServer)return;
+            float player1MoraleAccumulation = UIData.Player1MoraleAccumulation_Normalized;
+            float player2MoraleAccumulation = UIData.Player2MoraleAccumulation_Normalized;
+            Player2AvatarSlider.SetSliderValue(player2MoraleAccumulation);
+            Player1AvatarSlider.SetSliderValue(player1MoraleAccumulation);
+            Client_UpdateMoraleAccumulation(player1MoraleAccumulation,player2MoraleAccumulation);
+        }
+        
     }
+#endregion 数据关系
+#region 数据操作
     void MoraleAccumulationMaxed(Player player)
     {
         if(player == Player.Player1)
@@ -129,4 +149,18 @@ public class AvatarUI_Main : MonoBehaviour
         UIData.OnPlayer2MoraleAccumulationAdditionFinished?.Invoke(Player.Player2);
         UIData.player2isAdditioning = false;
     }
+#endregion 数据操作
+#region 联网数据操作
+    bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+    [ClientRpc]
+    public void Client_UpdateMoraleAccumulation(float player1MoraleAccumulation,float player2MoraleAccumulation)
+    {
+        Player2AvatarSlider.SetSliderValue(player2MoraleAccumulation);
+        Player1AvatarSlider.SetSliderValue(player1MoraleAccumulation);
+    }
+#endregion 联网数据操作
 }

@@ -4,8 +4,10 @@ using UnityEngine.Events;
 using System.Linq;
 using UC_PlayerData;
 using DG.Tweening;
-public class TetriBall : MonoBehaviour , ITetriProp
+using Mirror;
+public class TetriBall : NetworkBehaviour , ITetriProp
 {
+#region 数据对象
     [SerializeField]
     public bool MoveCollect{get;set;} = true;
     public Vector2 posId;
@@ -107,12 +109,18 @@ public class TetriBall : MonoBehaviour , ITetriProp
             return cube;
         }
     }
+#endregion 数据对象
+#region 联网数据对象
+    
+#endregion 联网数据对象
+#region 数据关系
     void Start()
     {
         if(!checker)checker = transform.GetChild(0);
         if(!BlocksCreator)BlocksCreator = FindObjectOfType<BlocksCreator_Main>();
         UserAction.OnPlayer1UserActionStateChanged += Event_OnUserActionStateChanged;
-        UserAction.OnPlayer2UserActionStateChanged += Event_OnUserActionStateChanged;    
+        UserAction.OnPlayer2UserActionStateChanged += Event_OnUserActionStateChanged;
+          
     }
     void OnDisable()
     {
@@ -124,6 +132,8 @@ public class TetriBall : MonoBehaviour , ITetriProp
         propTimer.UpdateTimer();
         transform.localPosition = new Vector3(transform.localPosition.x, propTimer.NormalizedTime(), transform.localPosition.z);
     }
+#endregion 数据关系
+#region 数据操作
     void Event_OnUserActionStateChanged(UserAction.State UserActionStateChanged)
     {
         switch (UserActionStateChanged)
@@ -294,7 +304,7 @@ public class TetriBall : MonoBehaviour , ITetriProp
         transform.localRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
         return true;
     }
-    void StartTimer_Growing()
+    public void StartTimer_Growing()
     {
         propTimer = new();
         Icon.SetActive(false);
@@ -304,5 +314,12 @@ public class TetriBall : MonoBehaviour , ITetriProp
             Icon.SetActive(true);
         });
     }
-    
+#endregion 数据操作
+#region 联网数据操作
+    public bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+#endregion 联网数据操作
 }

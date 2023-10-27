@@ -447,7 +447,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   idelUI: {fileID: 4043450735434708475}
-  playerPVP: 0
+  playerPVP_Temp: 0
   playerPVP_local: 0
   player: 0
   IdelHolderId: -1
@@ -651,6 +651,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b456557926be6ca4baf84a8b2d6bac72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   idelHolder: {fileID: 0}
   player: 0
   SelectionBox: {fileID: 676750736243217924}
@@ -1672,7 +1675,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4606832887523267479}
   m_Layer: 5
-  m_Name: RefreshButton
+  m_Name: RefreshButton_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

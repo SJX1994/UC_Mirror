@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UC_PlayerData;
 using DG.Tweening;
-public class TetriMoveDirection : MonoBehaviour , ITetriProp
+using Mirror;
+public class TetriMoveDirection : NetworkBehaviour, ITetriProp
 {
     public Sprite sprite_Up,spirte_Down,sprite_Icon_Up,sprite_Icon_Down;
     [SerializeField]
@@ -26,6 +27,7 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
             blocksCreator = value;
         } 
     }
+    [SyncVar]
     public PropsData.MoveDirection moveDirection = PropsData.MoveDirection.NotReady;
     Transform checker;
     Transform Checker
@@ -207,14 +209,7 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
         this.turn = turn;
         if(this.turn == Player.NotReady){Debug.LogError("道具“方向改变者”需要初始化“玩家”");return false;}
         // 道具计时器
-        lockTime = Random.Range(1.5f, 3.0f);
-        propTimer = new();
-        Icon.SetActive(false);
-        propTimer.StartTimer(lockTime, (UnityAction)(() => { 
-            Locked = false; 
-            SetSpriteAlpha(0.0f);
-            this.Icon.SetActive(true);
-        }));
+        StartTimer_Growing();
         return Generate_ForPlayer();
     }
     public bool Generate_ForPlayer()
@@ -276,5 +271,16 @@ public class TetriMoveDirection : MonoBehaviour , ITetriProp
         }
         // Icon.transform.localRotation = Quaternion.Euler(new Vector3(Icon.transform.localRotation.eulerAngles.x,Icon.transform.localRotation.eulerAngles.y,zAngel));
         
+    }
+    public void StartTimer_Growing()
+    {
+        lockTime = Random.Range(1.5f, 3.0f);
+        propTimer = new();
+        Icon.SetActive(false);
+        propTimer.StartTimer(lockTime, (UnityAction)(() => { 
+            Locked = false; 
+            SetSpriteAlpha(0.0f);
+            this.Icon.SetActive(true);
+        }));
     }
 }

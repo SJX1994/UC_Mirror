@@ -1047,6 +1047,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b41d1c6a80a7de7418d83ca3f08117c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   tetriUnitIndex: 3
   tetriUnitTemplate: {fileID: 11400000, guid: d8c557ae685ab1748b54cb102ab71c8c, type: 2}
   haveUnit: {fileID: 0}
@@ -1078,6 +1081,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d63ffe1201e0f7041b773049e4a2a66c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &5439442933116593814
 GameObject:
   m_ObjectHideFlags: 0
@@ -1217,6 +1223,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b41d1c6a80a7de7418d83ca3f08117c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   tetriUnitIndex: 0
   tetriUnitTemplate: {fileID: 11400000, guid: e81af44fe11465848b291627d27cf553, type: 2}
   haveUnit: {fileID: 0}
@@ -1248,6 +1257,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d63ffe1201e0f7041b773049e4a2a66c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &5439442933408414500
 GameObject:
   m_ObjectHideFlags: 0
@@ -1261,6 +1273,7 @@ GameObject:
   - component: {fileID: 8443460946131847425}
   - component: {fileID: 7024568676264822906}
   - component: {fileID: 2960659561133062020}
+  - component: {fileID: -3574338625104390081}
   m_Layer: 6
   m_Name: Z Tetromino
   m_TagString: Untagged
@@ -1315,10 +1328,6 @@ MonoBehaviour:
   idelBox: {fileID: 0}
   tetrisCheckMode: 3
   color: {r: 0, g: 0, b: 0, a: 0}
-  serverID: -1
-  rotateTimes: 0
-  type: Z
-  autoID: 1
 --- !u!114 &8443460946131847425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1361,7 +1370,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5439442933408414500}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
@@ -1389,6 +1398,23 @@ MonoBehaviour:
   compressRotation: 0
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &-3574338625104390081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5439442933408414500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 361696453
+  serverOnly: 0
+  visible: 0
+  hasSpawned: 0
 --- !u!1 &5439442934181524942
 GameObject:
   m_ObjectHideFlags: 0
@@ -1528,6 +1554,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b41d1c6a80a7de7418d83ca3f08117c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   tetriUnitIndex: 1
   tetriUnitTemplate: {fileID: 11400000, guid: 1f70b18e56bebb54482b9960c723cf88, type: 2}
   haveUnit: {fileID: 0}
@@ -1559,6 +1588,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d63ffe1201e0f7041b773049e4a2a66c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &5439442934182792617
 GameObject:
   m_ObjectHideFlags: 0
@@ -1698,6 +1730,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b41d1c6a80a7de7418d83ca3f08117c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   tetriUnitIndex: 2
   tetriUnitTemplate: {fileID: 11400000, guid: 754c91c213d17074cad055da96cd0f8d, type: 2}
   haveUnit: {fileID: 0}
@@ -1729,6 +1764,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d63ffe1201e0f7041b773049e4a2a66c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &5846467735788686291
 GameObject:
   m_ObjectHideFlags: 0

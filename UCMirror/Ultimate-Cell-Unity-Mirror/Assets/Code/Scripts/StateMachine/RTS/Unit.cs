@@ -6,8 +6,8 @@ using UnityEngine.AI;
 using UnityEngine.Events;
 using Spine.Unity;
 using DG.Tweening;
-
-public class Unit : MonoBehaviour
+using Mirror;
+public class Unit : NetworkBehaviour
 {
 
     #region 数据对象

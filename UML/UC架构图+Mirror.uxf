@@ -24,14 +24,14 @@
 
 
 // This text will be stored with each diagram;  use it for notes.</help_text>
-  <zoom_level>2</zoom_level>
+  <zoom_level>8</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>568</x>
-      <y>382</y>
-      <w>54</w>
-      <h>22</h>
+      <x>2040</x>
+      <y>1512</y>
+      <w>216</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>// 形式因：以四个方位的单位属性增强自身
 形式因：四个方位
@@ -47,10 +47,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>508</x>
-      <y>314</y>
-      <w>52</w>
-      <h>18</h>
+      <x>1800</x>
+      <y>1240</y>
+      <w>208</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>物质因：士兵单位之间一种关系
 //物质因：士兵单位之间的一种关系机制
@@ -63,10 +63,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>558</x>
-      <y>316</y>
-      <w>38</w>
-      <h>70</h>
+      <x>2000</x>
+      <y>1248</y>
+      <w>152</w>
+      <h>280</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;170.0;10.0;170.0;330.0</additional_attributes>
@@ -74,10 +74,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>630</x>
-      <y>382</y>
-      <w>50</w>
-      <h>10</h>
+      <x>2288</x>
+      <y>1512</y>
+      <w>200</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>起因因：联结表现
 --
@@ -89,10 +89,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>620</x>
-      <y>382</y>
-      <w>14</w>
-      <h>6</h>
+      <x>2248</x>
+      <y>1512</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
@@ -100,10 +100,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>630</x>
-      <y>394</y>
-      <w>50</w>
-      <h>10</h>
+      <x>2288</x>
+      <y>1560</y>
+      <w>200</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>目的因：互助表现
 --
@@ -115,10 +115,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>620</x>
-      <y>394</y>
-      <w>14</w>
-      <h>6</h>
+      <x>2248</x>
+      <y>1560</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
@@ -126,10 +126,10 @@
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>586</x>
-      <y>244</y>
-      <w>90</w>
-      <h>22</h>
+      <x>2112</x>
+      <y>960</y>
+      <w>360</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>士兵单位-弱势关联
 --
@@ -142,10 +142,10 @@
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>384</x>
-      <y>342</y>
-      <w>92</w>
-      <h>22</h>
+      <x>1304</x>
+      <y>1352</y>
+      <w>368</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>士兵单位-链式传递
 --
@@ -158,10 +158,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>564</x>
-      <y>340</y>
-      <w>134</w>
-      <h>88</h>
+      <x>2024</x>
+      <y>1344</y>
+      <w>536</w>
+      <h>352</h>
     </coordinates>
     <panel_attributes>
 bg=black
@@ -172,10 +172,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>452</x>
-      <y>376</y>
-      <w>44</w>
-      <h>24</h>
+      <x>1576</x>
+      <y>1488</y>
+      <w>176</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>//形式因：以链的方式传递N次
 形式因：链式传递
@@ -192,10 +192,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>384</x>
-      <y>376</y>
-      <w>50</w>
-      <h>12</h>
+      <x>1304</x>
+      <y>1488</y>
+      <w>200</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>// 起因因：基于心理学的 社会支持/共情
 起因因：传递感表现
@@ -207,10 +207,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>484</x>
-      <y>314</y>
-      <w>28</w>
-      <h>66</h>
+      <x>1704</x>
+      <y>1240</y>
+      <w>112</w>
+      <h>264</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>120.0;10.0;10.0;10.0;10.0;310.0</additional_attributes>
@@ -218,10 +218,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>374</x>
-      <y>334</y>
-      <w>128</w>
-      <h>106</h>
+      <x>1264</x>
+      <y>1320</y>
+      <w>512</w>
+      <h>424</h>
     </coordinates>
     <panel_attributes>
 bg=green
@@ -232,10 +232,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>432</x>
-      <y>380</y>
-      <w>24</w>
-      <h>6</h>
+      <x>1496</x>
+      <y>1504</y>
+      <w>96</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>100.0;10.0;10.0;10.0</additional_attributes>
@@ -243,10 +243,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>384</x>
-      <y>390</y>
-      <w>50</w>
-      <h>12</h>
+      <x>1304</x>
+      <y>1544</y>
+      <w>200</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>// 目的因：给玩家体验到 社会支持/共情 的传递感的力量，突发的领悟感
 目的因：突发领悟感表现
@@ -258,10 +258,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>432</x>
-      <y>392</y>
-      <w>24</w>
-      <h>6</h>
+      <x>1496</x>
+      <y>1552</y>
+      <w>96</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>100.0;10.0;10.0;10.0</additional_attributes>
@@ -269,10 +269,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>394</x>
-      <y>230</y>
-      <w>76</w>
-      <h>22</h>
+      <x>1344</x>
+      <y>904</y>
+      <w>304</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>士兵单位-士气
 --
@@ -285,10 +285,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>394</x>
-      <y>258</y>
-      <w>50</w>
-      <h>40</h>
+      <x>1344</x>
+      <y>1016</y>
+      <w>200</w>
+      <h>160</h>
     </coordinates>
     <panel_attributes>士气
 --
@@ -315,10 +315,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>486</x>
-      <y>260</y>
-      <w>36</w>
-      <h>22</h>
+      <x>1712</x>
+      <y>1024</y>
+      <w>144</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>士兵
 --
@@ -332,10 +332,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>442</x>
-      <y>260</y>
-      <w>48</w>
-      <h>6</h>
+      <x>1536</x>
+      <y>1024</y>
+      <w>192</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;220.0;10.0</additional_attributes>
@@ -343,10 +343,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>516</x>
-      <y>134</y>
-      <w>70</w>
-      <h>34</h>
+      <x>1832</x>
+      <y>520</y>
+      <w>280</w>
+      <h>136</h>
     </coordinates>
     <panel_attributes>
 bg=green
@@ -357,10 +357,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>608</x>
-      <y>350</y>
-      <w>76</w>
-      <h>22</h>
+      <x>2200</x>
+      <y>1384</y>
+      <w>304</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>士兵单位-方位联结
 --
@@ -373,10 +373,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>532</x>
-      <y>280</y>
-      <w>36</w>
-      <h>38</h>
+      <x>1896</x>
+      <y>1104</y>
+      <w>144</w>
+      <h>152</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;170.0;10.0;10.0;160.0;10.0</additional_attributes>
@@ -384,10 +384,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>494</x>
-      <y>244</y>
-      <w>12</w>
-      <h>6</h>
+      <x>1744</x>
+      <y>960</y>
+      <w>48</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>强度</panel_attributes>
     <additional_attributes/>
@@ -395,10 +395,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>498</x>
-      <y>248</y>
-      <w>6</w>
-      <h>16</h>
+      <x>1760</x>
+      <y>976</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
@@ -406,10 +406,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>564</x>
-      <y>274</y>
-      <w>54</w>
-      <h>28</h>
+      <x>2024</x>
+      <y>1080</y>
+      <w>216</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>// 形式因：所有同色单位同时增强
 形式因：弱势关联
@@ -427,10 +427,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>560</x>
-      <y>236</y>
-      <w>134</w>
-      <h>76</h>
+      <x>2008</x>
+      <y>928</y>
+      <w>536</w>
+      <h>304</h>
     </coordinates>
     <panel_attributes>
 bg=green
@@ -441,10 +441,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>508</x>
-      <y>334</y>
-      <w>28</w>
-      <h>26</h>
+      <x>1800</x>
+      <y>1320</y>
+      <w>112</w>
+      <h>104</h>
     </coordinates>
     <panel_attributes>输入管理
 --
@@ -459,10 +459,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>538</x>
-      <y>334</y>
-      <w>22</w>
-      <h>26</h>
+      <x>1920</x>
+      <y>1320</y>
+      <w>88</w>
+      <h>104</h>
     </coordinates>
     <panel_attributes>关系机制
 资产管理
@@ -475,10 +475,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>508</x>
-      <y>364</y>
-      <w>28</w>
-      <h>20</h>
+      <x>1800</x>
+      <y>1440</y>
+      <w>112</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>通讯数据管理
 --
@@ -493,10 +493,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>480</x>
-      <y>398</y>
-      <w>6</w>
-      <h>16</h>
+      <x>1688</x>
+      <y>1576</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
@@ -504,10 +504,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>472</x>
-      <y>410</y>
-      <w>24</w>
-      <h>18</h>
+      <x>1656</x>
+      <y>1624</y>
+      <w>96</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>UI 冷却计时器
 --
@@ -519,10 +519,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>538</x>
-      <y>364</y>
-      <w>22</w>
-      <h>36</h>
+      <x>1920</x>
+      <y>1440</y>
+      <w>88</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>提示系统
 --
@@ -542,10 +542,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>388</x>
-      <y>220</y>
-      <w>96</w>
-      <h>88</h>
+      <x>1320</x>
+      <y>864</y>
+      <w>384</w>
+      <h>352</h>
     </coordinates>
     <panel_attributes>
 bg=green
@@ -556,10 +556,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>540</x>
-      <y>154</y>
-      <w>6</w>
-      <h>116</h>
+      <x>1928</x>
+      <y>600</y>
+      <w>24</w>
+      <h>464</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;560.0;10.0;10.0</additional_attributes>
@@ -567,10 +567,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>520</x>
-      <y>138</y>
-      <w>24</w>
-      <h>18</h>
+      <x>1848</x>
+      <y>536</y>
+      <w>96</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>涂鸦管理员
 --
@@ -581,10 +581,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>558</x>
-      <y>150</y>
-      <w>20</w>
-      <h>6</h>
+      <x>2000</x>
+      <y>584</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>可涂鸦的物体</panel_attributes>
     <additional_attributes/>
@@ -592,10 +592,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>530</x>
-      <y>266</y>
-      <w>20</w>
-      <h>6</h>
+      <x>1888</x>
+      <y>1048</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>涂鸦触发器
 </panel_attributes>
@@ -604,10 +604,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>520</x>
-      <y>266</y>
-      <w>14</w>
-      <h>6</h>
+      <x>1848</x>
+      <y>1048</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
@@ -615,10 +615,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>542</x>
-      <y>150</y>
-      <w>20</w>
-      <h>6</h>
+      <x>1936</x>
+      <y>584</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
@@ -626,10 +626,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>416</x>
-      <y>86</y>
-      <w>28</w>
-      <h>12</h>
+      <x>1432</x>
+      <y>328</y>
+      <w>112</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>士兵“木偶”表现
 --
@@ -641,10 +641,10 @@ Once：
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>14</y>
-      <w>44</w>
-      <h>114</h>
+      <x>1688</x>
+      <y>40</y>
+      <w>176</w>
+      <h>456</h>
     </coordinates>
     <panel_attributes>木偶的线（士兵逻辑捕获）
 --
@@ -681,10 +681,10 @@ InvokeUpdate:
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>490</x>
-      <y>126</y>
-      <w>6</w>
-      <h>138</h>
+      <x>1728</x>
+      <y>488</y>
+      <w>24</w>
+      <h>552</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;670.0;10.0;10.0</additional_attributes>
@@ -692,10 +692,10 @@ InvokeUpdate:
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>442</x>
-      <y>86</y>
-      <w>42</w>
-      <h>6</h>
+      <x>1536</x>
+      <y>328</y>
+      <w>168</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>190.0;10.0;10.0;10.0</additional_attributes>
@@ -703,10 +703,10 @@ InvokeUpdate:
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>442</x>
-      <y>92</y>
-      <w>42</w>
-      <h>6</h>
+      <x>1536</x>
+      <y>352</y>
+      <w>168</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;190.0;10.0</additional_attributes>
@@ -714,10 +714,10 @@ InvokeUpdate:
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>256</x>
-      <y>260</y>
-      <w>28</w>
-      <h>14</h>
+      <x>792</x>
+      <y>1024</y>
+      <w>112</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>建筑
 --
@@ -728,10 +728,10 @@ InvokeUpdate:
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>204</x>
-      <y>284</y>
-      <w>26</w>
-      <h>16</h>
+      <x>584</x>
+      <y>1120</y>
+      <w>104</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>砖块
 --
@@ -741,10 +741,10 @@ InvokeUpdate:
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>204</x>
-      <y>260</y>
-      <w>26</w>
-      <h>12</h>
+      <x>584</x>
+      <y>1024</y>
+      <w>104</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>建筑槽位
 --
@@ -754,10 +754,10 @@ InvokeUpdate:
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>214</x>
-      <y>270</y>
-      <w>6</w>
-      <h>18</h>
+      <x>624</x>
+      <y>1064</y>
+      <w>24</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
@@ -765,10 +765,10 @@ InvokeUpdate:
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>228</x>
-      <y>264</y>
-      <w>32</w>
-      <h>6</h>
+      <x>680</x>
+      <y>1040</y>
+      <w>128</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;140.0;10.0</additional_attributes>
@@ -776,10 +776,10 @@ InvokeUpdate:
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>266</x>
-      <y>244</y>
-      <w>6</w>
-      <h>20</h>
+      <x>832</x>
+      <y>960</y>
+      <w>24</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
@@ -787,10 +787,10 @@ InvokeUpdate:
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>256</x>
-      <y>226</y>
-      <w>26</w>
-      <h>20</h>
+      <x>792</x>
+      <y>888</y>
+      <w>104</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>建筑管理
 --
@@ -802,10 +802,10 @@ InvokeUpdate:
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>508</x>
-      <y>386</y>
-      <w>28</w>
-      <h>22</h>
+      <x>1800</x>
+      <y>1528</y>
+      <w>112</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>阵营
 --
@@ -823,10 +823,10 @@ transparency=95
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>326</x>
-      <y>4</y>
-      <w>202</w>
-      <h>128</h>
+      <x>1072</x>
+      <y>0</y>
+      <w>808</w>
+      <h>512</h>
     </coordinates>
     <panel_attributes>弃用
 --
@@ -838,10 +838,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>194</x>
-      <y>214</y>
-      <w>106</w>
-      <h>102</h>
+      <x>544</x>
+      <y>840</y>
+      <w>424</w>
+      <h>408</h>
     </coordinates>
     <panel_attributes>弃用
 --
@@ -853,10 +853,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>446</x>
-      <y>410</y>
-      <w>22</w>
-      <h>18</h>
+      <x>1552</x>
+      <y>1624</y>
+      <w>88</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>数值
 --
@@ -868,10 +868,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>456</x>
-      <y>398</y>
-      <w>6</w>
-      <h>16</h>
+      <x>1592</x>
+      <y>1576</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
@@ -879,10 +879,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>76</x>
-      <y>490</y>
-      <w>20</w>
-      <h>6</h>
+      <x>72</x>
+      <y>1944</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>UI树引擎</panel_attributes>
     <additional_attributes/>
@@ -890,10 +890,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>418</x>
-      <y>68</y>
-      <w>26</w>
-      <h>6</h>
+      <x>1440</x>
+      <y>256</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>鼠标状态</panel_attributes>
     <additional_attributes/>
@@ -901,10 +901,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>428</x>
-      <y>72</y>
-      <w>6</w>
-      <h>18</h>
+      <x>1480</x>
+      <y>272</y>
+      <w>24</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
@@ -912,10 +912,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>326</x>
-      <y>138</y>
-      <w>122</w>
-      <h>50</h>
+      <x>1072</x>
+      <y>536</y>
+      <w>488</w>
+      <h>200</h>
     </coordinates>
     <panel_attributes>
 bg=red
@@ -926,10 +926,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>326</x>
-      <y>138</y>
-      <w>24</w>
-      <h>6</h>
+      <x>1072</x>
+      <y>536</y>
+      <w>96</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>表现层果实系统</panel_attributes>
     <additional_attributes/>
@@ -937,10 +937,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>366</x>
-      <y>156</y>
-      <w>30</w>
-      <h>6</h>
+      <x>1232</x>
+      <y>608</y>
+      <w>120</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>表现层 果实数据结构</panel_attributes>
     <additional_attributes/>
@@ -948,10 +948,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>366</x>
-      <y>172</y>
-      <w>30</w>
-      <h>6</h>
+      <x>1232</x>
+      <y>672</y>
+      <w>120</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>表现层 果实管理器</panel_attributes>
     <additional_attributes/>
@@ -959,10 +959,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>374</x>
-      <y>160</y>
-      <w>6</w>
-      <h>16</h>
+      <x>1264</x>
+      <y>624</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
@@ -970,10 +970,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>394</x>
-      <y>172</y>
-      <w>26</w>
-      <h>6</h>
+      <x>1344</x>
+      <y>672</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
@@ -981,10 +981,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>416</x>
-      <y>172</y>
-      <w>20</w>
-      <h>6</h>
+      <x>1432</x>
+      <y>672</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>果实加载器</panel_attributes>
     <additional_attributes/>
@@ -992,10 +992,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>434</x>
-      <y>172</y>
-      <w>84</w>
-      <h>92</h>
+      <x>1504</x>
+      <y>672</y>
+      <w>336</w>
+      <h>368</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>400.0;440.0;400.0;10.0;10.0;10.0</additional_attributes>
@@ -1003,10 +1003,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>452</x>
-      <y>76</y>
-      <w>20</w>
-      <h>6</h>
+      <x>1576</x>
+      <y>288</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>特效数据结构</panel_attributes>
     <additional_attributes/>
@@ -1014,10 +1014,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>442</x>
-      <y>78</y>
-      <w>14</w>
-      <h>12</h>
+      <x>1536</x>
+      <y>296</y>
+      <w>56</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;40.0;50.0;10.0</additional_attributes>
@@ -1025,10 +1025,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>470</x>
-      <y>78</y>
-      <w>14</w>
-      <h>6</h>
+      <x>1648</x>
+      <y>296</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
@@ -1036,10 +1036,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>76</x>
-      <y>512</y>
-      <w>22</w>
-      <h>6</h>
+      <x>72</x>
+      <y>2032</y>
+      <w>88</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>UI树引擎拓展</panel_attributes>
     <additional_attributes/>
@@ -1047,10 +1047,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>84</x>
-      <y>494</y>
-      <w>6</w>
-      <h>22</h>
+      <x>104</x>
+      <y>1960</y>
+      <w>24</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
@@ -1058,10 +1058,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>126</x>
-      <y>514</y>
-      <w>20</w>
-      <h>6</h>
+      <x>272</x>
+      <y>2040</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>模板:可视化树</panel_attributes>
     <additional_attributes/>
@@ -1069,10 +1069,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>96</x>
-      <y>514</y>
-      <w>34</w>
-      <h>6</h>
+      <x>152</x>
+      <y>2040</y>
+      <w>136</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;150.0;10.0</additional_attributes>
@@ -1080,10 +1080,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>164</x>
-      <y>498</y>
-      <w>20</w>
-      <h>8</h>
+      <x>424</x>
+      <y>1976</y>
+      <w>80</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>模板:基础节点</panel_attributes>
     <additional_attributes/>
@@ -1091,10 +1091,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>500</y>
-      <w>24</w>
-      <h>20</h>
+      <x>344</x>
+      <y>1984</y>
+      <w>96</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;80.0;100.0;10.0</additional_attributes>
@@ -1102,10 +1102,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>172</x>
-      <y>488</y>
-      <w>6</w>
-      <h>14</h>
+      <x>456</x>
+      <y>1936</y>
+      <w>24</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
@@ -1113,10 +1113,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>164</x>
-      <y>482</y>
-      <w>20</w>
-      <h>8</h>
+      <x>424</x>
+      <y>1912</y>
+      <w>80</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>&lt;&lt;接口&gt;&gt;
 节点基础信息</panel_attributes>
@@ -1125,10 +1125,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>472</y>
-      <w>20</w>
-      <h>34</h>
+      <x>608</x>
+      <y>1872</y>
+      <w>80</w>
+      <h>136</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;150.0;80.0;10.0</additional_attributes>
@@ -1136,10 +1136,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>226</x>
-      <y>470</y>
-      <w>20</w>
-      <h>6</h>
+      <x>672</x>
+      <y>1864</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>数据类型</panel_attributes>
     <additional_attributes/>
@@ -1147,10 +1147,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>226</x>
-      <y>480</y>
-      <w>20</w>
-      <h>6</h>
+      <x>672</x>
+      <y>1904</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>模板：等级</panel_attributes>
     <additional_attributes/>
@@ -1158,10 +1158,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>480</y>
-      <w>20</w>
-      <h>26</h>
+      <x>608</x>
+      <y>1904</y>
+      <w>80</w>
+      <h>104</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;110.0;80.0;10.0</additional_attributes>
@@ -1169,10 +1169,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>254</x>
-      <y>478</y>
-      <w>20</w>
-      <h>10</h>
+      <x>784</x>
+      <y>1896</y>
+      <w>80</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>&lt;&lt;接口&gt;&gt;
 等级基础信息</panel_attributes>
@@ -1181,10 +1181,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>244</x>
-      <y>480</y>
-      <w>14</w>
-      <h>6</h>
+      <x>744</x>
+      <y>1904</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
@@ -1192,10 +1192,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>226</x>
-      <y>492</y>
-      <w>22</w>
-      <h>6</h>
+      <x>672</x>
+      <y>1952</y>
+      <w>88</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>模板：树的买卖</panel_attributes>
     <additional_attributes/>
@@ -1203,10 +1203,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>492</y>
-      <w>20</w>
-      <h>14</h>
+      <x>608</x>
+      <y>1952</y>
+      <w>80</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;50.0;80.0;10.0</additional_attributes>
@@ -1214,10 +1214,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>226</x>
-      <y>500</y>
-      <w>22</w>
-      <h>6</h>
+      <x>672</x>
+      <y>1984</y>
+      <w>88</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>树的下一级缓存</panel_attributes>
     <additional_attributes/>
@@ -1225,10 +1225,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>500</y>
-      <w>20</w>
-      <h>6</h>
+      <x>608</x>
+      <y>1984</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
@@ -1236,10 +1236,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>226</x>
-      <y>508</y>
-      <w>26</w>
-      <h>6</h>
+      <x>672</x>
+      <y>2016</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>树的当前等级缓存</panel_attributes>
     <additional_attributes/>
@@ -1247,10 +1247,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>210</x>
-      <y>500</y>
-      <w>20</w>
-      <h>14</h>
+      <x>608</x>
+      <y>1984</y>
+      <w>80</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;50.0</additional_attributes>
@@ -1258,10 +1258,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>164</x>
-      <y>520</y>
-      <w>20</w>
-      <h>6</h>
+      <x>424</x>
+      <y>2064</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>模板:基础连接</panel_attributes>
     <additional_attributes/>
@@ -1269,10 +1269,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>144</x>
-      <y>514</y>
-      <w>24</w>
-      <h>12</h>
+      <x>344</x>
+      <y>2040</y>
+      <w>96</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;100.0;40.0</additional_attributes>
@@ -1280,10 +1280,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>172</x>
-      <y>504</y>
-      <w>6</w>
-      <h>20</h>
+      <x>456</x>
+      <y>2000</y>
+      <w>24</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
@@ -1291,10 +1291,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>198</x>
-      <y>498</y>
-      <w>14</w>
-      <h>6</h>
+      <x>560</x>
+      <y>1976</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>数据
 </panel_attributes>
@@ -1303,10 +1303,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>182</x>
-      <y>500</y>
-      <w>20</w>
-      <h>6</h>
+      <x>496</x>
+      <y>1984</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
@@ -1314,10 +1314,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>182</x>
-      <y>502</y>
-      <w>20</w>
-      <h>26</h>
+      <x>496</x>
+      <y>1992</y>
+      <w>80</w>
+      <h>104</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;110.0;80.0;10.0</additional_attributes>
@@ -1325,10 +1325,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>198</x>
-      <y>520</y>
-      <w>22</w>
-      <h>6</h>
+      <x>560</x>
+      <y>2064</y>
+      <w>88</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>模板：连接条件</panel_attributes>
     <additional_attributes/>
@@ -1336,10 +1336,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>182</x>
-      <y>522</y>
-      <w>20</w>
-      <h>6</h>
+      <x>496</x>
+      <y>2072</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
@@ -1347,10 +1347,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>198</x>
-      <y>528</y>
-      <w>22</w>
-      <h>6</h>
+      <x>560</x>
+      <y>2096</y>
+      <w>88</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>连接工具类</panel_attributes>
     <additional_attributes/>
@@ -1358,10 +1358,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>182</x>
-      <y>522</y>
-      <w>20</w>
-      <h>12</h>
+      <x>496</x>
+      <y>2072</y>
+      <w>80</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;40.0</additional_attributes>
@@ -1369,10 +1369,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>198</x>
-      <y>536</y>
-      <w>16</w>
-      <h>6</h>
+      <x>560</x>
+      <y>2128</y>
+      <w>64</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>树的连接</panel_attributes>
     <additional_attributes/>
@@ -1380,10 +1380,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>182</x>
-      <y>522</y>
-      <w>20</w>
-      <h>20</h>
+      <x>496</x>
+      <y>2072</y>
+      <w>80</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;80.0</additional_attributes>
@@ -1391,10 +1391,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>234</x>
-      <y>536</y>
-      <w>28</w>
-      <h>6</h>
+      <x>704</x>
+      <y>2128</y>
+      <w>112</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>模板连接基础信息</panel_attributes>
     <additional_attributes/>
@@ -1402,10 +1402,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>212</x>
-      <y>536</y>
-      <w>26</w>
-      <h>6</h>
+      <x>616</x>
+      <y>2128</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
@@ -1413,10 +1413,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>198</x>
-      <y>544</y>
-      <w>26</w>
-      <h>6</h>
+      <x>560</x>
+      <y>2160</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>树的当前连接状态</panel_attributes>
     <additional_attributes/>
@@ -1424,10 +1424,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>182</x>
-      <y>522</y>
-      <w>20</w>
-      <h>28</h>
+      <x>496</x>
+      <y>2072</y>
+      <w>80</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;120.0</additional_attributes>
@@ -1435,10 +1435,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>64</x>
-      <y>460</y>
-      <w>214</w>
-      <h>98</h>
+      <x>24</x>
+      <y>1824</y>
+      <w>856</w>
+      <h>392</h>
     </coordinates>
     <panel_attributes>运行时树逻辑
 --
@@ -1448,10 +1448,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>64</x>
-      <y>564</y>
-      <w>214</w>
-      <h>98</h>
+      <x>24</x>
+      <y>2240</y>
+      <w>856</w>
+      <h>392</h>
     </coordinates>
     <panel_attributes>编辑器树
 --
@@ -1461,10 +1461,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>58</x>
-      <y>352</y>
-      <w>224</w>
-      <h>314</h>
+      <x>0</x>
+      <y>1392</y>
+      <w>896</w>
+      <h>1256</h>
     </coordinates>
     <panel_attributes>UI树
 bg=red
@@ -1475,10 +1475,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>64</x>
-      <y>358</y>
-      <w>214</w>
-      <h>100</h>
+      <x>24</x>
+      <y>1416</y>
+      <w>856</w>
+      <h>400</h>
     </coordinates>
     <panel_attributes>运行时可视化
 --
@@ -1488,10 +1488,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>132</x>
-      <y>406</y>
-      <w>22</w>
-      <h>6</h>
+      <x>296</x>
+      <y>1608</y>
+      <w>88</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>UI组件_节点</panel_attributes>
     <additional_attributes/>
@@ -1499,10 +1499,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>108</x>
-      <y>616</y>
-      <w>36</w>
-      <h>6</h>
+      <x>200</x>
+      <y>2448</y>
+      <w>144</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>窗口_创建模板树</panel_attributes>
     <additional_attributes/>
@@ -1510,10 +1510,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>190</x>
-      <y>596</y>
-      <w>32</w>
-      <h>6</h>
+      <x>528</x>
+      <y>2368</y>
+      <w>128</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>窗口工具
 
@@ -1523,10 +1523,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>170</x>
-      <y>596</y>
-      <w>24</w>
-      <h>26</h>
+      <x>448</x>
+      <y>2368</y>
+      <w>96</w>
+      <h>104</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>100.0;10.0;10.0;110.0</additional_attributes>
@@ -1534,10 +1534,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>228</x>
-      <y>624</y>
-      <w>32</w>
-      <h>6</h>
+      <x>680</x>
+      <y>2480</y>
+      <w>128</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>更新树</panel_attributes>
     <additional_attributes/>
@@ -1545,10 +1545,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>190</x>
-      <y>624</y>
-      <w>32</w>
-      <h>6</h>
+      <x>528</x>
+      <y>2480</y>
+      <w>128</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>更新树上的节点</panel_attributes>
     <additional_attributes/>
@@ -1556,10 +1556,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>220</x>
-      <y>624</y>
-      <w>12</w>
-      <h>6</h>
+      <x>648</x>
+      <y>2480</y>
+      <w>48</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>40.0;10.0;10.0;10.0</additional_attributes>
@@ -1567,10 +1567,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>170</x>
-      <y>616</y>
-      <w>24</w>
-      <h>14</h>
+      <x>448</x>
+      <y>2448</y>
+      <w>96</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>100.0;50.0;10.0;10.0</additional_attributes>
@@ -1578,10 +1578,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>190</x>
-      <y>636</y>
-      <w>20</w>
-      <h>6</h>
+      <x>528</x>
+      <y>2528</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>树上的操作</panel_attributes>
     <additional_attributes/>
@@ -1589,10 +1589,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>170</x>
-      <y>616</y>
-      <w>24</w>
-      <h>26</h>
+      <x>448</x>
+      <y>2448</y>
+      <w>96</w>
+      <h>104</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>100.0;110.0;10.0;10.0</additional_attributes>
@@ -1600,10 +1600,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLNote</id>
     <coordinates>
-      <x>156</x>
-      <y>616</y>
-      <w>16</w>
-      <h>6</h>
+      <x>392</x>
+      <y>2448</y>
+      <w>64</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>窗口需要</panel_attributes>
     <additional_attributes/>
@@ -1611,10 +1611,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>142</x>
-      <y>616</y>
-      <w>18</w>
-      <h>6</h>
+      <x>336</x>
+      <y>2448</y>
+      <w>72</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>70.0;10.0;10.0;10.0</additional_attributes>
@@ -1622,10 +1622,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>190</x>
-      <y>612</y>
-      <w>20</w>
-      <h>6</h>
+      <x>528</x>
+      <y>2432</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>窗口菜单栏</panel_attributes>
     <additional_attributes/>
@@ -1633,10 +1633,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>170</x>
-      <y>612</y>
-      <w>24</w>
-      <h>10</h>
+      <x>448</x>
+      <y>2432</y>
+      <w>96</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>100.0;10.0;10.0;30.0</additional_attributes>
@@ -1644,10 +1644,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>108</x>
-      <y>608</y>
-      <w>36</w>
-      <h>6</h>
+      <x>200</x>
+      <y>2416</y>
+      <w>144</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>窗口_生成运行时模板树</panel_attributes>
     <additional_attributes/>
@@ -1655,10 +1655,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>208</x>
-      <y>612</y>
-      <w>34</w>
-      <h>6</h>
+      <x>600</x>
+      <y>2432</y>
+      <w>136</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>150.0;10.0;10.0;10.0</additional_attributes>
@@ -1666,10 +1666,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>238</x>
-      <y>612</y>
-      <w>28</w>
-      <h>6</h>
+      <x>720</x>
+      <y>2432</y>
+      <w>112</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>树的层级子菜单</panel_attributes>
     <additional_attributes/>
@@ -1677,10 +1677,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>242</x>
-      <y>636</y>
-      <w>24</w>
-      <h>6</h>
+      <x>736</x>
+      <y>2528</y>
+      <w>96</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>创建树的弹窗</panel_attributes>
     <additional_attributes/>
@@ -1688,10 +1688,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>208</x>
-      <y>636</y>
-      <w>38</w>
-      <h>6</h>
+      <x>600</x>
+      <y>2528</y>
+      <w>152</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>170.0;10.0;10.0;10.0</additional_attributes>
@@ -1699,10 +1699,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>132</x>
-      <y>416</y>
-      <w>32</w>
-      <h>6</h>
+      <x>296</x>
+      <y>1648</y>
+      <w>128</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>UI组件_绘制连接曲线</panel_attributes>
     <additional_attributes/>
@@ -1710,10 +1710,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>162</x>
-      <y>416</y>
-      <w>38</w>
-      <h>6</h>
+      <x>416</x>
+      <y>1648</y>
+      <w>152</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;170.0;10.0</additional_attributes>
@@ -1721,10 +1721,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>196</x>
-      <y>416</y>
-      <w>24</w>
-      <h>6</h>
+      <x>552</x>
+      <y>1648</y>
+      <w>96</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>贝塞尔曲线工具</panel_attributes>
     <additional_attributes/>
@@ -1732,10 +1732,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>74</x>
-      <y>612</y>
-      <w>20</w>
-      <h>6</h>
+      <x>64</x>
+      <y>2432</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>入口菜单</panel_attributes>
     <additional_attributes/>
@@ -1743,10 +1743,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>92</x>
-      <y>608</y>
-      <w>20</w>
-      <h>10</h>
+      <x>136</x>
+      <y>2416</y>
+      <w>80</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;30.0;80.0;10.0</additional_attributes>
@@ -1754,10 +1754,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>92</x>
-      <y>612</y>
-      <w>20</w>
-      <h>10</h>
+      <x>136</x>
+      <y>2432</y>
+      <w>80</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;30.0</additional_attributes>
@@ -1765,10 +1765,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>132</x>
-      <y>436</y>
-      <w>24</w>
-      <h>6</h>
+      <x>296</x>
+      <y>1728</y>
+      <w>96</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>UI树的效果
 </panel_attributes>
@@ -1777,10 +1777,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>142</x>
-      <y>420</y>
-      <w>6</w>
-      <h>20</h>
+      <x>336</x>
+      <y>1664</y>
+      <w>24</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
@@ -1788,10 +1788,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>74</x>
-      <y>412</y>
-      <w>38</w>
-      <h>32</h>
+      <x>64</x>
+      <y>1632</y>
+      <w>152</w>
+      <h>128</h>
     </coordinates>
     <panel_attributes>UI树的操作表现
 --
@@ -1805,10 +1805,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>110</x>
-      <y>408</y>
-      <w>26</w>
-      <h>10</h>
+      <x>208</x>
+      <y>1616</y>
+      <w>104</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;30.0;110.0;10.0</additional_attributes>
@@ -1816,10 +1816,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>110</x>
-      <y>416</y>
-      <w>26</w>
-      <h>6</h>
+      <x>208</x>
+      <y>1648</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
@@ -1827,10 +1827,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>74</x>
-      <y>392</y>
-      <w>38</w>
-      <h>10</h>
+      <x>64</x>
+      <y>1552</y>
+      <w>152</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>UI树的视图控制
 --
@@ -1840,10 +1840,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>74</x>
-      <y>376</y>
-      <w>38</w>
-      <h>12</h>
+      <x>64</x>
+      <y>1488</y>
+      <w>152</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>UI树的收集
 --
@@ -1853,10 +1853,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>790</x>
-      <y>242</y>
-      <w>244</w>
-      <h>102</h>
+      <x>2928</x>
+      <y>952</y>
+      <w>976</w>
+      <h>408</h>
     </coordinates>
     <panel_attributes>俄罗斯方块逻辑
 bg=green
@@ -1867,10 +1867,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>866</x>
-      <y>276</y>
-      <w>30</w>
-      <h>30</h>
+      <x>3232</x>
+      <y>1088</y>
+      <w>120</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>Tetris_俄组的行为
 --
@@ -1884,10 +1884,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>832</x>
-      <y>274</y>
-      <w>20</w>
-      <h>20</h>
+      <x>3096</x>
+      <y>1080</y>
+      <w>80</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>IdelUI
 --
@@ -1901,10 +1901,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>850</x>
-      <y>278</y>
-      <w>20</w>
-      <h>6</h>
+      <x>3168</x>
+      <y>1096</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
@@ -1912,10 +1912,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>866</x>
-      <y>316</y>
-      <w>30</w>
-      <h>14</h>
+      <x>3232</x>
+      <y>1248</y>
+      <w>120</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>Tetri_俄块的行为
 --
@@ -1926,10 +1926,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>876</x>
-      <y>304</y>
-      <w>6</w>
-      <h>16</h>
+      <x>3272</x>
+      <y>1200</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
@@ -1937,10 +1937,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>906</x>
-      <y>286</y>
-      <w>28</w>
-      <h>12</h>
+      <x>3392</x>
+      <y>1128</y>
+      <w>112</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>Blocks_所有砖块生成
 --
@@ -1950,10 +1950,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>894</x>
-      <y>290</y>
-      <w>16</w>
-      <h>8</h>
+      <x>3344</x>
+      <y>1144</y>
+      <w>64</w>
+      <h>32</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;20.0;60.0;10.0</additional_attributes>
@@ -1961,10 +1961,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>908</x>
-      <y>302</y>
-      <w>46</w>
-      <h>20</h>
+      <x>3400</x>
+      <y>1192</y>
+      <w>184</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>Block_俄罗斯方块逻辑处理
 --
@@ -1977,10 +1977,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>894</x>
-      <y>318</y>
-      <w>18</w>
-      <h>6</h>
+      <x>3344</x>
+      <y>1256</y>
+      <w>72</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;70.0;10.0</additional_attributes>
@@ -1988,10 +1988,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>798</x>
-      <y>276</y>
-      <w>20</w>
-      <h>6</h>
+      <x>2960</x>
+      <y>1088</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>心流模式表现</panel_attributes>
     <additional_attributes/>
@@ -1999,10 +1999,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>816</x>
-      <y>276</y>
-      <w>20</w>
-      <h>6</h>
+      <x>3032</x>
+      <y>1088</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
@@ -2010,10 +2010,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>734</x>
-      <y>350</y>
-      <w>122</w>
-      <h>58</h>
+      <x>2704</x>
+      <y>1384</y>
+      <w>488</w>
+      <h>232</h>
     </coordinates>
     <panel_attributes>实时性
 bg=green
@@ -2024,10 +2024,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>800</x>
-      <y>356</y>
-      <w>28</w>
-      <h>18</h>
+      <x>2968</x>
+      <y>1408</y>
+      <w>112</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>浮标信息
 --
@@ -2037,10 +2037,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>800</x>
-      <y>384</y>
-      <w>36</w>
-      <h>16</h>
+      <x>2968</x>
+      <y>1520</y>
+      <w>144</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>浮标行为
 --
@@ -2052,10 +2052,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>810</x>
-      <y>372</y>
-      <w>6</w>
-      <h>16</h>
+      <x>3008</x>
+      <y>1472</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
@@ -2063,10 +2063,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>834</x>
-      <y>336</y>
-      <w>12</w>
-      <h>56</h>
+      <x>3104</x>
+      <y>1328</y>
+      <w>48</w>
+      <h>224</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;260.0;40.0;260.0;40.0;10.0</additional_attributes>
@@ -2074,10 +2074,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>788</x>
-      <y>388</y>
-      <w>16</w>
-      <h>6</h>
+      <x>2920</x>
+      <y>1536</y>
+      <w>64</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>60.0;10.0;10.0;10.0</additional_attributes>
@@ -2085,10 +2085,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>762</x>
-      <y>384</y>
-      <w>28</w>
-      <h>16</h>
+      <x>2816</x>
+      <y>1520</y>
+      <w>112</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>浮标范围摇杆
 --
@@ -2100,10 +2100,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>830</x>
-      <y>324</y>
-      <w>32</w>
-      <h>14</h>
+      <x>3088</x>
+      <y>1280</y>
+      <w>128</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>俄罗斯方块浮标的行为
 --
@@ -2114,10 +2114,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>848</x>
-      <y>316</y>
-      <w>6</w>
-      <h>12</h>
+      <x>3160</x>
+      <y>1248</y>
+      <w>24</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
@@ -2125,10 +2125,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>822</x>
-      <y>296</y>
-      <w>36</w>
-      <h>22</h>
+      <x>3056</x>
+      <y>1168</y>
+      <w>144</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>俄罗斯方块组浮标的行为
 --
@@ -2142,10 +2142,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>856</x>
-      <y>300</y>
-      <w>14</w>
-      <h>6</h>
+      <x>3192</x>
+      <y>1184</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>50.0;10.0;10.0;10.0</additional_attributes>
@@ -2153,10 +2153,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>908</x>
-      <y>324</y>
-      <w>42</w>
-      <h>6</h>
+      <x>3400</x>
+      <y>1280</y>
+      <w>168</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>Tetri_俄块整体范围显示</panel_attributes>
     <additional_attributes/>
@@ -2164,10 +2164,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>894</x>
-      <y>326</y>
-      <w>18</w>
-      <h>6</h>
+      <x>3344</x>
+      <y>1288</y>
+      <w>72</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;70.0;10.0</additional_attributes>
@@ -2175,10 +2175,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>538</x>
-      <y>506</y>
-      <w>20</w>
-      <h>18</h>
+      <x>1920</x>
+      <y>2008</y>
+      <w>80</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>管理器
 --
@@ -2191,10 +2191,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>508</x>
-      <y>472</y>
-      <w>190</w>
-      <h>164</h>
+      <x>1800</x>
+      <y>1872</y>
+      <w>760</w>
+      <h>656</h>
     </coordinates>
     <panel_attributes>Mirror网络模块
 bg=blue
@@ -2205,12 +2205,12 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>572</x>
-      <y>518</y>
-      <w>44</w>
-      <h>28</h>
+      <x>2056</x>
+      <y>2056</y>
+      <w>176</w>
+      <h>112</h>
     </coordinates>
-    <panel_attributes>玩家培养皿 同步
+    <panel_attributes>玩家培养皿 加载
 --
 -  生成可见性
 -  同步生成俄罗斯砖块组内容
@@ -2225,10 +2225,10 @@ bg=red</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>572</x>
-      <y>552</y>
-      <w>30</w>
-      <h>12</h>
+      <x>2056</x>
+      <y>2192</y>
+      <w>120</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>棋盘砖块组 同步
 --
@@ -2239,10 +2239,10 @@ bg=red</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>664</x>
-      <y>536</y>
-      <w>22</w>
-      <h>6</h>
+      <x>2424</x>
+      <y>2128</y>
+      <w>88</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>俄罗斯方块 同步
 </panel_attributes>
@@ -2251,10 +2251,10 @@ bg=red</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>628</x>
-      <y>536</y>
-      <w>26</w>
-      <h>6</h>
+      <x>2280</x>
+      <y>2128</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>俄罗斯方块组 同步
 </panel_attributes>
@@ -2263,10 +2263,10 @@ bg=red</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>538</x>
-      <y>490</y>
-      <w>20</w>
-      <h>12</h>
+      <x>1920</x>
+      <y>1944</y>
+      <w>80</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>加载状态
 --
@@ -2276,10 +2276,10 @@ bg=red</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>572</x>
-      <y>490</y>
-      <w>28</w>
-      <h>26</h>
+      <x>2056</x>
+      <y>1944</y>
+      <w>112</w>
+      <h>104</h>
     </coordinates>
     <panel_attributes>玩家浮标 同步
 --
@@ -2295,10 +2295,10 @@ bg=red</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>556</x>
-      <y>494</y>
-      <w>20</w>
-      <h>20</h>
+      <x>1992</x>
+      <y>1960</y>
+      <w>80</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;80.0;80.0;10.0</additional_attributes>
@@ -2306,10 +2306,10 @@ bg=red</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>556</x>
-      <y>516</y>
-      <w>20</w>
-      <h>12</h>
+      <x>1992</x>
+      <y>2048</y>
+      <w>80</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;80.0;40.0</additional_attributes>
@@ -2317,10 +2317,10 @@ bg=red</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>616</x>
-      <y>490</y>
-      <w>20</w>
-      <h>6</h>
+      <x>2232</x>
+      <y>1944</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>预示同步</panel_attributes>
     <additional_attributes/>
@@ -2328,10 +2328,10 @@ bg=red</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>598</x>
-      <y>492</y>
-      <w>22</w>
-      <h>6</h>
+      <x>2160</x>
+      <y>1952</y>
+      <w>88</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
@@ -2339,10 +2339,10 @@ bg=red</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>598</x>
-      <y>500</y>
-      <w>22</w>
-      <h>6</h>
+      <x>2160</x>
+      <y>1984</y>
+      <w>88</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
@@ -2350,10 +2350,10 @@ bg=red</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>616</x>
-      <y>500</y>
-      <w>20</w>
-      <h>6</h>
+      <x>2232</x>
+      <y>1984</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>摇杆同步</panel_attributes>
     <additional_attributes/>
@@ -2361,10 +2361,10 @@ bg=red</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>554</x>
-      <y>522</y>
-      <w>22</w>
-      <h>38</h>
+      <x>1984</x>
+      <y>2072</y>
+      <w>88</w>
+      <h>152</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;90.0;170.0</additional_attributes>
@@ -2372,10 +2372,10 @@ bg=red</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>614</x>
-      <y>526</y>
-      <w>18</w>
-      <h>16</h>
+      <x>2224</x>
+      <y>2088</y>
+      <w>72</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;70.0;60.0</additional_attributes>
@@ -2383,10 +2383,10 @@ bg=red</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>600</x>
-      <y>538</y>
-      <w>32</w>
-      <h>22</h>
+      <x>2168</x>
+      <y>2136</y>
+      <w>128</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;90.0;140.0;10.0</additional_attributes>
@@ -2394,10 +2394,10 @@ bg=red</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>586</x>
-      <y>562</y>
-      <w>6</w>
-      <h>12</h>
+      <x>2112</x>
+      <y>2232</y>
+      <w>24</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;40.0;10.0;10.0</additional_attributes>
@@ -2405,10 +2405,10 @@ bg=red</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>572</x>
-      <y>570</y>
-      <w>40</w>
-      <h>14</h>
+      <x>2056</x>
+      <y>2264</y>
+      <w>160</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>棋盘砖块 同步
 --
@@ -2421,10 +2421,10 @@ bg=red</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>652</x>
-      <y>536</y>
-      <w>16</w>
-      <h>6</h>
+      <x>2376</x>
+      <y>2128</y>
+      <w>64</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;60.0;10.0</additional_attributes>
@@ -2432,10 +2432,10 @@ bg=red</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>880</x>
-      <y>354</y>
-      <w>130</w>
-      <h>106</h>
+      <x>3288</x>
+      <y>1400</y>
+      <w>520</w>
+      <h>424</h>
     </coordinates>
     <panel_attributes>单位的基础状态机
 bg=green
@@ -2446,10 +2446,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>930</x>
-      <y>364</y>
-      <w>38</w>
-      <h>14</h>
+      <x>3488</x>
+      <y>1440</y>
+      <w>152</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>俄罗斯砖块的单位处理
 --
@@ -2460,10 +2460,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>880</x>
-      <y>328</y>
-      <w>12</w>
-      <h>46</h>
+      <x>3288</x>
+      <y>1296</y>
+      <w>48</w>
+      <h>184</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;210.0;40.0;210.0</additional_attributes>
@@ -2471,10 +2471,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>898</x>
-      <y>388</y>
-      <w>20</w>
-      <h>6</h>
+      <x>3360</x>
+      <y>1536</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>单位行为</panel_attributes>
     <additional_attributes/>
@@ -2482,10 +2482,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>934</x>
-      <y>376</y>
-      <w>6</w>
-      <h>16</h>
+      <x>3504</x>
+      <y>1488</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
@@ -2493,10 +2493,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>916</x>
-      <y>388</y>
-      <w>14</w>
-      <h>6</h>
+      <x>3432</x>
+      <y>1536</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
@@ -2504,10 +2504,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>926</x>
-      <y>388</y>
-      <w>70</w>
-      <h>16</h>
+      <x>3472</x>
+      <y>1536</y>
+      <w>280</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>简化单位
 --
@@ -2519,10 +2519,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>888</x>
-      <y>364</y>
-      <w>34</w>
-      <h>14</h>
+      <x>3320</x>
+      <y>1440</y>
+      <w>136</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>俄罗斯砖块组的处理
 --
@@ -2532,10 +2532,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>920</x>
-      <y>368</y>
-      <w>14</w>
-      <h>6</h>
+      <x>3448</x>
+      <y>1456</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
@@ -2543,10 +2543,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>888</x>
-      <y>328</y>
-      <w>58</w>
-      <h>40</h>
+      <x>3320</x>
+      <y>1296</y>
+      <w>232</w>
+      <h>160</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;150.0;270.0;150.0;270.0;180.0</additional_attributes>
@@ -2554,10 +2554,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>834</x>
-      <y>372</y>
-      <w>58</w>
-      <h>24</h>
+      <x>3104</x>
+      <y>1472</y>
+      <w>232</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;100.0;170.0;100.0;170.0;10.0;270.0;10.0</additional_attributes>
@@ -2565,10 +2565,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>942</x>
-      <y>264</y>
-      <w>20</w>
-      <h>12</h>
+      <x>3536</x>
+      <y>1040</y>
+      <w>80</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>Blocks_UI显示
 --
@@ -2579,10 +2579,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>932</x>
-      <y>274</y>
-      <w>14</w>
-      <h>18</h>
+      <x>3496</x>
+      <y>1080</y>
+      <w>56</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;70.0;50.0;10.0</additional_attributes>
@@ -2590,10 +2590,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>968</x>
-      <y>252</y>
-      <w>22</w>
-      <h>30</h>
+      <x>3640</x>
+      <y>992</y>
+      <w>88</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>Blocks_计算器
 --
@@ -2606,10 +2606,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>932</x>
-      <y>256</y>
-      <w>40</w>
-      <h>38</h>
+      <x>3496</x>
+      <y>1008</y>
+      <w>160</w>
+      <h>152</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;170.0;40.0;130.0;160.0;130.0;160.0;10.0;180.0;10.0</additional_attributes>
@@ -2617,10 +2617,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>558</x>
-      <y>322</y>
-      <w>344</w>
-      <h>100</h>
+      <x>2000</x>
+      <y>1272</y>
+      <w>1376</w>
+      <h>400</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;860.0;10.0;860.0;480.0;1580.0;480.0;1580.0;340.0;1700.0;340.0</additional_attributes>
@@ -2628,10 +2628,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>384</x>
-      <y>408</y>
-      <w>50</w>
-      <h>18</h>
+      <x>1304</x>
+      <y>1616</y>
+      <w>200</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>链式传递道具：传递的球
 --
@@ -2641,10 +2641,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>942</x>
-      <y>288</y>
-      <w>22</w>
-      <h>10</h>
+      <x>3536</x>
+      <y>1136</y>
+      <w>88</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>Blocks_道具生成
 --
@@ -2654,10 +2654,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>932</x>
-      <y>292</y>
-      <w>14</w>
-      <h>6</h>
+      <x>3496</x>
+      <y>1152</y>
+      <w>56</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;10.0</additional_attributes>
@@ -2665,10 +2665,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1134</x>
-      <y>264</y>
-      <w>20</w>
-      <h>6</h>
+      <x>4304</x>
+      <y>1040</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>道具砖块</panel_attributes>
     <additional_attributes/>
@@ -2676,10 +2676,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1128</x>
-      <y>252</y>
-      <w>144</w>
-      <h>140</h>
+      <x>4280</x>
+      <y>992</y>
+      <w>576</w>
+      <h>560</h>
     </coordinates>
     <panel_attributes>道具逻辑
 bg=green
@@ -2690,10 +2690,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1152</x>
-      <y>264</y>
-      <w>38</w>
-      <h>18</h>
+      <x>4376</x>
+      <y>1040</y>
+      <w>152</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;170.0;70.0</additional_attributes>
@@ -2701,10 +2701,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1186</x>
-      <y>292</y>
-      <w>26</w>
-      <h>6</h>
+      <x>4512</x>
+      <y>1152</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>小球俄罗斯方块</panel_attributes>
     <additional_attributes/>
@@ -2712,10 +2712,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>962</x>
-      <y>292</y>
-      <w>228</w>
-      <h>6</h>
+      <x>3616</x>
+      <y>1152</y>
+      <w>912</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;1120.0;10.0</additional_attributes>
@@ -2723,10 +2723,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>884</x>
-      <y>172</y>
-      <w>88</w>
-      <h>68</h>
+      <x>3304</x>
+      <y>672</y>
+      <w>352</w>
+      <h>272</h>
     </coordinates>
     <panel_attributes>头像UI
 bg=red
@@ -2737,10 +2737,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1152</x>
-      <y>266</y>
-      <w>38</w>
-      <h>44</h>
+      <x>4376</x>
+      <y>1048</y>
+      <w>152</w>
+      <h>176</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;170.0;200.0</additional_attributes>
@@ -2748,10 +2748,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1186</x>
-      <y>326</y>
-      <w>28</w>
-      <h>6</h>
+      <x>4512</x>
+      <y>1288</y>
+      <w>112</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>行进方向俄罗斯方块</panel_attributes>
     <additional_attributes/>
@@ -2759,10 +2759,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>894</x>
-      <y>328</y>
-      <w>296</w>
-      <h>14</h>
+      <x>3344</x>
+      <y>1296</y>
+      <w>1184</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;50.0;50.0;580.0;50.0;1460.0;10.0</additional_attributes>
@@ -2770,10 +2770,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1210</x>
-      <y>292</y>
-      <w>24</w>
-      <h>24</h>
+      <x>4608</x>
+      <y>1152</y>
+      <w>96</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>100.0;100.0;10.0;10.0</additional_attributes>
@@ -2781,10 +2781,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1212</x>
-      <y>312</y>
-      <w>22</w>
-      <h>20</h>
+      <x>4616</x>
+      <y>1232</y>
+      <w>88</w>
+      <h>80</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>90.0;10.0;10.0;80.0</additional_attributes>
@@ -2792,10 +2792,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1230</x>
-      <y>310</y>
-      <w>32</w>
-      <h>6</h>
+      <x>4688</x>
+      <y>1224</y>
+      <w>128</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>俄罗斯砖块道具接口</panel_attributes>
     <additional_attributes/>
@@ -2803,10 +2803,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1198</x>
-      <y>312</y>
-      <w>6</w>
-      <h>18</h>
+      <x>4560</x>
+      <y>1232</y>
+      <w>24</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
@@ -2814,10 +2814,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1190</x>
-      <y>312</y>
-      <w>6</w>
-      <h>18</h>
+      <x>4528</x>
+      <y>1232</y>
+      <w>24</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
@@ -2825,10 +2825,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1188</x>
-      <y>280</y>
-      <w>6</w>
-      <h>16</h>
+      <x>4520</x>
+      <y>1104</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
@@ -2836,10 +2836,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1194</x>
-      <y>280</y>
-      <w>6</w>
-      <h>16</h>
+      <x>4544</x>
+      <y>1104</y>
+      <w>24</w>
+      <h>64</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
@@ -2847,10 +2847,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1186</x>
-      <y>276</y>
-      <w>26</w>
-      <h>6</h>
+      <x>4512</x>
+      <y>1088</y>
+      <w>104</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>链式传递小球砖块</panel_attributes>
     <additional_attributes/>
@@ -2858,10 +2858,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1186</x>
-      <y>304</y>
-      <w>28</w>
-      <h>10</h>
+      <x>4512</x>
+      <y>1200</y>
+      <w>112</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>前进方向砖块
 --
@@ -2871,10 +2871,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1230</x>
-      <y>270</y>
-      <w>36</w>
-      <h>32</h>
+      <x>4688</x>
+      <y>1064</y>
+      <w>144</w>
+      <h>128</h>
     </coordinates>
     <panel_attributes>砖块道具接口
 --
@@ -2891,10 +2891,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1212</x>
-      <y>270</y>
-      <w>22</w>
-      <h>40</h>
+      <x>4616</x>
+      <y>1064</y>
+      <w>88</w>
+      <h>160</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>90.0;10.0;10.0;180.0</additional_attributes>
@@ -2902,10 +2902,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1210</x>
-      <y>270</y>
-      <w>24</w>
-      <h>12</h>
+      <x>4608</x>
+      <y>1064</y>
+      <w>96</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>100.0;10.0;10.0;40.0</additional_attributes>
@@ -2913,10 +2913,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>962</x>
-      <y>294</y>
-      <w>228</w>
-      <h>18</h>
+      <x>3616</x>
+      <y>1160</y>
+      <w>912</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;1120.0;70.0</additional_attributes>
@@ -2924,10 +2924,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>942</x>
-      <y>252</y>
-      <w>20</w>
-      <h>10</h>
+      <x>3536</x>
+      <y>992</y>
+      <w>80</w>
+      <h>40</h>
     </coordinates>
     <panel_attributes>Blocks_特效
 --
@@ -2937,10 +2937,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>928</x>
-      <y>256</y>
-      <w>18</w>
-      <h>34</h>
+      <x>3480</x>
+      <y>1008</y>
+      <w>72</w>
+      <h>136</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;150.0;70.0;10.0</additional_attributes>
@@ -2948,10 +2948,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>994</x>
-      <y>252</y>
-      <w>30</w>
-      <h>30</h>
+      <x>3744</x>
+      <y>992</y>
+      <w>120</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>Blocks_游戏胜负判定
 --
@@ -2963,10 +2963,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>932</x>
-      <y>280</y>
-      <w>72</w>
-      <h>14</h>
+      <x>3496</x>
+      <y>1104</y>
+      <w>288</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;50.0;50.0;30.0;340.0;30.0;340.0;10.0</additional_attributes>
@@ -2974,10 +2974,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1186</x>
-      <y>342</y>
-      <w>28</w>
-      <h>6</h>
+      <x>4512</x>
+      <y>1352</y>
+      <w>112</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>障碍物砖块</panel_attributes>
     <additional_attributes/>
@@ -2985,10 +2985,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1186</x>
-      <y>360</y>
-      <w>28</w>
-      <h>6</h>
+      <x>4512</x>
+      <y>1424</y>
+      <w>112</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>障碍物俄罗斯方块</panel_attributes>
     <additional_attributes/>
@@ -2996,10 +2996,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1192</x>
-      <y>346</y>
-      <w>6</w>
-      <h>18</h>
+      <x>4536</x>
+      <y>1368</y>
+      <w>24</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
@@ -3007,10 +3007,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1200</x>
-      <y>346</y>
-      <w>6</w>
-      <h>18</h>
+      <x>4568</x>
+      <y>1368</y>
+      <w>24</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
@@ -3018,10 +3018,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1150</x>
-      <y>268</y>
-      <w>40</w>
-      <h>82</h>
+      <x>4368</x>
+      <y>1056</y>
+      <w>160</w>
+      <h>328</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;180.0;390.0</additional_attributes>
@@ -3029,10 +3029,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1212</x>
-      <y>314</y>
-      <w>24</w>
-      <h>52</h>
+      <x>4616</x>
+      <y>1240</y>
+      <w>96</w>
+      <h>208</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>100.0;10.0;10.0;240.0</additional_attributes>
@@ -3040,10 +3040,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1212</x>
-      <y>270</y>
-      <w>22</w>
-      <h>80</h>
+      <x>4616</x>
+      <y>1064</y>
+      <w>88</w>
+      <h>320</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>90.0;10.0;10.0;380.0</additional_attributes>
@@ -3051,10 +3051,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>962</x>
-      <y>294</y>
-      <w>228</w>
-      <h>72</h>
+      <x>3616</x>
+      <y>1160</y>
+      <w>912</w>
+      <h>288</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;1120.0;340.0</additional_attributes>
@@ -3062,10 +3062,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>838</x>
-      <y>260</y>
-      <w>6</w>
-      <h>18</h>
+      <x>3120</x>
+      <y>1024</y>
+      <w>24</w>
+      <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
@@ -3073,10 +3073,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>926</x>
-      <y>410</y>
-      <w>20</w>
-      <h>6</h>
+      <x>3472</x>
+      <y>1624</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>单位</panel_attributes>
     <additional_attributes/>
@@ -3084,10 +3084,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>934</x>
-      <y>402</y>
-      <w>6</w>
-      <h>12</h>
+      <x>3504</x>
+      <y>1592</y>
+      <w>24</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
@@ -3095,10 +3095,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>926</x>
-      <y>424</y>
-      <w>20</w>
-      <h>12</h>
+      <x>3472</x>
+      <y>1680</y>
+      <w>80</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>武器
 --
@@ -3108,10 +3108,10 @@ transparency=95</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>934</x>
-      <y>414</y>
-      <w>6</w>
-      <h>14</h>
+      <x>3504</x>
+      <y>1640</y>
+      <w>24</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
@@ -3119,10 +3119,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>832</x>
-      <y>248</y>
-      <w>28</w>
-      <h>14</h>
+      <x>3096</x>
+      <y>976</y>
+      <w>112</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>液体进度条
 -
@@ -3133,10 +3133,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>824</x>
-      <y>178</y>
-      <w>20</w>
-      <h>6</h>
+      <x>3064</x>
+      <y>696</y>
+      <w>80</w>
+      <h>24</h>
     </coordinates>
     <panel_attributes>士兵表情</panel_attributes>
     <additional_attributes/>
@@ -3144,10 +3144,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>794</x>
-      <y>172</y>
-      <w>88</w>
-      <h>68</h>
+      <x>2944</x>
+      <y>672</y>
+      <w>352</w>
+      <h>272</h>
     </coordinates>
     <panel_attributes>叙事系统
 bg=red
@@ -3158,10 +3158,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>918</x>
-      <y>178</y>
-      <w>20</w>
-      <h>12</h>
+      <x>3440</x>
+      <y>696</y>
+      <w>80</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>头像UI
 --
@@ -3172,10 +3172,10 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>866</x>
-      <y>258</y>
-      <w>30</w>
-      <h>14</h>
+      <x>3232</x>
+      <y>1016</y>
+      <w>120</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>Tetri_用户视图分层
 --
@@ -3185,14 +3185,106 @@ transparency=95</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>956</x>
-      <y>308</y>
-      <w>30</w>
-      <h>14</h>
+      <x>3592</x>
+      <y>1216</y>
+      <w>120</w>
+      <h>56</h>
     </coordinates>
     <panel_attributes>Block_用户视图分层
 --
 </panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2424</x>
+      <y>2168</y>
+      <w>88</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>士兵 同步
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2376</x>
+      <y>2136</y>
+      <w>64</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2056</x>
+      <y>2360</y>
+      <w>136</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>全局砖块信息加载
+BlocksCreator_Main
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1960</x>
+      <y>2072</y>
+      <w>112</w>
+      <h>312</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;370.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2056</x>
+      <y>2424</y>
+      <w>136</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>头像信息UI加载
+bg=blue</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1944</x>
+      <y>2072</y>
+      <w>128</w>
+      <h>384</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;140.0;460.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2256</x>
+      <y>2344</y>
+      <w>80</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>道具生成</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2184</x>
+      <y>2352</y>
+      <w>88</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;30.0</additional_attributes>
   </element>
 </diagram>

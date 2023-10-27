@@ -13,7 +13,7 @@ public class IdelHolder : NetworkBehaviour
 {
     public IdelUI idelUI;
     [SyncVar]
-    public Player playerPVP;
+    public Player playerPVP_Temp;
     public Player playerPVP_local;
     public Player player;
     public static HashSet<IdelHolder> ActiveIdelHolders = new();
@@ -41,7 +41,8 @@ public class IdelHolder : NetworkBehaviour
     }
     void Start()
     {
-        Active();
+        // Active();
+        playerPVP_local = playerPVP_Temp;
         RecordId();
      
         if(idelUI)
@@ -51,42 +52,25 @@ public class IdelHolder : NetworkBehaviour
             return;
         }
         idelUI.Active();
-        
     }
     void RecordId()
     {
         if(Local())return;
         IdelHolderId = ActiveIdelHolders.Count;
     }
-  
-  
-    public void Active()
+    [ClientRpc]
+    public void Client_HideOther()
     {
-        if(Local())return;
-        if(isServer)return;
-        playerPVP_local = playerPVP;
-        Invoke(nameof(HideOther),0.1f);
-    }
-    void HideOther()
-    {
-        foreach(var idealHolder in FindObjectsOfType<IdelHolder>())
-        {
-            if(idealHolder.player == playerPVP_local)continue;
-            idealHolder.idelUI.Hide();
-        }
+        bool thisNeedHide = playerPVP_local == player ? false : true;
+        if(!thisNeedHide)return;
+        idelUI.Hide();
         foreach(var tetrominoe in FindObjectsOfType<TetrisBlockSimple>())
         {
-            if(tetrominoe.player == playerPVP_local)continue;
+            if(tetrominoe.player == player)continue;
             tetrominoe.DisPlayOnline(false); 
-            
         }
         
     }
-   
-    /// <summary>
-    /// 检查是否是本地模式
-    /// </summary>
-    /// <returns></returns>
     public bool Local()
     {
         if(RunModeData.CurrentRunMode == RunMode.Local)return true;

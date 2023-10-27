@@ -19,6 +19,8 @@ public class BuoyBehavior : NetworkBehaviour
     LayerMask blockTargetMask;
     Vector3 originPos;
     BuoyTurnHandle.TurnHandleControlState state = BuoyTurnHandle.TurnHandleControlState.None;
+# endregion 数据对象
+# region 联网数据对象
     [Header("UC_PVP:")]
     public List<TetrisBuoySimple> tetrisBuoySimpleList = new();
     [SyncVar(hook = nameof(ClientGetTetrisGroupID))]
@@ -27,8 +29,25 @@ public class BuoyBehavior : NetworkBehaviour
     public int tetrisBuoySimpleIdTemp = -1;
     [SyncVar]
     Vector3 originPos_PVP;
-    
-# endregion 数据对象
+    NetworkManagerUC_PVP networkManagerUC_PVP;
+    NetworkManagerUC_PVP NetworkManagerUC_PVP
+    {
+        get{
+            if(!isServer)return null;
+            if(!networkManagerUC_PVP)networkManagerUC_PVP = FindObjectOfType<NetworkManagerUC_PVP>();
+            return networkManagerUC_PVP;
+        }
+    }
+    struct ServerToClient_SetCorrect
+    {
+        public uint netId;
+        public float rotationDifferentLocal;
+        public Vector3 localPosition;
+        public Quaternion localRotation; 
+        public Player player;
+        public UserAction.State userState;
+    }
+# endregion 联网数据对象
 # region 数据关系
     void Start()
     {
@@ -81,16 +100,13 @@ public class BuoyBehavior : NetworkBehaviour
         if(buoyInfo.Local())
         {
             Behavior_OnMouseUp();
+            Reset();
         }else
         {
             if(!isLocalPlayer)return;
             Client_Behavior_OnMouseUp();
+            Cmd_Reset();
         }
-        // 重置
-        Reset();
-        if(buoyInfo.Local())return;
-        Cmd_Reset();
-        
     }
 # endregion 数据关系
 # region 数据操作
@@ -180,7 +196,8 @@ public class BuoyBehavior : NetworkBehaviour
             bool canPutChecker = CanPutChecker();
             if(!canPutChecker){CantPutAction();return;}
             PutAction();// 可以放置
-        }else if (state == BuoyTurnHandle.TurnHandleControlState.Scaning_9 || state == BuoyTurnHandle.TurnHandleControlState.Scaning_25)
+        }else 
+        if (state == BuoyTurnHandle.TurnHandleControlState.Scaning_9 || state == BuoyTurnHandle.TurnHandleControlState.Scaning_25)
         {
             if(tetrisBuoySimpleTemps.Count == 0)return;
             if(tsBuoyControleds.Count == 0)return;
@@ -254,7 +271,122 @@ public class BuoyBehavior : NetworkBehaviour
         }
         if(tetrisBuoySimpleTemps.Count==0)return;
     }
-    //--------------------联网--------------------
+    
+    // ------------------工具--------------------
+    
+    void Reset()
+    {
+        if(buoyInfo.Local())
+        {
+            originPos = Vector3.zero;
+            tsBuoyControled = null;
+            tetrisBuoySimpleTemp = null;
+            tsBuoyControleds.Clear();
+            tetrisBuoySimpleTemps.Clear();
+            checkSelfTetris.Clear();
+        }
+        else
+        {
+            originPos_PVP = Vector3.zero;
+            if(tetrisBuoySimpleTemp)tetrisBuoySimpleTemp = null;
+            if(tsBuoyControled)tsBuoyControled = null;
+            if(tsBuoyControleds.Count!=0)tsBuoyControleds.Clear();
+            if(tetrisBuoySimpleTemps.Count!=0)tetrisBuoySimpleTemps.Clear();
+            if(checkSelfTetris.Count!=0)checkSelfTetris.Clear();
+        }
+        // 退出心流状态
+        buoyInfo.OnBuoyEndDrag?.Invoke();
+    }
+    void CantPutAction()
+    {
+        if(!tsBuoyControled || !tetrisBuoySimpleTemp)return;
+        if(buoyInfo.Local())
+        {
+            // Unit相关
+            TetrisUnitSimple tetrisUnitControled = tsBuoyControled.transform.GetComponent<TetrisUnitSimple>();
+            tetrisUnitControled.CheckUnitTag(true);
+            // 放置相关
+            transform.parent.localPosition = originPos;
+            tsBuoyControled.tetrisBlockSimple.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Drop;
+            tsBuoyControled.tetrisBlockSimple.Stop();
+            tsBuoyControled.tetrisBlockSimple.Active_X();
+            // tsBuoyControled.tetrisBlockSimple.Move();
+            
+            DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
+        }else
+        {
+            if(!isServer)return;
+            transform.parent.localPosition = originPos_PVP;
+            tsBuoyControled.tetrisBlockSimple.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Drop;
+            tsBuoyControled.tetrisBlockSimple.Stop();
+            tsBuoyControled.tetrisBlockSimple.Active_X();
+            // tsBuoyControled.tetrisBlockSimple.Move();
+            
+            // DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
+            NetworkServer.Destroy(tetrisBuoySimpleTemp.gameObject);
+        }
+        
+    }
+    void PutAction()
+    {
+        if(!tsBuoyControled || !tetrisBuoySimpleTemp)return;
+        // Unit相关
+        TetrisUnitSimple tetrisUnitControled = tsBuoyControled.transform.GetComponent<TetrisUnitSimple>();
+        tetrisUnitControled.CheckUnitTag(true); // 可以战斗
+        // 放置相关
+        tsBuoyControled.tetrisBlockSimple.Reset();
+        tsBuoyControled.transform.parent = buoyInfo.transform.parent;
+        tsBuoyControled.transform.localPosition = tetrisBuoySimpleTemp.transform.localPosition + transform.parent.localPosition;
+        tsBuoyControled.tetrisBlockSimple.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Drop;
+        tsBuoyControled.tetrisBlockSimple.SuccessToCreat();
+        tsBuoyControled.tetrisBlockSimple.Active();
+        // 机制检测
+        TetrisBlockSimple tetrisBlockSimple = tsBuoyControled.TetrisBlockSimple;
+        tetrisBlockSimple.BlocksCreator.Event_BlocksCounterInvoke();
+        
+        if(buoyInfo.Local())
+        {
+            DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
+        }else
+        {
+            if(!isServer)return;
+            // DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
+            NetworkServer.Destroy(tetrisBuoySimpleTemp.gameObject);
+        }
+        
+       
+    }
+    bool CanPutChecker()
+    {
+        List<bool> condition = new();
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        condition.Add(hitBlock);
+        if(!tsBuoyControled){DestroyImmediate(tetrisBuoySimpleTemp.gameObject);return false;}
+        bool putChecker = tetrisBuoySimpleTemp.DoDropCanPutCheck() && tsBuoyControled.tetrisBlockSimple.OnBuoyDrop();
+        condition.Add(putChecker);
+        bool allTrue = condition.All(b => b);
+        tsBuoyControled.TetrisBuoyTemp = null; // 释放死亡监听
+        return allTrue;
+    }
+    bool CanPutChecker(List<TetriBuoySimple> checkSelfTetris)
+    {
+        List<bool> condition = new();
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
+        condition.Add(hitBlock);
+        if(!tsBuoyControled || !tsBuoyControled.tetrisBlockSimple){DestroyImmediate(tetrisBuoySimpleTemp.gameObject);return false;}
+        bool putChecker = tetrisBuoySimpleTemp.DoDropCanPutCheck(checkSelfTetris) && tsBuoyControled.tetrisBlockSimple.OnBuoyDrop();
+        condition.Add(putChecker);
+        bool allTrue = condition.All(b => b);
+        tsBuoyControled.TetrisBuoyTemp = null; // 释放死亡监听
+        return allTrue;
+    }
+#endregion 数据操作
+#region 联网数据操作
+//--------------------联网--------------------
     [Client]
     void Client_Behavior_OnMouseDown()
     {
@@ -265,145 +397,34 @@ public class BuoyBehavior : NetworkBehaviour
         }
         else if (state == BuoyTurnHandle.TurnHandleControlState.Scaning_9 || state == BuoyTurnHandle.TurnHandleControlState.Scaning_25 )
         {
-            Cmd_BehaviorMultiple_OnMouseDown(Input.mousePosition);
+            // 过时，暂未启用
+            // Cmd_BehaviorMultiple_OnMouseDown(Input.mousePosition);
         }
     }
     [Command(requiresAuthority = false)]
     void Cmd_Behavior_OnMouseDown(Vector3 mousePos_Temp)
     {
-        state = BuoyTurnHandle.TurnHandleControlState.Scaning_1;
-        if(!buoyInfo.Server_MouseButtonDown(mousePos_Temp))return;
-        originPos_PVP = transform.parent.localPosition;
+        buoyInfo.OnBuoyDrag?.Invoke();
+        // UserAction.Player1UserState = UserAction.State.CommandTheBattle_Buoy;
+        // UserAction.Player2UserState = UserAction.State.CommandTheBattle_Buoy;
+        state = buoyInfo.buoyTurnHandle.GetControlState();
         tsBuoyControled = buoyInfo.blockBuoyHandler.GetTetrisBuoy();
         if(!tsBuoyControled)return;
-        if(!buoyInfo.Local() && tsBuoyControled.tetrisBlockSimple.player != buoyInfo.player_local)return;
+        if(!buoyInfo.Local() && tsBuoyControled.tetrisBlockSimple.player != buoyInfo.player)return;
         if(tsBuoyControled.tetrisBlockSimple.tetrisCheckMode != TetrisBlockSimple.TetrisCheckMode.Normal) return;
-        tsBuoyControled.tetrisBlockSimple.Stop();
-        // --服务器生成预示砖块--
-        tetrisBuoySimpleTemp = MakeOneTetris(tsBuoyControled.tetrisBlockSimple.type,tsBuoyControled);
-        if(!tetrisBuoySimpleTemp.tetrisBuoyDragged)return;
-        // 转成Buoy坐标系
-        tetrisBuoySimpleTemp.transform.localPosition = tsBuoyControled.transform.localPosition - transform.parent.localPosition;
-        // 刷新砖块表现
-        tetrisBuoySimpleTemp.tetrisBlockSimple.Player = buoyInfo.player_local;
-        tetrisBuoySimpleTemp.Display_OnDragBuoy();
-        // 服务器回调
-        tetrisBuoySimpleIdTemp = ServerLogic.GetTetrisGroupIDTemp(1);
-        tsBuoyControledId = tsBuoyControled.tetrisBlockSimple.serverID;
-        Rcp_AddScanedTetriToTemp(tsBuoyControled.tetrisBlockSimple.type,tetrisBuoySimpleTemp.transform.localPosition,tsBuoyControled.rotateTimes);
-    }
-    [Command(requiresAuthority = false)]
-    void Cmd_BehaviorMultiple_OnMouseDown(Vector3 mousePos_Temp)
-    {
-        state = BuoyTurnHandle.TurnHandleControlState.Scaning_9;
-        if(!buoyInfo.Server_MouseButtonDown(mousePos_Temp))return;
-        originPos_PVP = transform.parent.localPosition;
-        tsBuoyControleds = buoyInfo.buoyTurnHandle.GetControledTetris();
-        Server_AddScanedTetrisToTemp();
-        List<TetrisBuoySimple> tsBuoyControledsTemp = new(tsBuoyControleds);
-        foreach(var temp in tsBuoyControledsTemp)
+        if(buoyInfo.player_local == Player.Player1)
         {
-            if(!temp)continue;
-            if(!temp.tetrisBlockSimple)temp.Init();
-            if(buoyInfo.player_local!=temp.tetrisBlockSimple.player)continue;
-            Vector2 idChanger = temp.tetrisBlockSimple.posId - buoyInfo.CurrentPosID;
-            Vector3 pos = new Vector3(idChanger.x,0,idChanger.y);
-            Rcp_AddScanedTetrisToTemp(temp.tetrisBlockSimple.type,pos,temp.rotateTimes);
+            UserAction.Player1UserState = UserAction.State.CommandTheBattle_Buoy;
+        }else if(buoyInfo.player_local == Player.Player2)
+        {
+            UserAction.Player2UserState = UserAction.State.CommandTheBattle_Buoy;
         }
+        // 俄罗斯方块组 预示
+            // tetrisBuoySimpleTemp = Instantiate(tsBuoyControled, transform.parent);
+        Player whichPlayer = tsBuoyControled.TetrisBlockSimple.player;
+        Server_OnGameObjCreate_tetrisBuoySimpleTemp(tsBuoyControled.name.Replace("(Clone)",""),whichPlayer);
         
-    }
-    [TargetRpc]
-    void Rcp_AddScanedTetriToTemp(string type,Vector3 pos,int roteteTimes)
-    {
-        state = BuoyTurnHandle.TurnHandleControlState.Scaning_1;
-        int index = tetrisBuoySimpleList.FindIndex(item => item.GetComponent<TetrisBlockSimple>().type ==  type);
-        var tetrominoe = Instantiate(tetrisBuoySimpleList[index].gameObject,transform.parent);
-        TetrisBlockSimple tetrisBlockSimple = tetrominoe.GetComponent<TetrisBlockSimple>();
-        for(int i = 0; i < roteteTimes; i++)
-        {
-            tetrisBlockSimple.Rotate(tetrisBlockSimple.transform.forward);
-        }
-        tetrisBuoySimpleTemp = tetrominoe.GetComponent<TetrisBuoySimple>();
-        if(!tetrisBuoySimpleTemp)return;
-        tetrisBuoySimpleTemp.transform.parent = transform.parent;
-        tetrisBuoySimpleTemp.transform.localPosition = pos;
-        tetrisBuoySimpleTemp.transform.localScale = Vector3.one;
-        tetrisBuoySimpleTemp.Display_OnDragBuoy();
-        tetrisBuoySimpleTemp.tetrisBlockSimple.Player = buoyInfo.player_local; // 刷新砖块表现
-        // 进入心流状态
-        buoyInfo.OnBuoyDrag?.Invoke();
-    }
-    [TargetRpc]
-    void Rcp_AddScanedTetrisToTemp(string type,Vector3 pos,int roteteTimes)
-    {
-        state = BuoyTurnHandle.TurnHandleControlState.Scaning_9;
-        int index = tetrisBuoySimpleList.FindIndex(item => item.GetComponent<TetrisBlockSimple>().type ==  type);
-        var tetrominoe = Instantiate(tetrisBuoySimpleList[index].gameObject,transform.parent);
-        TetrisBlockSimple tetrisBlockSimple = tetrominoe.GetComponent<TetrisBlockSimple>();
-        for(int i = 0; i < roteteTimes; i++)
-        {
-            tetrisBlockSimple.Rotate(tetrisBlockSimple.transform.forward);
-        }
-        TetrisBuoySimple temp = tetrominoe.GetComponent<TetrisBuoySimple>();
-        if(!temp)return;
-        temp.transform.parent = transform.parent;
-        temp.transform.localPosition = pos;
-        temp.transform.localScale = Vector3.one;
-        temp.Display_OnDragBuoy();
-        temp.tetrisBlockSimple.Player = buoyInfo.player_local; // 刷新砖块表现
-        // 加入检测组
-        if(tetrisBuoySimpleTemps.Contains(temp))return;
-        tetrisBuoySimpleTemps.Add(temp);
-        // 进入心流状态
-        buoyInfo.OnBuoyDrag?.Invoke();
-    }
-    [Server]
-    void Server_AddScanedTetrisToTemp()
-    {   
         
-        if(tsBuoyControleds.Count == 0)return;
-        foreach(var tetrisBuoy in tsBuoyControleds)
-        {
-            if(!tetrisBuoy)continue;
-            if(!buoyInfo.Local() && tetrisBuoy.tetrisBlockSimple.player != buoyInfo.player_local)continue;
-            if(tetrisBuoy.tetrisBlockSimple.tetrisCheckMode != TetrisBlockSimple.TetrisCheckMode.Normal)continue;
-            tetrisBuoy.tetrisBlockSimple.Stop();
-            // --服务器生成预示砖块--
-            TetrisBuoySimple tetrisControledTemp = MakeOneTetris(tetrisBuoy.tetrisBlockSimple.type,tetrisBuoy);
-            // 加入检测组
-            if(!tetrisControledTemp.tetrisBuoyDragged)continue;
-            if(tetrisBuoySimpleTemps.Contains(tetrisControledTemp))continue;
-            tetrisBuoySimpleTemps.Add(tetrisControledTemp);
-            // 转成Buoy坐标系
-            Vector2 idChanger = tetrisBuoy.tetrisBlockSimple.posId - buoyInfo.CurrentPosID;
-            tetrisControledTemp.transform.localPosition = new Vector3(idChanger.x,0,idChanger.y);
-            // 刷新砖块表现
-            tetrisControledTemp.tetrisBlockSimple.Player = buoyInfo.player_local;
-            tetrisControledTemp.Display_OnDragBuoy();
-        }
-        if(tetrisBuoySimpleTemps.Count==0)return;
-        // 进入心流状态
-        buoyInfo.OnBuoyDrag?.Invoke();
-    }
-    TetrisBuoySimple MakeOneTetris(string typeIn,TetrisBuoySimple Controled)
-    {
-        if(buoyInfo.Local())return null;
-        int index = tetrisBuoySimpleList.FindIndex(item => item.GetComponent<TetrisBlockSimple>().type ==  typeIn);
-        if(tetrisBuoySimpleList.Count==0){Debug.LogError("没给浮标配置砖块"); return null;}
-        var tetrominoe = Instantiate(tetrisBuoySimpleList[index].gameObject,transform.parent);
-        tetrominoe.name = tetrominoe.name.Replace("(Clone)","(Temp)");
-        TetrisBlockSimple tetrisBlockSimple = tetrominoe.GetComponent<TetrisBlockSimple>();
-        tetrisBlockSimple.Init();
-        tetrisBlockSimple.autoID = false;
-        for(int i = 0; i < Controled.rotateTimes; i++)
-        {
-            tetrisBlockSimple.Rotate(tetrisBlockSimple.transform.forward);
-        }
-        TetrisBuoySimple tetrisControledTemp = tetrominoe.GetComponent<TetrisBuoySimple>();
-        tetrisControledTemp.Init();
-        tetrisControledTemp.tetrisBuoyDragged = Controled; // 自碰撞检测:自己可以被覆盖
-        // tetrisControledTemp.tetrisBlockSimple.ServerID = ServerLogic.GetTetrisGroupIDTemp(1);
-        return tetrisControledTemp;
     }
     [Client]
     void Client_Behavior_OnMouseDrag()
@@ -433,7 +454,10 @@ public class BuoyBehavior : NetworkBehaviour
         transform.parent.localPosition = new Vector3( blockposId.x, 0, blockposId.y);
         // 不能放置的表现
         if(!tetrisBuoySimpleTemp)return;
+        TetrisUnitSimple tetrisUnitControledTemp = tetrisBuoySimpleTemp.transform.GetComponent<TetrisUnitSimple>();
+        tetrisUnitControledTemp.SetUnitSortingOrderToFlow();
         bool canPut = tetrisBuoySimpleTemp.DoDropDragingCheck();
+        // Debug.Log(canPut);
         Rpc_Behavior_OnMouseDrag(canPut);
     }
     [Command]
@@ -494,20 +518,47 @@ public class BuoyBehavior : NetworkBehaviour
         }
         else if (state == BuoyTurnHandle.TurnHandleControlState.Scaning_9 || state == BuoyTurnHandle.TurnHandleControlState.Scaning_25 )
         {
-            Cmd_BehaviorMultiple_OnMouseUp();
+            // Cmd_BehaviorMultiple_OnMouseUp();
         }
         
     }
     [Command]
     void Cmd_Behavior_OnMouseUp()
     {
+        if(buoyInfo.player_local == Player.Player1)
+        {
+            UserAction.Player1UserState = UserAction.State.WatchingFight;
+        }else if(buoyInfo.player_local == Player.Player2)
+        {
+            UserAction.Player2UserState = UserAction.State.WatchingFight;
+        }
         state = BuoyTurnHandle.TurnHandleControlState.None;
-        Rcp_Destory();
+        // Rcp_Destory();
         if(!tsBuoyControled || !tetrisBuoySimpleTemp)return;
+        // Unit处理
+        TetrisUnitSimple tetrisUnitControled = tsBuoyControled.transform.GetComponent<TetrisUnitSimple>();
+        bool canDoFight = true;
+        tetrisUnitControled.CheckUnitTag(canDoFight);
+        // 放置检测
         bool canPutChecker = Server_CanPutChecker();
         if(!canPutChecker){CantPutAction();return;}
         // 可以放置
         PutAction();
+        ServerToClient_SetCorrect serverToClient_SetCorrect = new();
+        serverToClient_SetCorrect.player = buoyInfo.player_local;
+        Client_Behavior_OnMouseUp_Reset(serverToClient_SetCorrect);
+    }
+    [ClientRpc]
+    void Client_Behavior_OnMouseUp_Reset(ServerToClient_SetCorrect serverToClient_SetCorrect_In)
+    {
+        if(buoyInfo.player_local == Player.Player1)
+        {
+            UserAction.Player1UserState = UserAction.State.WatchingFight;
+        }else if(buoyInfo.player_local == Player.Player2)
+        {
+            UserAction.Player2UserState = UserAction.State.WatchingFight;
+        }
+        buoyInfo.OnBuoyEndDrag?.Invoke();
     }
     [Command]
     void Cmd_BehaviorMultiple_OnMouseUp()
@@ -606,119 +657,93 @@ public class BuoyBehavior : NetworkBehaviour
         return allTrue;
     }
     
-    // ------------------工具--------------------
     [Command]
     void Cmd_Reset()
     {
         Reset();
     }
-    void Reset()
+    [Server]
+    void Server_OnGameObjCreate_tetrisBuoySimpleTemp(string tetrominoeName,Player whichPlayer)
     {
-        if(buoyInfo.Local())
-        {
-            originPos = Vector3.zero;
-            tsBuoyControled = null;
-            tetrisBuoySimpleTemp = null;
-            tsBuoyControleds.Clear();
-            tetrisBuoySimpleTemps.Clear();
-            checkSelfTetris.Clear();
-        }
-        else
-        {
-            originPos_PVP = Vector3.zero;
-            if(tetrisBuoySimpleTemp)tetrisBuoySimpleTemp = null;
-            if(tsBuoyControled)tsBuoyControled = null;
-            if(tsBuoyControleds.Count!=0)tsBuoyControleds.Clear();
-            if(tetrisBuoySimpleTemps.Count!=0)tetrisBuoySimpleTemps.Clear();
-            if(checkSelfTetris.Count!=0)checkSelfTetris.Clear();
-        }
-        // 退出心流状态
-        buoyInfo.OnBuoyEndDrag?.Invoke();
+        // Debug.Log("Server_OnGameObjCreate_tetrisBuoySimpleTemp----");
+        tetrisBuoySimpleTemp = Instantiate(NetworkManagerUC_PVP.spawnPrefabs.Find(prefab => prefab.name == tetrominoeName),transform.parent).GetComponent<TetrisBuoySimple>();
+        tetrisBuoySimpleTemp.Server_Init_TetriUnits();
+        tetrisBuoySimpleTemp.player = whichPlayer;
+        tetrisBuoySimpleTemp.TetrisBlockSimple.Player = whichPlayer;
+        NetworkServer.Spawn(tetrisBuoySimpleTemp.gameObject);
+        Client_OnGameObjCreate_tetrisBuoySimpleTemp(tetrisBuoySimpleTemp.netId);
+        Server_SetCorrect_tetrisBuoySimpleTemp();
     }
-    void CantPutAction()
+    [ClientRpc]
+    void Client_OnGameObjCreate_tetrisBuoySimpleTemp(uint tetrisBuoySimpleTempNetID)
     {
-        if(!tsBuoyControled || !tetrisBuoySimpleTemp)return;
-        if(buoyInfo.Local())
-        {
-            // Unit相关
-            TetrisUnitSimple tetrisUnitControled = tsBuoyControled.transform.GetComponent<TetrisUnitSimple>();
-            tetrisUnitControled.CheckUnitTag(true);
-            // 放置相关
-            transform.parent.localPosition = originPos;
-            tsBuoyControled.tetrisBlockSimple.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Drop;
-            tsBuoyControled.tetrisBlockSimple.Stop();
-            tsBuoyControled.tetrisBlockSimple.Active_X();
-            // tsBuoyControled.tetrisBlockSimple.Move();
-            
-            DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
-        }else
-        {
-            if(!isServer)return;
-            transform.parent.localPosition = originPos_PVP;
-            tsBuoyControled.tetrisBlockSimple.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Drop;
-            tsBuoyControled.tetrisBlockSimple.Stop();
-            tsBuoyControled.tetrisBlockSimple.Active_X();
-            // tsBuoyControled.tetrisBlockSimple.Move();
-            
-            DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
-        }
-        
+        buoyInfo.OnBuoyDrag?.Invoke();
+        if(!tetrisBuoySimpleTemp)tetrisBuoySimpleTemp = FindObjectsOfType<TetrisBuoySimple>().ToList().Find(item => item.netId == tetrisBuoySimpleTempNetID);
+        tetrisBuoySimpleTemp.transform.parent = transform.parent;
+        Invoke(nameof(Display_ShowForPlayerScreen),0.1f);
     }
-    void PutAction()
+    void Display_ShowForPlayerScreen()
     {
-        if(!tsBuoyControled || !tetrisBuoySimpleTemp)return;
-        // Unit相关
+        if(!tetrisBuoySimpleTemp)return;
+        tetrisBuoySimpleTemp.GetComponent<TetrisUnitSimple>().Display_ShowForPlayerScreen();
+    }
+    [Server]
+    void Server_SetCorrect_tetrisBuoySimpleTemp()
+    {
+        tsBuoyControled.tetrisBlockSimple.Stop(false);
+        // Unit预示暂存
         TetrisUnitSimple tetrisUnitControled = tsBuoyControled.transform.GetComponent<TetrisUnitSimple>();
-        tetrisUnitControled.CheckUnitTag(true); // 可以战斗
-        // 放置相关
-        tsBuoyControled.tetrisBlockSimple.Reset();
-        tsBuoyControled.transform.parent = buoyInfo.transform.parent;
-        tsBuoyControled.transform.localPosition = tetrisBuoySimpleTemp.transform.localPosition + transform.parent.localPosition;
-        tsBuoyControled.tetrisBlockSimple.tetrisCheckMode = TetrisBlockSimple.TetrisCheckMode.Drop;
-        tsBuoyControled.tetrisBlockSimple.SuccessToCreat();
-        tsBuoyControled.tetrisBlockSimple.Active();
-        // 机制检测
-        TetrisBlockSimple tetrisBlockSimple = tsBuoyControled.TetrisBlockSimple;
-        tetrisBlockSimple.BlocksCreator.Event_BlocksCounterInvoke();
-        
-        if(buoyInfo.Local())
+        tetrisUnitControled.NewTetrisUnit = false;
+        List<KeyValuePair<int, UnitData.Color>> indexPairColors = tetrisUnitControled.GetUnitsData();
+        tetrisUnitControled.CheckUnitTag(false); // 不可以战斗
+
+        tetrisBuoySimpleTemp.name = tsBuoyControled.name.Replace("(Clone)",UnitData.Temp);
+        tetrisBuoySimpleTemp.tetrisBuoyDragged = tsBuoyControled; // 自碰撞检测:自己可以被覆盖
+        if(!tetrisBuoySimpleTemp.tetrisBuoyDragged)return;
+        // Units
+        TetrisUnitSimple tetrisUnitControledTemp = tetrisBuoySimpleTemp.transform.GetComponent<TetrisUnitSimple>();
+        var unitRotationDifferentLocal = Quaternion.Angle(tetrisBuoySimpleTemp.transform.localRotation, tsBuoyControled.transform.localRotation);
+      
+        tetrisUnitControledTemp.Server_LoadUnits(indexPairColors,unitRotationDifferentLocal);
+        // 转成Buoy坐标系
+        tetrisBuoySimpleTemp.transform.localPosition = tsBuoyControled.transform.localPosition -transform.parent.localPosition;
+        tetrisBuoySimpleTemp.transform.localRotation = tsBuoyControled.transform.localRotation;
+        tetrisBuoySimpleTemp.Display_OnDragBuoy();
+        tsBuoyControled.TetrisBuoyTemp = tetrisBuoySimpleTemp;
+        ServerToClient_SetCorrect serverToClient_SetCorrect = new();
+        serverToClient_SetCorrect.netId = tetrisBuoySimpleTemp.netId;
+        serverToClient_SetCorrect.rotationDifferentLocal = unitRotationDifferentLocal;
+        serverToClient_SetCorrect.localRotation = tsBuoyControled.transform.localRotation;
+        serverToClient_SetCorrect.localPosition = tsBuoyControled.transform.localPosition;
+        serverToClient_SetCorrect.player = buoyInfo.player_local;
+        serverToClient_SetCorrect.userState = UserAction.State.CommandTheBattle_Buoy;
+        Client_SetCorrect_tetrisBuoySimpleTemp(serverToClient_SetCorrect);
+    }
+    [ClientRpc]
+    void Client_SetCorrect_tetrisBuoySimpleTemp(ServerToClient_SetCorrect serverToClient_SetCorrect_In)
+    {
+        // if(serverToClient_SetCorrect_In.player == Player.Player1)
+        // {
+        //    TetriDifferentStatusDisplays.ForEach(x=>x.Event_OnUserActionStateChanged(serverToClient_SetCorrect_In.userState));
+        // }else if(serverToClient_SetCorrect_In.player == Player.Player2)
+        // {
+        //     TetriDifferentStatusDisplays.ForEach(x=>x.Event_OnUserActionStateChanged(serverToClient_SetCorrect_In.userState));
+        // }
+        if(serverToClient_SetCorrect_In.player == Player.Player1)
         {
-            DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
-        }else
+            UserAction.Player1UserState = UserAction.State.CommandTheBattle_Buoy;
+
+        }else if(serverToClient_SetCorrect_In.player == Player.Player2)
         {
-            if(!isServer)return;
-            DestroyImmediate(tetrisBuoySimpleTemp.gameObject);
+            UserAction.Player2UserState = UserAction.State.CommandTheBattle_Buoy;
         }
-        
-       
+        if(!tetrisBuoySimpleTemp)tetrisBuoySimpleTemp = FindObjectsOfType<TetrisBuoySimple>().ToList().Find(item => item.netId == serverToClient_SetCorrect_In.netId);
+        TetrisUnitSimple tetrisUnitControledTemp = tetrisBuoySimpleTemp.transform.GetComponent<TetrisUnitSimple>();
+        tetrisUnitControledTemp.Client_LoadUnits(serverToClient_SetCorrect_In.rotationDifferentLocal);
+        // 转成Buoy坐标系
+        tetrisBuoySimpleTemp.transform.localPosition = serverToClient_SetCorrect_In.localPosition - transform.parent.localPosition;
+        tetrisBuoySimpleTemp.transform.localRotation = serverToClient_SetCorrect_In.localRotation;
+        tetrisBuoySimpleTemp.Display_OnDragBuoy();
     }
-    bool CanPutChecker()
-    {
-        List<bool> condition = new();
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
-        condition.Add(hitBlock);
-        if(!tsBuoyControled){DestroyImmediate(tetrisBuoySimpleTemp.gameObject);return false;}
-        bool putChecker = tetrisBuoySimpleTemp.DoDropCanPutCheck() && tsBuoyControled.tetrisBlockSimple.OnBuoyDrop();
-        condition.Add(putChecker);
-        bool allTrue = condition.All(b => b);
-        tsBuoyControled.TetrisBuoyTemp = null; // 释放死亡监听
-        return allTrue;
-    }
-    bool CanPutChecker(List<TetriBuoySimple> checkSelfTetris)
-    {
-        List<bool> condition = new();
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
-        condition.Add(hitBlock);
-        if(!tsBuoyControled || !tsBuoyControled.tetrisBlockSimple){DestroyImmediate(tetrisBuoySimpleTemp.gameObject);return false;}
-        bool putChecker = tetrisBuoySimpleTemp.DoDropCanPutCheck(checkSelfTetris) && tsBuoyControled.tetrisBlockSimple.OnBuoyDrop();
-        condition.Add(putChecker);
-        bool allTrue = condition.All(b => b);
-        tsBuoyControled.TetrisBuoyTemp = null; // 释放死亡监听
-        return allTrue;
-    }
-#endregion 数据操作
+#endregion 联网数据操作
 }

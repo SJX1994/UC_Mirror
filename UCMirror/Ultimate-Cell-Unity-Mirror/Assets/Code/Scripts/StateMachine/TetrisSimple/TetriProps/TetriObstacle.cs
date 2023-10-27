@@ -4,8 +4,9 @@ using UnityEngine.Events;
 using System.Linq;
 using UC_PlayerData;
 using DG.Tweening;
+using Mirror;
 
-public class TetriObstacle : MonoBehaviour, ITetriProp
+public class TetriObstacle : NetworkBehaviour, ITetriProp
 {
 # region 数据对象
     public Vector2 posId;
@@ -154,16 +155,7 @@ public class TetriObstacle : MonoBehaviour, ITetriProp
             return false;
         }
         // 道具计时器
-        propTimer = new();
-        Icon.SetActive(false);
-        lockTime = 0.1f;
-        propTimer.StartTimer(lockTime, () => {
-            Locked = false;
-            SetSpriteAlpha(1.0f);
-            Icon.SetActive(true);
-            int randomFactor = Random.Range(0,2);
-            Icon.GetComponent<SpriteRenderer>().flipX = randomFactor == 0 ? true:false;
-            });
+        StartTimer_Growing();
         // 方位属性
         transform.localPosition = new Vector3(block.posId.x, 0.3f, block.posId.y);
         // transform.localScale = Vector3.one;
@@ -251,6 +243,19 @@ public class TetriObstacle : MonoBehaviour, ITetriProp
         target.transform.LookAt(fixCameraPos);
         target.localRotation = Quaternion.Euler(target.localRotation.eulerAngles.x, target.localRotation.eulerAngles.y, 0);
         SetSpriteAlpha(1.0f);
+    }
+    public void StartTimer_Growing()
+    {
+        propTimer = new();
+        Icon.SetActive(false);
+        lockTime = 0.1f;
+        propTimer.StartTimer(lockTime, () => {
+            Locked = false;
+            SetSpriteAlpha(1.0f);
+            Icon.SetActive(true);
+            int randomFactor = Random.Range(0,2);
+            Icon.GetComponent<SpriteRenderer>().flipX = randomFactor == 0 ? true:false;
+        });
     }
 # endregion 数据操作
 }

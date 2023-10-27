@@ -4,16 +4,32 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 using UC_PlayerData;
+using Mirror;
 
-public class TetriBlockSimple : MonoBehaviour
+public class TetriBlockSimple : NetworkBehaviour
 {
+#region 数据对象
     public TetrisBlockSimple tetrisBlockSimple;
+    public TetrisBlockSimple TetrisBlockSimple
+    {
+        get
+        {
+            if(tetrisBlockSimple)return tetrisBlockSimple;
+            tetrisBlockSimple = transform.parent.GetComponent<TetrisBlockSimple>();
+            return tetrisBlockSimple;
+        }
+        set
+        {
+            tetrisBlockSimple = value;
+        }
+    }
     public UnityAction<Player> TetriPlayerChanged;
     public Player player = UC_PlayerData.Player.NotReady;
     public Player Player
     {
         get
         {
+            if(player == UC_PlayerData.Player.NotReady)player = TetrisBlockSimple.player;
             return player;
         }
         set
@@ -77,7 +93,8 @@ public class TetriBlockSimple : MonoBehaviour
     }
     Vector3 originalRotation = Vector3.zero;
     public UnityAction<TetriBlockSimple> tetriStuckEvent;
-    // Start is called before the first frame update
+#endregion 数据对象
+#region 数据关系
     void Awake()
     {
         
@@ -91,6 +108,8 @@ public class TetriBlockSimple : MonoBehaviour
         originalRotation = transform.localRotation.eulerAngles;
         Display_playerColor();
     }
+#endregion 数据关系
+#region 数据操作
     public void FailToCreat()
     {
         tetrisBlockSimple.Stop();
@@ -397,7 +416,6 @@ public class TetriBlockSimple : MonoBehaviour
         materialP2.color = spriteColor;
         Color red = Color.red;
         Color blue = Color.blue + Color.white*0.3f;
-
         if(player == Player.Player1)
         {
             cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP1;
@@ -407,6 +425,10 @@ public class TetriBlockSimple : MonoBehaviour
             cubeSortingGroup.transform.GetComponent<MeshRenderer>().material = materialP2;
             tetriDisplayRange.SetColor(blue);
         }
+        if(Local())return;
+        Color colorFortetriDisplayRange = player == Player.Player1 ? red : blue;
+        if(!isServer)return;
+        tetriDisplayRange.Server_SetColor(colorFortetriDisplayRange);
     }
     public void Display_playerColor(bool Visible)
     {
@@ -452,7 +474,16 @@ public class TetriBlockSimple : MonoBehaviour
     }
     public void RotateForRecalculateDisplayRange(bool reverse)
     {
+        // Debug.Log("RotateForRecalculateDisplayRange!!!!!++");
         float localRotationRotAngle = reverse ? 90f : -90f;
         transform.RotateAround(transform.position,transform.forward,localRotationRotAngle);
     }
+#endregion 数据操作
+#region 联网数据操作
+    bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+#endregion 联网数据操作
 }

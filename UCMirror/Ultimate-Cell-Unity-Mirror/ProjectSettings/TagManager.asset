@@ -16,6 +16,7 @@ TagManager:
   - Soul_Virus
   - Player1
   - Player2
+  - NotReady
   layers:
   - Default
   - TransparentFX

@@ -40,8 +40,8 @@ public class TetriBuoySimple : MonoBehaviour
             if(value == null)return;
             OnTetriTempChange?.Invoke(tetriTemp);
             tetriTemp.TryGetComponent(out TetriUnitSimple tetriUnitSimple);
-            if(!tetriUnitSimple.haveUnit)return;
-            tetriUnitSimple.haveUnit.targetOfAttack = null;
+            if(!tetriUnitSimple.HaveUnit)return;
+            tetriUnitSimple.HaveUnit.targetOfAttack = null;
         }
     }
     public UnityAction<TetriBuoySimple> OnTetriTempChange;
@@ -129,6 +129,7 @@ public class TetriBuoySimple : MonoBehaviour
         if(!block)return false;
         if(!tetrisBuoySimple.tetrisBuoyDragged)return false;
         if(tetrisBuoySimple.tetrisBuoyDragged.childTetris.Count == 0)tetrisBuoySimple.tetrisBuoyDragged.Init();
+        // Debug.Log("检测到砖块" + tetriBlockSimple.Player);
         if(tetrisBuoySimple.tetrisBuoyDragged.childTetris.Contains(block.tetriBuoySimple))
         {
             return true;

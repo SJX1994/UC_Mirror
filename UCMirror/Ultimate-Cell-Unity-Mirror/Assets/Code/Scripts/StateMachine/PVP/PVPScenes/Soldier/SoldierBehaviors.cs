@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using UC_PlayerData;
-
-public class SoldierBehaviors : MonoBehaviour
+using Mirror;
+public class SoldierBehaviors : NetworkBehaviour
 {
 #region 数据对象
     private bool needRender;
@@ -528,6 +528,13 @@ public class SoldierBehaviors : MonoBehaviour
     }
 # endregion
 # endregion 数据操作
+# region 联网数据操作
+    public bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+# endregion 联网数据操作
 }
 
 
