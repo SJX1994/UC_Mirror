@@ -49,7 +49,7 @@ public class GlobalControlManager : MonoBehaviour
 
         StoryPlayer = this.gameObject.AddComponent<StoryPlayerManager>();
 
-        AudioSystemManager.Instance.PlayMusic("FearsRightHandMan", 99);
+        // AudioSystemManager.Instance.PlayMusic("FearsRightHandMan", 99);
 
         ExcelLoadManager.Instance.Load();
     }

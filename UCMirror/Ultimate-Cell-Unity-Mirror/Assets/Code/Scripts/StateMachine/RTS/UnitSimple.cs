@@ -5,7 +5,7 @@ using Spine.Unity;
 using Mirror;
 public class UnitSimple : Unit
 {
-# region 数据对象
+#region 数据对象
     public float durationRunning = 1f;
     public float DurationRunning
     {
@@ -275,6 +275,7 @@ public class UnitSimple : Unit
         Display_HideUnit();
         Display_HideMorale();
         HideForPlayerScreen();
+        AudioSystemManager.Instance.PlaySound("Sound_FrequentBubbles");
     }
     // 玩家差异
     public void DifferentPlayerInit()
@@ -323,26 +324,50 @@ public class UnitSimple : Unit
     // 被攻击
     void Event_OnBeenAttackedBlood(int damage)
     {
-        tween_BeenAttack?.Kill();
-        Color startColor = bloodColor;
-        Color endColor = Color.clear;
-        Color beenAttackColor = bloodColor;
-        UpdateBeenAttackedEffect(endColor);
-        tween_BeenAttack = DOVirtual.Color(startColor, endColor, 0.5f, (TweenCallback<Color>)((Color value) =>
+        if(Local())
         {
-            beenAttackColor = value;
-            UpdateBeenAttackedEffect(beenAttackColor);
-        }));
-        
-        for (int i = 0; i < damage; i++)
+            tween_BeenAttack?.Kill();
+            Color startColor = bloodColor;
+            Color endColor = Color.clear;
+            Color beenAttackColor = bloodColor;
+            UpdateBeenAttackedEffect(endColor);
+            tween_BeenAttack = DOVirtual.Color(startColor, endColor, 0.5f, (TweenCallback<Color>)((Color value) =>
+            {
+                beenAttackColor = value;
+                UpdateBeenAttackedEffect(beenAttackColor);
+            }));
+            
+            for (int i = 0; i < damage; i++)
+            {
+                bloodEffect = Instantiate(bloodEffectLoad,transform); 
+                bloodEffect.paintColor = bloodColor;
+                // var main = bloodEffect.GetComponent<ParticleSystem>().main;
+                // main.startColor = bloodColor;
+                // var particleSystemMain = bloodEffect.GetComponent<ParticleSystem>().main;
+                // particleSystemMain.startColor = bloodColor;
+            }
+        }else
         {
-            bloodEffect = Instantiate(bloodEffectLoad,transform); 
-            bloodEffect.paintColor = bloodColor;
-            // var main = bloodEffect.GetComponent<ParticleSystem>().main;
-            // main.startColor = bloodColor;
-            // var particleSystemMain = bloodEffect.GetComponent<ParticleSystem>().main;
-            // particleSystemMain.startColor = bloodColor;
+            if(!isServer)return;
+            tween_BeenAttack?.Kill();
+            Color startColor = bloodColor;
+            Color endColor = Color.clear;
+            Color beenAttackColor = bloodColor;
+            UpdateBeenAttackedEffect(endColor);
+            tween_BeenAttack = DOVirtual.Color(startColor, endColor, 0.5f, (TweenCallback<Color>)((Color value) =>
+            {
+                beenAttackColor = value;
+                UpdateBeenAttackedEffect(beenAttackColor);
+            }));
+            
+            for (int i = 0; i < damage; i++)
+            {
+                bloodEffect = Instantiate(bloodEffectLoad,transform); 
+                bloodEffect.paintColor = bloodColor;
+            }
+            Client_OnBeenAttackedBlood();
         }
+
     }
     // 攻击
     Unit AttackChecker()
@@ -356,12 +381,25 @@ public class UnitSimple : Unit
     }
     public void Attack(Unit target)
     {
-        if (!target)return;       
-        if (IsDeadOrNull(target))return;
-        DrawLine();
-        if (tween_running != null) tween_running.Kill();
-        animator.speed = Random.Range(0.95f, 1.15f);
-        StartCoroutine(DealAttackSimple());
+        if(Local())
+        {
+            if (!target)return;       
+            if (IsDeadOrNull(target))return;
+            DrawLine();
+            if (tween_running != null) tween_running.Kill();
+            animator.speed = Random.Range(0.95f, 1.15f);
+            StartCoroutine(DealAttackSimple());
+        }else
+        {
+            if(!isServer)return;
+            if (!target)return;       
+            if (IsDeadOrNull(target))return;
+            DrawLine();
+            if (tween_running != null) tween_running.Kill();
+            animator.speed = Random.Range(0.95f, 1.15f);
+            StartCoroutine(Server_DealAttackSimple());
+        }
+        
     }
     public void Event_OnTetriPosIdChanged(Vector2 posId)
     {
@@ -374,6 +412,7 @@ public class UnitSimple : Unit
         attackDirectionLineRenderer.SetPosition(1, startPoint);
         Vector3 lineRenderEndPoint = targetOfAttack ? endPoint : startPoint;
         attackDirectionLineRenderer.SetPosition(1, lineRenderEndPoint);
+        Client_DrawLine(startPoint,lineRenderEndPoint);
     }
     // 旋转
     public void Event_OnRotate(bool Reverse)
@@ -405,6 +444,7 @@ public class UnitSimple : Unit
         transform.localScale = LocalScale + Vector3.one * 0.15f;
         SetUnitSortingOrderToFlow();
     }
+    
     // 放下的表现
     public void Display_OnEndDragDisplay()
     {
@@ -418,6 +458,7 @@ public class UnitSimple : Unit
         SetUnitSortingOrderToNormal();
         // transform.localScale = LocalScale;
     }
+    
     // 当砖块Z向移动到顶后的表现
     public void Event_Display_OnTetriStuck(TetriBlockSimple tetriBlock)
     {
@@ -558,12 +599,25 @@ public class UnitSimple : Unit
     // 跑步动画
     public void Event_Display_StartRunning()
     {
-        ResetRotation();
-        animator.speed = Random.Range(1.05f, 1.15f);
-        runningValue = 0f;
-        animator.SetFloat("Speed", 0f);
-        if(tween_running != null)tween_running.Kill();
-        DOVirtual.DelayedCall(RunningDelay, Display_delayCallRunning);
+        if(Local())
+        {
+            ResetRotation();
+            animator.speed = Random.Range(1.05f, 1.15f);
+            runningValue = 0f;
+            animator.SetFloat("Speed", 0f);
+            if(tween_running != null)tween_running.Kill();
+            DOVirtual.DelayedCall(RunningDelay, Display_delayCallRunning);
+        }else
+        {
+            if(!isServer)return;
+            ResetRotation();
+            animator.speed = Random.Range(1.05f, 1.15f);
+            runningValue = 0f;
+            animator.SetFloat("Speed", 0f);
+            if(tween_running != null)tween_running.Kill();
+            DOVirtual.DelayedCall(RunningDelay, Server_Display_delayCallRunning);
+        }
+        
     }
     void Display_delayCallRunning()
     {
@@ -586,6 +640,7 @@ public class UnitSimple : Unit
             ResetRotation();
         };
     }
+    
     // 全体庆祝
     void Display_AllWin(TetriBlockSimple tetriBlock)
     {
@@ -669,11 +724,6 @@ public class UnitSimple : Unit
     }
 # endregion 数据操作
 # region 联网数据操作
-    public bool Local()
-    {
-        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
-        return false;
-    }
     struct ServerToClient_Unit
     {
         public Color moraleColor;
@@ -681,6 +731,7 @@ public class UnitSimple : Unit
         public Color bloodColor;
         public int faceDirection;
         public Vector3 playerLineRendererOffset;
+        public Player playerBelong;
 
     }
     [Server]
@@ -724,6 +775,7 @@ public class UnitSimple : Unit
         serverToClient_Unit.bloodColor = bloodColor;
         serverToClient_Unit.faceDirection = faceDirection;
         serverToClient_Unit.playerLineRendererOffset = playerLineRendererOffset;
+        serverToClient_Unit.playerBelong = unitTemplate.player;
         ShaderInit();
         ResetRotation();
         SetFlip();
@@ -746,6 +798,10 @@ public class UnitSimple : Unit
         ShaderInit();
         ResetRotation();
         SetFlip();
+        unitTemplate.player = serverToClient_Unit_In.playerBelong;
+        if(unitTemplate.player == ServerLogic.local_palayer)return;
+        Color DistinguishBelongingColor = unitTemplate.player == Player.Player1 ? Color.red * 0.4f + Color.white*0.6f : Color.blue * 0.4f + Color.white * 0.6f;
+        UpdateColorMultiplication(DistinguishBelongingColor);
     }
     [Server]
     void Server_Display_onWeakAssociation()
@@ -769,6 +825,27 @@ public class UnitSimple : Unit
         animator.SetTrigger("DoWin");
         if(tween_running != null)tween_running.Kill();
     }
+    [ClientRpc]
+    void Client_OnBeenAttackedBlood()
+    {
+        tween_BeenAttack?.Kill();
+        Color startColor = bloodColor;
+        Color endColor = Color.clear;
+        Color beenAttackColor = bloodColor;
+        UpdateBeenAttackedEffect(endColor);
+        tween_BeenAttack = DOVirtual.Color(startColor, endColor, 0.5f, (TweenCallback<Color>)((Color value) =>
+        {
+            beenAttackColor = value;
+            UpdateBeenAttackedEffect(beenAttackColor);
+        }));
+    }
+    [ClientRpc]
+    void Client_DrawLine(Vector3 startPoint,Vector3 endPoint)
+    {
+        attackDirectionLineRenderer.positionCount = 2;
+        attackDirectionLineRenderer.SetPosition(0, startPoint);
+        attackDirectionLineRenderer.SetPosition(1, endPoint);
+    }
     void HideForPlayerScreen()
     {
         SkeletonRenderer.transform.GetComponent<MeshRenderer>().enabled = false;
@@ -780,6 +857,74 @@ public class UnitSimple : Unit
         SkeletonRenderer.transform.GetComponent<MeshRenderer>().enabled = true;
         soldier.StrengthBar.GetComponent<SpriteRenderer>().enabled = true;
         soldier.LevelUpEffect.GetComponent<Renderer>().enabled = true;
+    }
+    [Server]
+    public void Server_Display_OnBeginDragDisplay()
+    {
+        ForeshadowOpen = 1;
+        EnableSelectEffect = false;
+        Soldier.Behaviors_OnBeginDragDisplay();
+        transform.localScale = LocalScale + Vector3.one * 0.15f;
+        SetUnitSortingOrderToFlow();
+        Client_Display_OnBeginDragDisplay();
+    }
+    [ClientRpc]
+    void Client_Display_OnBeginDragDisplay()
+    {
+        ForeshadowOpen = 1;
+        EnableSelectEffect = false;
+        transform.localScale = LocalScale + Vector3.one * 0.15f;
+        SetUnitSortingOrderToFlow();
+    }
+    [Server]
+    void Server_Display_delayCallRunning()
+    {
+        float endValue = RunningSpeed;
+        float duration = DurationRunning - RunningDelay;
+        if(!animator){tween_running.Kill(); return;}
+        tween_running = DOVirtual.Float(0, animator.speed + endValue, duration, (float value) =>
+        {
+            runningValue = value;
+            if(!animator)return;
+            animator.speed = value;
+            animator.SetFloat("Speed", runningValue);
+            Client_Display_delayCallRunning_SetSpeed(runningValue);
+        });
+        tween_running.onComplete=() =>
+        {
+            runningValue = 0f;
+            if(!animator)return;
+            animator.speed = Random.Range(1.05f, 1.15f);
+            float stop = 0;
+            animator.SetFloat("Speed", stop);
+            Client_Display_delayCallRunning_SetSpeed(stop);
+            ResetRotation();
+        };
+    }
+    [ClientRpc]
+    void Client_Display_delayCallRunning_SetSpeed(float runningValueIn)
+    {
+        animator.SetFloat("Speed", runningValueIn);
+    }
+    [Server]
+    public void Server_Display_OnEndDragDisplay()
+    {
+        ForeshadowOpen = 0;
+        tween_OnEndDragDisplay = transform.DOScale(LocalScale, 0.3f).SetEase(Ease.OutBounce);
+        tween_OnEndDragDisplay.OnComplete(() => {
+            animator.SetTrigger("DoWin");
+            Soldier.Behaviors_OnEndDragDisplay();
+            tween_OnEndDragDisplay.Kill();
+        });
+        SetUnitSortingOrderToNormal();
+        Client_Display_OnEndDragDisplay();
+    }
+    [ClientRpc]
+    void Client_Display_OnEndDragDisplay()
+    {
+        ForeshadowOpen = 0;
+        animator.SetTrigger("DoWin");
+        SetUnitSortingOrderToNormal();
     }
 # endregion 联网数据操作
 }

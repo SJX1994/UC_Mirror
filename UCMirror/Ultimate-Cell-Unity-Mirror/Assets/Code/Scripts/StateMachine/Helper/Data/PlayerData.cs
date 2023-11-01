@@ -130,6 +130,8 @@ namespace UC_PlayerData
     }
     public static class ServerLogic
     {
+        public static Player local_palayer = Player.NotReady;
+        public static bool isGameStart = false;
         // 道具Id
         // private static int PropsID = 10_0000_0;
         // 俄罗斯砖块组ID

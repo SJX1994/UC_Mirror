@@ -1,6 +1,6 @@
 Shader "Spine/Skeleton-processing" {
 	Properties {
-		_Color("Color", Color) = (1,1,1,1)
+		[PerRendererData]_Color("Color", Color) = (1,1,1,1)
 		[PerRendererData]_BeenAttackedColor("BeenAttackedColor", Color) = (0,0,0,0)
 		[PerRendererData]_SelectOutlineColor ("Outline Color", Color) = (0,0,0,0)
         _SelectOutlineWidth ("Outline Width", Range(0, 1)) = 0.005

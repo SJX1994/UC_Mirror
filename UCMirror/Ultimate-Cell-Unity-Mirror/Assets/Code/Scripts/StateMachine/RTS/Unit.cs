@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using Spine.Unity;
 using DG.Tweening;
 using Mirror;
+using UC_PlayerData;
 public class Unit : NetworkBehaviour
 {
 
@@ -71,6 +72,7 @@ public class Unit : NetworkBehaviour
     private MaterialPropertyBlock spinePropertyBlock_foreshadow;
     private MaterialPropertyBlock spinePropertyBlock_alpha;
     private MaterialPropertyBlock spinePropertyBlock_SelectEffect;
+    private MaterialPropertyBlock spinePropertyBlock_color;
     protected bool isReady = false;
     protected float lastGuardCheckTime, guardCheckInterval = 1f;
     private Unit[] hostiles;
@@ -363,6 +365,17 @@ public class Unit : NetworkBehaviour
         spineRenderer.GetPropertyBlock(spinePropertyBlock_hp);
         spinePropertyBlock_hp.SetFloat("_Porcess", SetFloat);
         spineRenderer.SetPropertyBlock(spinePropertyBlock_hp);
+    }
+    public void UpdateColorMultiplication(Color SetColor)
+    {
+        if  (spinePropertyBlock_color == null)
+        {
+            spinePropertyBlock_color = new MaterialPropertyBlock();
+        }
+        if(SetColor == spinePropertyBlock_color.GetColor("_Color"))return;
+        spineRenderer.GetPropertyBlock(spinePropertyBlock_color);
+        spinePropertyBlock_color.SetColor("_Color", SetColor);
+        spineRenderer.SetPropertyBlock(spinePropertyBlock_color);
     }
     public void UpdateMatForeshadow(float SetFloat)
     {
@@ -828,7 +841,6 @@ public class Unit : NetworkBehaviour
     }
     public virtual IEnumerator DealAttackSimple()
     {
-
         while (targetOfAttack != null)
         {
             if(!animator)break;
@@ -855,6 +867,7 @@ public class Unit : NetworkBehaviour
             GuardSimple();
         }
     }
+    
     protected void WeaponDisplay()
     {
         if (weaponType == WeaponTemplate.WeaponType.Null) return;
@@ -941,4 +954,53 @@ public class Unit : NetworkBehaviour
         targetOfAttack = null;
     }
     #endregion 数据操作
+    #region 联网数据操作
+    protected bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+    [Server]
+    public virtual IEnumerator Server_DealAttackSimple()
+    {
+        while (targetOfAttack != null)
+        {
+            if(!animator)break;
+            RunEffect(EffectTemplate.EffectType.Attacking);
+            animator.SetTrigger("DoAttack");
+            Client_DealAttackSimple_DoAttackAnimation();
+            OnAttacking?.Invoke();
+            WeaponDisplay();
+            targetOfAttack.SufferAttackSimple(unitTemplate.attackPower);
+            yield return new WaitForSeconds(1f / unitTemplate.attackSpeed);
+            if (IsDeadOrNull(targetOfAttack))
+            {
+                animator.SetTrigger("InterruptAttack");
+                Client_DealAttackSimple_InterruptAttackAnimation();
+                OnAttackFinish?.Invoke();
+                break;
+            }
+            if (state == UnitState.Dead)
+            {
+                yield break;
+            }
+        }
+
+        if (state == UnitState.Attacking)
+        {
+            GuardSimple();
+        }
+    }
+    [ClientRpc]
+    void Client_DealAttackSimple_DoAttackAnimation()
+    {
+        animator.SetTrigger("DoAttack");
+    }
+    [ClientRpc]
+    void Client_DealAttackSimple_InterruptAttackAnimation()
+    {
+        animator.SetTrigger("InterruptAttack");
+    }
+    
+    #endregion 联网数据操作
 }

@@ -252,8 +252,29 @@ public class TetriUnitSimple : NetworkBehaviour
     }
     public void PlayBlockEffect()
     {
-        if(!TetriBuoy.blockBuoyHandler)return;
-        BlockDisplay blockDisplay = TetriBuoy.blockBuoyHandler.BlockDisplay;
+        if(Local())
+        {
+            if(!TetriBuoy.blockBuoyHandler)return;
+            BlockDisplay blockDisplay = TetriBuoy.blockBuoyHandler.BlockDisplay;
+            BlocksEffects bE =  TetrisBlockSimple.blocksCreator.BlocksEffects;
+            bE.LoadAttentionEffect(blockDisplay,TetrisBlockSimple.player);
+        }else
+        {
+            if(!isServer)return;
+            if(!TetriBuoy.blockBuoyHandler)return;
+            BlockDisplay blockDisplay = TetriBuoy.blockBuoyHandler.BlockDisplay;
+            BlocksEffects bE =  TetrisBlockSimple.blocksCreator.BlocksEffects;
+            bE.LoadAttentionEffect(blockDisplay,TetrisBlockSimple.player);
+            Client_PlayBlockEffect(blockDisplay.posId);
+        }
+        
+    }
+    [ClientRpc]
+    void Client_PlayBlockEffect(Vector2 posId)
+    {
+        BlocksCreator_Main blocksCreator_Main = FindObjectOfType<BlocksCreator_Main>();
+        BlockDisplay blockDisplay = blocksCreator_Main.blocks.Find((block) => block.posId == posId);
+        if(!blockDisplay || !blocksCreator_Main)return;
         BlocksEffects bE =  TetrisBlockSimple.blocksCreator.BlocksEffects;
         bE.LoadAttentionEffect(blockDisplay,TetrisBlockSimple.player);
     }
@@ -373,7 +394,15 @@ public class TetriUnitSimple : NetworkBehaviour
     }
     public void OnBeginDragDisplay()
     {
-        HaveUnit.Display_OnBeginDragDisplay();
+        if(Local())
+        {
+            HaveUnit.Display_OnBeginDragDisplay();
+        }else
+        {
+            if(!isServer)return;
+            HaveUnit.Server_Display_OnBeginDragDisplay();
+        }
+        
     }
     public void OnEditingStatusAfterSelection()
     {
@@ -381,7 +410,15 @@ public class TetriUnitSimple : NetworkBehaviour
     }
     public void OnEndDragDisplay()
     {
-        HaveUnit.Display_OnEndDragDisplay();
+        if(Local())
+        {
+            HaveUnit.Display_OnEndDragDisplay();
+        }else
+        {
+            if(!isServer)return;
+            HaveUnit.Server_Display_OnEndDragDisplay();
+        }
+        
     }
     public void Display_UserCommandTheBattle()
     {

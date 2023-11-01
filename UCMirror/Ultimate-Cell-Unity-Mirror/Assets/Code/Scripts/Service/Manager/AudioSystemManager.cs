@@ -75,13 +75,15 @@ public class AudioSystemManager : MonoBehaviour
         else
         {
             //加载资源
-            AudioClip clip = ABManager.Instance.LoadResource<AudioClip>("audio", name);
+            // AudioClip clip = ABManager.Instance.LoadResource<AudioClip>("audio", name);
+            AudioClip clip = Resources.Load<AudioClip>(name);
                 // Resources.Load<AudioClip>(PATH + fname + ".wav");
             if (clip == null)
                 return;
             if (musicSource.isPlaying)
                 musicSource.Stop();
             musicSource.clip = clip;
+            musicSource.volume *= 0.5f;
             nowName = name;
             musicSource.Play();
 
@@ -96,8 +98,8 @@ public class AudioSystemManager : MonoBehaviour
     /// </summary>
     public void PlaySound(string name)
     {
-        AudioClip clip = ABManager.Instance.LoadResource<AudioClip>("audio", name);
-
+        // AudioClip clip = ABManager.Instance.LoadResource<AudioClip>("audio", name);
+        AudioClip clip = Resources.Load<AudioClip>(name);
         soundSource.PlayOneShot(clip);
     }
 

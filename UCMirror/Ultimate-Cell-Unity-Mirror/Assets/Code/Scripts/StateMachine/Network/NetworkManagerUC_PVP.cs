@@ -52,19 +52,20 @@ public class NetworkManagerUC_PVP : NetworkManager
     // public override void OnStopClient()
     // {
     //     if(!RunModeCheck())return;
-    //     Debug.Log("OnStopClient");
-        
+    //     Debug.Log("OnStopClient!");
     // }
-    public override void OnClientConnect()
-    {
-        if(!RunModeCheck())return;
-        // Debug.Log("OnClientConnect");
-        base.OnClientConnect();
-    }
+    // public override void OnClientConnect()
+    // {
+    //     if(!RunModeCheck())return;
+    //     // Debug.Log("OnClientConnect");
+    //     base.OnClientConnect();
+    // }
     // public override void OnClientDisconnect()
     // {
     //     if(!RunModeCheck())return;
     //     Debug.Log("OnClientDisconnect");
+    //     NetworkServer.Shutdown();
+    //     StopServer();
     // }
   
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -103,10 +104,14 @@ public class NetworkManagerUC_PVP : NetworkManager
     } 
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
-        if(blocksCreator) NetworkServer.Destroy(blocksCreator.gameObject);
-        if(canvasManager_StayMachine) NetworkServer.Destroy(canvasManager_StayMachine.gameObject);
+        Debug.Log("玩家掉线");
         // call base functionality (actually destroys the player)
         base.OnServerDisconnect(conn);
+        
+        
+        // 重新启动服务器
+        StopServer();
+        // StartServer();
     }
 #endregion 联网数据关系
 #region 数据操作

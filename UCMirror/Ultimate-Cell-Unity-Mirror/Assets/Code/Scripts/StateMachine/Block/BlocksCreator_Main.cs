@@ -292,8 +292,17 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
     }
     public void BlocksUIActive()
     {
+        
         if(!isServer)return;
+        string music_BattlefieldBackground = "Music_BattlefieldBackground";
+        AudioSystemManager.Instance.PlayMusic(music_BattlefieldBackground, 99);
         BlocksReferee.Active();
+        Client_PlayMusic(music_BattlefieldBackground, 99);
+    }
+    [ClientRpc]
+    void Client_PlayMusic(string musicName, int loopTime)
+    {
+        AudioSystemManager.Instance.PlayMusic(musicName, loopTime);
     }
     [Client]
     void OnBlockNeedChange(Server_BockChanged previousData, Server_BockChanged newData)

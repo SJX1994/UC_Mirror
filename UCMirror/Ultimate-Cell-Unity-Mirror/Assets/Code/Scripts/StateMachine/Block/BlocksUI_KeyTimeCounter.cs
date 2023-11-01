@@ -44,11 +44,14 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
             if(time_WhenGameStart == 0)
             {
                 isGameStart = true;
+                
                 DisplayTheKeyTimeCounter_WhenGameStart_Stop();
             }else
             {
+                isGameStart = false;
                 DisplayTheKeyTimeCounter_WhenGameStart();
             }
+            ServerLogic.isGameStart = isGameStart;
             return time_WhenGameStart;
         }
     }
@@ -173,6 +176,7 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
         if(!isServer)return;
         Rpc_DisplayTheKeyTimeCounter_WhenGameStart_Stop();
     }
+    
 #endregion 数据操作
 #region 联网数据操作
     bool Local()
@@ -237,12 +241,16 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
     [ClientRpc]
     void Rpc_DisplayTheKeyTimeCounter_WhenGameStart_Stop()
     {
+        isGameStart =  true;
+        ServerLogic.isGameStart = isGameStart;
         ImageRenderer.color = Color.clear;
         Referee.OnTimeBeforStartFinish_FromKeyTimeCounter?.Invoke();
     }
     [ClientRpc]
     void Rpc_DisplayTheKeyTimeCounter_WhenGameStart(float time_WhenGameStart)
     {
+        isGameStart =  false;
+        ServerLogic.isGameStart = isGameStart;
         Vector3 startSize = Vector3.one * 4.2f;
         Vector3 endSize = Vector3.one;
         ImageRenderer.rectTransform.localScale = startSize;

@@ -10,7 +10,7 @@ public class UIControlManager : MonoBehaviour
 
     private void Start()
     {
-        AudioSystemManager.Instance.PlayMusic("FearsLeftHandMan", 99);
+        // AudioSystemManager.Instance.PlayMusic("FearsLeftHandMan", 99);
     }
 
     public void StartGame() 

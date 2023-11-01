@@ -230,6 +230,7 @@ public class IdelBox : NetworkBehaviour,
             
         }else
         {
+            if(!ServerLogic.isGameStart)return;
             if(!tetrominoe)return;
             if(!isClient)return;
             if(idelHolder.playerPVP_local != idelHolder.player)return;

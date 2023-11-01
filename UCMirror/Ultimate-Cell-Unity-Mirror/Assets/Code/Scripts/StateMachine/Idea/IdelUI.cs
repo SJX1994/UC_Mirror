@@ -101,8 +101,7 @@ public class IdelUI : NetworkBehaviour
             if(!Info)continue;
             Info.GetComponent<IdelBox>().RefreshGameObj();
         }
-
-        // AudioSystemManager.Instance.PlaySound("Button_Click");
+        AudioSystemManager.Instance.PlaySound("Sound_Button_Click");
     }
     
     #endregion
