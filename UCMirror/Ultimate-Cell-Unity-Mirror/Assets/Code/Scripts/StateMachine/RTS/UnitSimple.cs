@@ -314,6 +314,7 @@ public class UnitSimple : Unit
             soldier.StrengthBar.GetComponent<SpriteRenderer>().color = moraleColor;
             if(!bloodEffectLoad)bloodEffectLoad = Resources.Load<ParticlesController>("Effect/BeenAttackBlood");
             OnBeenAttacked += Event_OnBeenAttackedBlood;
+            SetFlip();
         }else
         {
             if(!isServer)return;
@@ -412,6 +413,7 @@ public class UnitSimple : Unit
         attackDirectionLineRenderer.SetPosition(1, startPoint);
         Vector3 lineRenderEndPoint = targetOfAttack ? endPoint : startPoint;
         attackDirectionLineRenderer.SetPosition(1, lineRenderEndPoint);
+        if(Local())return;
         Client_DrawLine(startPoint,lineRenderEndPoint);
     }
     // 旋转
@@ -855,8 +857,8 @@ public class UnitSimple : Unit
     public void ShowForPlayerScreen()
     {
         SkeletonRenderer.transform.GetComponent<MeshRenderer>().enabled = true;
-        soldier.StrengthBar.GetComponent<SpriteRenderer>().enabled = true;
-        soldier.LevelUpEffect.GetComponent<Renderer>().enabled = true;
+        Soldier.StrengthBar.GetComponent<SpriteRenderer>().enabled = true;
+        Soldier.LevelUpEffect.GetComponent<Renderer>().enabled = true;
     }
     [Server]
     public void Server_Display_OnBeginDragDisplay()

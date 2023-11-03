@@ -139,7 +139,7 @@ public class BuoyBehavior : NetworkBehaviour
             // 转成Buoy坐标系
             tetrisBuoySimpleTemp.transform.localPosition = tsBuoyControled.transform.localPosition -transform.parent.localPosition;
             tetrisBuoySimpleTemp.Display_OnDragBuoy();
-
+            tetrisBuoySimpleTemp.GetComponent<TetrisUnitSimple>().Display_ShowForPlayerScreen();
             tsBuoyControled.TetrisBuoyTemp = tetrisBuoySimpleTemp;
             
         }

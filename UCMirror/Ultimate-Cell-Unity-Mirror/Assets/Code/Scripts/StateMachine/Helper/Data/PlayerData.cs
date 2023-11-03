@@ -4,6 +4,48 @@ using UnityEngine;
 using UnityEngine.Events;
 namespace UC_PlayerData
 {
+    public class LeaderData
+    {
+        public static WhoTalking whoTalking = WhoTalking.None;
+        public enum WhoTalking
+        {
+            Player1,
+            Player2,
+            None,
+        }
+        public LeaderState leaderState = LeaderState.Idle; 
+        public enum LeaderState
+        {
+            Idle,
+            Attack,
+            Die,
+            Move,
+        }
+        public LeaderType leaderType = LeaderType.NotSet;
+        public enum LeaderType
+        {
+            Bao,
+            Zhao,
+            Duo,
+            Weak,
+            NotSet,
+        }
+        public LeaderDirection leaderDirection = LeaderDirection.NotSet;
+        public enum LeaderDirection
+        {
+            Left,
+            Right,
+            NotSet,
+        }
+        public LeaderPosition leaderPosition = LeaderPosition.NotSet;
+        public enum LeaderPosition
+        {
+            Left,
+            Right,
+            NotSet,
+        }
+        
+    }
     public enum Player
     {
         Player1,
@@ -106,7 +148,7 @@ namespace UC_PlayerData
     public static class Referee
     {
         public const float InIdelbox_CreatFirstCountdown = 9f;
-        public const float InIdelbox_CreatCountdown = 3f;
+        public const float InIdelbox_CreatCountdown = 9f;
         public const float InIdelbox_UpLevelCountdown = 6f;
         public static UnityAction OnTimeBeforStartFinish_FromKeyTimeCounter;
         public const float TotalTime_ReverseOrder = 180f;
