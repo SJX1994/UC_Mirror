@@ -52,7 +52,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 0ccc12d161927584ab9b3f95089f3033, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -300,6 +300,7 @@ GameObject:
   - component: {fileID: 7250696363613272850}
   - component: {fileID: -2916464073512494223}
   - component: {fileID: 444737975085434652}
+  - component: {fileID: 248718626353609025}
   - component: {fileID: 1247224777600730304}
   - component: {fileID: -6052688814211986346}
   m_Layer: 7
@@ -380,6 +381,21 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   blocksCreator: {fileID: 0}
+--- !u!114 &248718626353609025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7250696363613272848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dac455b870bd1e489b03f9366480072, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  maxHealth: 150
+  beenAttackedDisplay: 1
 --- !u!65 &1247224777600730304
 BoxCollider:
   m_ObjectHideFlags: 0

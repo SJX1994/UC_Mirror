@@ -192,6 +192,7 @@ public class TetriBall : NetworkBehaviour , ITetriProp
         tetriPairBlock = new(this, block);
         block.BlockPairTetri = new(block, this);
         block.MoveCollect = this.MoveCollect;
+        block.StopMoveProp = false;
         posId = block.PosId;
         ResetRotation();
         return true;
@@ -223,7 +224,10 @@ public class TetriBall : NetworkBehaviour , ITetriProp
         {
             return Generate_ForPlayer();
         }
-        
+    }
+    public bool Generate(Player turn,Vector2 specificCoordinate)
+    {
+        return Generate_SpecificCoordinate(specificCoordinate);
     }
     public void Collect()
     {
@@ -300,6 +304,18 @@ public class TetriBall : NetworkBehaviour , ITetriProp
         StartTimer_Growing();
         transform.localPosition = new Vector3(block.posId.x, 0.3f, block.posId.y);
         // transform.localScale = Vector3.one;
+        transform.localScale = Vector3.one * 0.9f;
+        transform.localRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
+        return true;
+    }
+    public bool Generate_SpecificCoordinate(Vector2 specificCoordinate)
+    {
+        if(transform.parent != BlocksCreator.transform)transform.SetParent(BlocksCreator.transform);
+        List<BlockTetriHandler> blocks = new();
+        Vector2 checkId = specificCoordinate;
+        var block = BlocksCreator.blocks.Where(b => b.posId == checkId).FirstOrDefault();
+        StartTimer_Growing();
+        transform.localPosition = new Vector3(block.posId.x, 0.3f, block.posId.y);
         transform.localScale = Vector3.one * 0.9f;
         transform.localRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
         return true;

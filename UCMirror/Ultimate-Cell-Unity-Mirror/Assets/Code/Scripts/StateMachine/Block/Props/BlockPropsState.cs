@@ -4,6 +4,7 @@ using UC_PlayerData;
 public class BlockPropsState : MonoBehaviour
 {
     public bool moveCollect;
+    public bool stopMoveProp = false;
     private BlockObstacle blockObstacle;
     public BlockObstacle BlockObstacle
     {

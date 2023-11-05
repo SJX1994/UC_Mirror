@@ -10107,6 +10107,7 @@ GameObject:
   - component: {fileID: 2505277734249363593}
   - component: {fileID: 5028588802474284766}
   - component: {fileID: 1194182879957464291}
+  - component: {fileID: 810458406438106180}
   - component: {fileID: 4859299981933158966}
   - component: {fileID: 9215075874725026047}
   - component: {fileID: 530365467027143934}
@@ -10172,6 +10173,7 @@ MonoBehaviour:
   syncInterval: 0
   weaponType: 4
   unitTemplate: {fileID: 11400000, guid: d60051352b6384549b6478974bcb1918, type: 2}
+  state: 0
   flip: 0
   unitSoul: {fileID: 0}
   id: 0
@@ -10184,6 +10186,9 @@ MonoBehaviour:
   skeletonRenderer: {fileID: 0}
   selectionCircle: {fileID: 0}
   weapon: {fileID: 0}
+  isReady: 0
+  lastGuardCheckTime: 0
+  guardCheckInterval: 1
   targetOfAttack: {fileID: 0}
   animator: {fileID: 0}
   blockPos: {x: 0, y: 0, z: 0}
@@ -10195,7 +10200,9 @@ MonoBehaviour:
   durationRunning: 1
   mat: {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   tetriUnitSimple: {fileID: 0}
-  attackDirectionLineRenderer: {fileID: 0}
+  startPoint: {x: 0, y: 0, z: 0}
+  endPoint: {x: 0, y: 0, z: 0}
+  playerLineRendererOffset: {x: 0, y: 1, z: 0}
 --- !u!114 &4235034112600392459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10326,6 +10333,18 @@ MonoBehaviour:
   - {fileID: 3682596832703063083, guid: 493c372e9eef041428be063b09e47d6c, type: 3}
   - {fileID: 3682596832703063083, guid: d06b06c9a020288479335a5ed97c26e3, type: 3}
   preview: 0
+--- !u!114 &810458406438106180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4859299981933158961}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efd1f368de48a5d42b619a70d29ddb40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!195 &4859299981933158966
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -52,8 +52,8 @@ public class IdelHolder : NetworkBehaviour
             return;
         }
         idelUI.Active();
-        if(ServerLogic.local_palayer != Player.NotReady)return;
-        ServerLogic.local_palayer = playerPVP_local;
+        if(ServerLogic.Local_palayer != Player.NotReady)return;
+        ServerLogic.Local_palayer = playerPVP_local;
     }
     void RecordId()
     {
@@ -63,7 +63,7 @@ public class IdelHolder : NetworkBehaviour
     [ClientRpc]
     public void Client_HideOther()
     {
-        ServerLogic.local_palayer = playerPVP_local;
+        ServerLogic.Local_palayer = playerPVP_local;
         bool thisNeedHide = playerPVP_local == player ? false : true;
         if(!thisNeedHide)return;
         idelUI.Hide();

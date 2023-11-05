@@ -117,12 +117,15 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
                     block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += Event_BlocksCounterInvoke;
                 });
                 // 道具生成
-                BlocksProps.Generate(PropsData.PropsState.ChainBall);
+                // BlocksProps.Generate(PropsData.PropsState.ChainBall);
                 BlocksProps.Generate(PropsData.PropsState.MoveDirectionChanger);
                 BlocksProps.Generate(PropsData.PropsState.Obstacle);
             }else
             {
+                ServerLogic.Local_palayer = Player.NotReady;
+                ServerLogic.On_Local_palayer_ready += Client_Event_On_Local_player_ready;
                 if(!isServer)return;
+                
                 Event_ReflashPlayerBlocksOccupied();
                 blocks.ForEach((block) => {
                     block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += Server_Event_OnBlockTetriStateChanged;
@@ -134,7 +137,7 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
                     block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += Event_BlocksCounterInvoke;
                 });
                 // 道具生成
-                BlocksProps.Generate(PropsData.PropsState.ChainBall);
+                // BlocksProps.Generate(PropsData.PropsState.ChainBall);
                 BlocksProps.Generate(PropsData.PropsState.MoveDirectionChanger);
                 BlocksProps.Generate(PropsData.PropsState.Obstacle);
 
@@ -148,6 +151,7 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
     {
         UIData.OnPlayer1MoraleAccumulationMaxed -= BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
         UIData.OnPlayer2MoraleAccumulationMaxed -= BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
+        ServerLogic.On_Local_palayer_ready -= Client_Event_On_Local_player_ready;
     }
 #endregion 数据关系
 #region 数据操作
@@ -232,7 +236,7 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
     {
         Vector3 pos = new Vector3(-15f,0,-8f);
         Vector3 scale = new Vector3(1.62f,1.5f,1.37f);
-        Vector3 rot = new Vector3(7.57f,0f,0f);
+        Vector3 rot = new Vector3(5.88f,0f,0f);
         transform.DOMove(pos,0.1f).onComplete = () => {
             originPos = transform.position;
         };
@@ -325,6 +329,20 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
     {
         if(dataStack.Count == 0) return;
         sync_blockChanged = dataStack.Pop();
+    }
+    [Client]
+    public void Client_Event_On_Local_player_ready()
+    {
+        if(ServerLogic.Local_palayer == Player.Player1)
+        {
+            transform.localPosition = new Vector3(transform.localPosition.x+2,transform.localPosition.y,transform.localPosition.z);
+            originPos = transform.position;
+        }else if(ServerLogic.Local_palayer == Player.Player2)
+        {
+           transform.localPosition = new Vector3(transform.localPosition.x-2,transform.localPosition.y,transform.localPosition.z);
+           originPos = transform.position;
+        }
+
     }
 #endregion 联网数据操作
 }

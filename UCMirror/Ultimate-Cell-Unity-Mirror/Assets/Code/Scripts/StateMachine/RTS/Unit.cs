@@ -17,7 +17,7 @@ public class Unit : NetworkBehaviour
     public WeaponTemplate.WeaponType weaponType = WeaponTemplate.WeaponType.Null;
     protected StateMachineManager stateMachineManager;
     public UnitTemplate unitTemplate;
-    protected UnitState state = UnitState.Idle;
+    public UnitState state = UnitState.Idle;
     public bool flip = false;
     public UnitSoul unitSoul;
     [HideInInspector]
@@ -73,11 +73,13 @@ public class Unit : NetworkBehaviour
     private MaterialPropertyBlock spinePropertyBlock_alpha;
     private MaterialPropertyBlock spinePropertyBlock_SelectEffect;
     private MaterialPropertyBlock spinePropertyBlock_color;
-    protected bool isReady = false;
-    protected float lastGuardCheckTime, guardCheckInterval = 1f;
+    public bool isReady = false;
+    public float lastGuardCheckTime, guardCheckInterval = 1f;
     private Unit[] hostiles;
     [HideInInspector]
     public Unit targetOfAttack;
+    [HideInInspector]
+    public TetriAttackable_Attribute targetOfAttackableProp;
     [HideInInspector]
     public Animator animator;
     [HideInInspector]
@@ -106,6 +108,8 @@ public class Unit : NetworkBehaviour
         MovingToTarget,// 向目标移动
         MovingToSpotIdle,// 移动然后待机
         MovingToSpotGuard,// 移动然后侦察
+        AttackProp,
+        AttackingProp,
         Dead,// 死亡
         MovingToSpotWithGuard,// 移动伴随侦察
     }
@@ -231,7 +235,6 @@ public class Unit : NetworkBehaviour
                 }
                 break;
             case UnitState.Attacking:
-
                 if(IsDeadOrNull(targetOfAttack)){Guard();return;}
                 break;
             case UnitState.MovingToSpotWithGuard:
@@ -570,7 +573,7 @@ public class Unit : NetworkBehaviour
     /// 加载收集特效
     /// </summary>
     /// <returns></returns>
-    protected void RunEffect(EffectTemplate.EffectType type)
+    public void RunEffect(EffectTemplate.EffectType type)
     {
         if (!effect) return;
 
@@ -804,12 +807,9 @@ public class Unit : NetworkBehaviour
         {
 
             RunEffect(EffectTemplate.EffectType.Attacking);
-            BossAttack();
+            // BossAttack();
             animator.SetTrigger("DoAttack");
-            if (OnAttacking != null)
-            {
-                OnAttacking();
-            }
+            OnAttacking?.Invoke();
             WeaponDisplay();
             targetOfAttack.SufferAttack(unitTemplate.attackPower);
 
@@ -868,7 +868,7 @@ public class Unit : NetworkBehaviour
         }
     }
     
-    protected void WeaponDisplay()
+    public void WeaponDisplay()
     {
         if (weaponType == WeaponTemplate.WeaponType.Null) return;
         switch (weaponType)
@@ -926,7 +926,7 @@ public class Unit : NetworkBehaviour
     /// <summary>
     /// 停下来注意附近的敌人
     /// </summary>
-    protected void Guard()
+    public void Guard()
     {
         if(!navMeshAgent)return;
         if(!navMeshAgent.enabled)return;
@@ -938,7 +938,7 @@ public class Unit : NetworkBehaviour
         navMeshAgent.isStopped = true;
         navMeshAgent.velocity = Vector3.zero;
     }
-    protected void GuardSimple()
+    public void GuardSimple()
     {
         state = UnitState.Guarding;
         targetOfAttack = null;
@@ -955,7 +955,7 @@ public class Unit : NetworkBehaviour
     }
     #endregion 数据操作
     #region 联网数据操作
-    protected bool Local()
+    public bool Local()
     {
         if(RunModeData.CurrentRunMode == RunMode.Local)return true;
         return false;
@@ -992,12 +992,12 @@ public class Unit : NetworkBehaviour
         }
     }
     [ClientRpc]
-    void Client_DealAttackSimple_DoAttackAnimation()
+    public void Client_DealAttackSimple_DoAttackAnimation()
     {
         animator.SetTrigger("DoAttack");
     }
     [ClientRpc]
-    void Client_DealAttackSimple_InterruptAttackAnimation()
+    public void Client_DealAttackSimple_InterruptAttackAnimation()
     {
         animator.SetTrigger("InterruptAttack");
     }

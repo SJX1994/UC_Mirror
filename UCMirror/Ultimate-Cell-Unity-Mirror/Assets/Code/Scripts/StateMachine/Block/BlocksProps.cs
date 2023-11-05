@@ -134,8 +134,23 @@ public class BlocksProps : NetworkBehaviour
             SetTetriBallOnServer();
             
         }
-        
-        
+    }
+    public void GenerateChainBall_SpecificCoordinates( Vector2 specificCoordinates )
+    {
+        // ChainBallSwitcher = Switcher(ChainBallSwitcher);
+        if(Local())
+        {
+            tetriBall = Instantiate(TetriBall);
+            LocalMode(tetriBall.transform);
+            tetriBall.Generate(Player.NotReady,specificCoordinates);
+        }else
+        {
+            if(!isServer)return;
+            InstantiateTetriBallOnServer();
+            if(!tetriBall)return;
+            SetTetriBallOnServer();
+            
+        }
     }
     public void Event_GenerateChainBall_MoraleAccumulationMaxed(Player whoMax)
     {

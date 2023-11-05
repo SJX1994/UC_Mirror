@@ -50,7 +50,7 @@ namespace UC_PlayerData
     {
         Player1,
         Player2,
-        NotReady,
+        NotReady
     }
     public class UnitData
     {
@@ -151,7 +151,7 @@ namespace UC_PlayerData
         public const float InIdelbox_CreatCountdown = 9f;
         public const float InIdelbox_UpLevelCountdown = 6f;
         public static UnityAction OnTimeBeforStartFinish_FromKeyTimeCounter;
-        public const float TotalTime_ReverseOrder = 180f;
+        public const float TotalTime_ReverseOrder =  210f;//180f;
         public static float currentTime_ReverseOrder = 0f;
         public static bool isTimerRunning_ReverseOrder = false;
         public static string timerText_ReverseOrder = "00:00";
@@ -173,6 +173,20 @@ namespace UC_PlayerData
     public static class ServerLogic
     {
         public static Player local_palayer = Player.NotReady;
+        public static Player Local_palayer
+        {
+            get
+            {
+                return local_palayer;
+            }
+            set
+            {
+                if(local_palayer == value) return;
+                local_palayer = value;
+                On_Local_palayer_ready?.Invoke();
+            }
+        }
+        public static UnityAction On_Local_palayer_ready;
         public static bool isGameStart = false;
         // 道具Id
         // private static int PropsID = 10_0000_0;

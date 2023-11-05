@@ -385,10 +385,18 @@ public class BuoyBehavior : NetworkBehaviour
 #endregion 数据操作
 #region 联网数据操作
 //--------------------联网--------------------
+    Vector3 ClientMouseOffest()
+    {
+        Vector3 player1MousePosition = Input.mousePosition + new Vector3(0,0,100);
+        Vector3 player2MousePosition = Input.mousePosition - new Vector3(0,0,100);
+        Vector3 mousePosition = ServerLogic.Local_palayer == Player.Player1 ? player1MousePosition : ServerLogic.Local_palayer == Player.Player2 ? player2MousePosition : Vector3.zero;
+        return mousePosition;
+    }
     [Client]
     void Client_Behavior_OnMouseDown()
     {
         state = buoyInfo.buoyTurnHandle.GetControlState();
+        
         if(state == BuoyTurnHandle.TurnHandleControlState.Scaning_1)
         {
             originPos_PVP = transform.parent.localPosition;
@@ -487,7 +495,7 @@ public class BuoyBehavior : NetworkBehaviour
     void Rpc_Behavior_OnMouseDrag(bool canPut,Player whichPlayer)
     {
         if(!tetrisBuoySimpleTemp)return;
-        if(whichPlayer!=ServerLogic.local_palayer)return;
+        if(whichPlayer!=ServerLogic.Local_palayer)return;
         if(canPut)tetrisBuoySimpleTemp.Display_OnDragBuoy();
         else if(!canPut)tetrisBuoySimpleTemp.Display_OnCantDragBuoy();
     }
@@ -556,7 +564,7 @@ public class BuoyBehavior : NetworkBehaviour
     [ClientRpc]
     void Client_CantPutAction(Player whichPlayer)
     {
-        if(whichPlayer!=ServerLogic.local_palayer)return;
+        if(whichPlayer!=ServerLogic.Local_palayer)return;
         if(whichPlayer == Player.Player1)
         {
             UserAction.Player1UserState = UserAction.State.WatchingFight;
@@ -569,7 +577,7 @@ public class BuoyBehavior : NetworkBehaviour
     [ClientRpc]
     void Client_PutAction(Player whichPlayer)
     {
-        if(whichPlayer!=ServerLogic.local_palayer)return;
+        if(whichPlayer!=ServerLogic.Local_palayer)return;
         if(whichPlayer == Player.Player1)
         {
             UserAction.Player1UserState = UserAction.State.WatchingFight;
@@ -699,7 +707,7 @@ public class BuoyBehavior : NetworkBehaviour
         
         if(!tetrisBuoySimpleTemp)tetrisBuoySimpleTemp = FindObjectsOfType<TetrisBuoySimple>().ToList().Find(item => item.netId == tetrisBuoySimpleTempNetID);
         tetrisBuoySimpleTemp.transform.parent = transform.parent;
-        if(whichPlayerDragging != ServerLogic.local_palayer)return;
+        if(whichPlayerDragging != ServerLogic.Local_palayer)return;
         buoyInfo.OnBuoyDrag?.Invoke();
         Invoke(nameof(Display_ShowForPlayerScreen),0.1f);
     }
@@ -750,7 +758,7 @@ public class BuoyBehavior : NetworkBehaviour
         //     TetriDifferentStatusDisplays.ForEach(x=>x.Event_OnUserActionStateChanged(serverToClient_SetCorrect_In.userState));
         // }
         // if(serverToClient_SetCorrect_In.player != buoyInfo.player_local)return;
-        if(serverToClient_SetCorrect_In.player != ServerLogic.local_palayer)return;
+        if(serverToClient_SetCorrect_In.player != ServerLogic.Local_palayer)return;
         if(serverToClient_SetCorrect_In.player == Player.Player1)
         {
             UserAction.Player1UserState = UserAction.State.CommandTheBattle_Buoy;

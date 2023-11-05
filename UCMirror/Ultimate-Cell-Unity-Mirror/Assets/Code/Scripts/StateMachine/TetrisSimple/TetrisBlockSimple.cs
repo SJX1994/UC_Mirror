@@ -536,6 +536,8 @@ public class TetrisBlockSimple : NetworkBehaviour
             condition.Add(blockNext);
             condition.Add(pineer.CanMove);
             condition.Add(pineer.BlockNextCheckBuoy(blockNext));
+            if(!blockNext)continue;
+            condition.Add(!blockNext.GetComponent<BlockPropsState>().stopMoveProp);
         }
         bool allTrue = condition.All(b => b);
         return allTrue;
@@ -554,6 +556,8 @@ public class TetrisBlockSimple : NetworkBehaviour
             condition.Add(blockNext);
             condition.Add(pineer.CanMove);
             condition.Add(pineer.BlockNextCheckBuoy(blockNext));
+            if(!blockNext)continue;
+            condition.Add(!blockNext.GetComponent<BlockPropsState>().stopMoveProp);
             // Debug.Log($"cccccc:{pineer.CanMove}");
         }
         bool allTrue = condition.All(b => b);

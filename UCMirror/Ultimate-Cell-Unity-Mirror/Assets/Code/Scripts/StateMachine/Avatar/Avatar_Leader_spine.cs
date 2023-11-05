@@ -71,8 +71,8 @@ public class Avatar_Leader_spine : NetworkBehaviour
         {
             // Debug.Log("PlayAttackAnimation_buttonClick!!!");
             if(!isClient)return;
-            if(leaderData.leaderPosition == LeaderData.LeaderPosition.Left && ServerLogic.local_palayer != Player.Player1)return;
-            if(leaderData.leaderPosition == LeaderData.LeaderPosition.Right && ServerLogic.local_palayer != Player.Player2)return;
+            if(leaderData.leaderPosition == LeaderData.LeaderPosition.Left && ServerLogic.Local_palayer != Player.Player1)return;
+            if(leaderData.leaderPosition == LeaderData.LeaderPosition.Right && ServerLogic.Local_palayer != Player.Player2)return;
             leaderData.leaderState = LeaderData.LeaderState.Attack;
             Client_PlayAnimation(leaderData.leaderState, false);
         }

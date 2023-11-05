@@ -158,7 +158,7 @@ public class BlocksReferee : NetworkBehaviour
     [ClientRpc]
     void Client_GameOver(int Player1_numb,int Player2_numb)
     {
-        Player localPlayer = ServerLogic.local_palayer;
+        Player localPlayer = ServerLogic.Local_palayer;
         if(Player1_numb == Player2_numb)
         {
             equivalentPage = Instantiate(EquivalentPage);

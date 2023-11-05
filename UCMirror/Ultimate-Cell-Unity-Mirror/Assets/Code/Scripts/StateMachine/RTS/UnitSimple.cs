@@ -3,6 +3,8 @@ using UC_PlayerData;
 using DG.Tweening;
 using Spine.Unity;
 using Mirror;
+using System.Linq;
+using System.Collections.Generic;
 public class UnitSimple : Unit
 {
 #region 数据对象
@@ -60,10 +62,10 @@ public class UnitSimple : Unit
         }
     }
     // 可视化
-    Vector3 startPoint;
-    Vector3 endPoint;
-    public LineRenderer attackDirectionLineRenderer;
-    LineRenderer AttackDirectionLineRenderer
+    public Vector3 startPoint;
+    public Vector3 endPoint;
+    LineRenderer attackDirectionLineRenderer;
+    public LineRenderer AttackDirectionLineRenderer
     {
         get
         {
@@ -128,7 +130,17 @@ public class UnitSimple : Unit
             }
         }
     }
-    Vector3 playerLineRendererOffset = new Vector3(0,1,0);
+    public Vector3 playerLineRendererOffset = new Vector3(0,1,0);
+    UnitAttackProp unitAttackProp;
+    UnitAttackProp UnitAttackProp
+    {
+        get
+        {
+            if(!unitAttackProp)unitAttackProp = GetComponent<UnitAttackProp>();
+            return unitAttackProp;
+        }
+    }
+
 # endregion 数据对象
 # region 数据关系
     public override void Awake()
@@ -171,17 +183,21 @@ public class UnitSimple : Unit
     {
         if(Local())
         {
-            targetOfAttack = AttackChecker();
+            Transform target = TargetsComparison();
             startPoint = transform.position + playerLineRendererOffset;
-            endPoint = targetOfAttack ? new( targetOfAttack.transform.position.x - playerLineRendererOffset.x,targetOfAttack.transform.position.y + playerLineRendererOffset.y,targetOfAttack.transform.position.z+ playerLineRendererOffset.z) : startPoint;
-            Attack(targetOfAttack);
+            endPoint = target ? new( target.transform.position.x - playerLineRendererOffset.x,target.transform.position.y + playerLineRendererOffset.y,target.transform.position.z + playerLineRendererOffset.z) : startPoint;
+            if(!target)return;
+            AttackDifferentTypeConvert(target);
+            DrawLine();
         }else
         {
             if(!isServer)return;
-            targetOfAttack = AttackChecker();
+            Transform target = TargetsComparison();
             startPoint = transform.position + playerLineRendererOffset;
-            endPoint = targetOfAttack ? new( targetOfAttack.transform.position.x - playerLineRendererOffset.x,targetOfAttack.transform.position.y + playerLineRendererOffset.y,targetOfAttack.transform.position.z+ playerLineRendererOffset.z) : startPoint;
-            Attack(targetOfAttack);
+            endPoint = target ? new( target.transform.position.x - playerLineRendererOffset.x,target.transform.position.y + playerLineRendererOffset.y,target.transform.position.z + playerLineRendererOffset.z) : startPoint;
+            if(!target)return;
+            AttackDifferentTypeConvert(target);
+            DrawLine();
         }
         
     }
@@ -244,6 +260,31 @@ public class UnitSimple : Unit
     
 # endregion 数据关系
 # region 数据操作
+    Transform TargetsComparison()
+    {
+        Transform target = null;
+        float cantFound = 10_0000f;
+        targetOfAttack = AttackChecker();
+        targetOfAttackableProp = UnitAttackProp.AttackChecker();
+        float distanceOfUnit = targetOfAttack? Vector3.Distance(transform.position,targetOfAttack.transform.position) : cantFound;
+        float distanceOfProp = targetOfAttackableProp? Vector3.Distance(transform.position,targetOfAttackableProp.transform.position) : cantFound;
+        if(distanceOfUnit == cantFound && distanceOfProp == cantFound)
+        {
+            target = null;
+        }else if(distanceOfUnit != cantFound && distanceOfProp != cantFound)
+        {
+            target = distanceOfUnit >= distanceOfProp ? targetOfAttackableProp.transform : targetOfAttack.transform;
+        }
+        else if(distanceOfUnit == cantFound && distanceOfProp != cantFound)
+        {
+            target = targetOfAttackableProp.transform;
+        }else if(distanceOfUnit != cantFound && distanceOfProp == cantFound)
+        {
+            target = targetOfAttack.transform;
+        }
+        // if(target)Debug.Log("target"+target.name);
+        return target;
+    }
     public void SetUnitSortingOrderToFlow()
     {
         Renderer sotingOrderRender = SkeletonRenderer.gameObject.GetComponent<SkeletonMecanim>().GetComponent<Renderer>();
@@ -371,6 +412,18 @@ public class UnitSimple : Unit
 
     }
     // 攻击
+    void AttackDifferentTypeConvert(Transform target)
+    {
+        
+        if(target.TryGetComponent(out TetriAttackable_Attribute tetriAttackable_Attribute))
+        {
+            UnitAttackProp.Attack(tetriAttackable_Attribute);
+        }
+        if(target.TryGetComponent(out UnitSimple unitSimple))
+        {
+            Attack(unitSimple);
+        }
+    }
     Unit AttackChecker()
     {
         if (transform.tag == "Untagged") return null;
@@ -386,7 +439,6 @@ public class UnitSimple : Unit
         {
             if (!target)return;       
             if (IsDeadOrNull(target))return;
-            DrawLine();
             if (tween_running != null) tween_running.Kill();
             animator.speed = Random.Range(0.95f, 1.15f);
             StartCoroutine(DealAttackSimple());
@@ -395,7 +447,6 @@ public class UnitSimple : Unit
             if(!isServer)return;
             if (!target)return;       
             if (IsDeadOrNull(target))return;
-            DrawLine();
             if (tween_running != null) tween_running.Kill();
             animator.speed = Random.Range(0.95f, 1.15f);
             StartCoroutine(Server_DealAttackSimple());
@@ -406,16 +457,17 @@ public class UnitSimple : Unit
     {
         Invoke(nameof(DrawLine), 0.3f);
     }
-    private void DrawLine()
+    public void DrawLine()
     {
-        attackDirectionLineRenderer.positionCount = 2;
-        attackDirectionLineRenderer.SetPosition(0, startPoint);
-        attackDirectionLineRenderer.SetPosition(1, startPoint);
-        Vector3 lineRenderEndPoint = targetOfAttack ? endPoint : startPoint;
-        attackDirectionLineRenderer.SetPosition(1, lineRenderEndPoint);
+        AttackDirectionLineRenderer.positionCount = 2;
+        AttackDirectionLineRenderer.SetPosition(0, startPoint);
+        AttackDirectionLineRenderer.SetPosition(1, startPoint);
+        Vector3 lineRenderEndPoint = targetOfAttack ? endPoint: targetOfAttackableProp? endPoint: startPoint;
+        AttackDirectionLineRenderer.SetPosition(1, lineRenderEndPoint);
         if(Local())return;
         Client_DrawLine(startPoint,lineRenderEndPoint);
     }
+    
     // 旋转
     public void Event_OnRotate(bool Reverse)
     {
@@ -644,7 +696,7 @@ public class UnitSimple : Unit
     }
     
     // 全体庆祝
-    void Display_AllWin(TetriBlockSimple tetriBlock)
+    public void Display_AllWin(TetriBlockSimple tetriBlock)
     {
         foreach(var display in tetriBlock.tetrisBlockSimple.ChildTetris)
         {
@@ -801,7 +853,7 @@ public class UnitSimple : Unit
         ResetRotation();
         SetFlip();
         unitTemplate.player = serverToClient_Unit_In.playerBelong;
-        if(unitTemplate.player == ServerLogic.local_palayer)return;
+        if(unitTemplate.player == ServerLogic.Local_palayer)return;
         Color DistinguishBelongingColor = unitTemplate.player == Player.Player1 ? Color.red * 0.4f + Color.white*0.6f : Color.blue * 0.4f + Color.white * 0.6f;
         UpdateColorMultiplication(DistinguishBelongingColor);
     }
@@ -844,6 +896,17 @@ public class UnitSimple : Unit
     [ClientRpc]
     void Client_DrawLine(Vector3 startPoint,Vector3 endPoint)
     {
+        if(startPoint == endPoint)return;
+        float offset = 2f;
+        if(ServerLogic.Local_palayer != Player.Player1)
+        {
+            startPoint = new Vector3(startPoint.x - offset,startPoint.y,startPoint.z);
+            endPoint = new Vector3(endPoint.x - offset,endPoint.y,endPoint.z);
+        }else if (ServerLogic.Local_palayer != Player.Player2)
+        {
+            startPoint = new Vector3(startPoint.x + offset,startPoint.y,startPoint.z);
+            endPoint = new Vector3(endPoint.x + offset,endPoint.y,endPoint.z);
+        }
         attackDirectionLineRenderer.positionCount = 2;
         attackDirectionLineRenderer.SetPosition(0, startPoint);
         attackDirectionLineRenderer.SetPosition(1, endPoint);

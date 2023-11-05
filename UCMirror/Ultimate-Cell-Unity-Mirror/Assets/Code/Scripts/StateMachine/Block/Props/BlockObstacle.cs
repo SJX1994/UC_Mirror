@@ -30,7 +30,19 @@ public class BlockObstacle : MonoBehaviour, IBlockProp
             BlockPropsState.moveCollect = moveCollect;
         }
     }
-
+    private bool stopMoveProp = false;
+    public bool StopMoveProp
+    {
+        get
+        {
+            return stopMoveProp;
+        }
+        set
+        {
+            stopMoveProp = value;
+            BlockPropsState.stopMoveProp = stopMoveProp;
+        }
+    }
     private BlockDisplay blockDisplay;
     public BlockDisplay BlockDisplay
     {

@@ -47,7 +47,7 @@ public class IdelUI : NetworkBehaviour
             // ChangeHideColorRecursive(Info.transform);
         }
         RectTransform rectTransform = transform.GetComponent<RectTransform>();
-        Vector2 newPosition = new Vector2(-3f, rectTransform.anchoredPosition.y);
+        Vector2 newPosition = new Vector2(-4.44f, rectTransform.anchoredPosition.y);
         rectTransform.anchoredPosition = newPosition;
         hiden = true;
         Button refalshButton = transform.Find("RefreshButton").GetComponent<Button>();

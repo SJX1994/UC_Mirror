@@ -1076,6 +1076,7 @@ GameObject:
   - component: {fileID: -8238031156067317923}
   - component: {fileID: 7663754766313671107}
   - component: {fileID: -7232832196721784973}
+  - component: {fileID: 6151285064052220328}
   m_Layer: 6
   m_Name: T Tetromino
   m_TagString: Untagged
@@ -1172,7 +1173,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5933914586323795205}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
@@ -1200,6 +1201,23 @@ MonoBehaviour:
   compressRotation: 0
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &6151285064052220328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5933914586323795205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 4245229734
+  serverOnly: 0
+  visible: 0
+  hasSpawned: 0
 --- !u!1 &5933914587304869546
 GameObject:
   m_ObjectHideFlags: 0

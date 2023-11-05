@@ -187,7 +187,6 @@ public class ChangeLiquid : NetworkBehaviour
         haloBlinkAnimationSequence.Append(haloImage.DOFade(HaloStartBlinkIntensity, haloblinkDuration / 2));
         haloBlinkAnimationSequence.Append(haloImage.DOFade(HaloEndBlinkIntensity, haloblinkDuration / 2));
         haloBlinkAnimationSequence.SetLoops(loopForever,LoopType.Yoyo); 
-        
     }
     public void DoCount()
     {
@@ -310,30 +309,6 @@ public class ChangeLiquid : NetworkBehaviour
         ColumnLiquid.GetComponent<Image>().fillAmount = 0;
         TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
     }
-    // [Client]
-    // public void Client_DoCount()
-    // {
-    //     TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
-    //     ReadyLight.SetActive(false);
-    //     // ideaBox.idelContainer.SetActive(false);
-    //     TopLiquid.GetComponent<RectTransform>().DOAnchorPos(new Vector3(-46f,59f,0f),6f);
-    //     DOVirtual.Float(0, 1, 6.3f, (TweenCallback<float>)((float value) =>
-    //     {
-    //         fade = value;
-    //         this.ColumnLiquid.GetComponent<Image>().fillAmount = value;
-    //         foreach(var tetris in FindObjectsOfType<TetrisBlockSimple>())
-    //         {
-    //             if(tetris.player != Player.NotReady)return;
-    //             // 是否需要在 客户端idelBox 还没获取的时候 隐藏 俄罗斯方块组
-    //         }
-    //     })).onComplete=() =>
-    //     {
-    //         ReadyLight.SetActive(true);
-    //         // ideaBox.idelContainer.SetActive(true);
-    //         IdelBox.ClientGetTetrisGroupID();
-    //     };
-        
-    // }
     public void ChangeColor(Color color)
     {
         if(!IdelBox.idelUI.hiden)
@@ -422,6 +397,7 @@ public class ChangeLiquid : NetworkBehaviour
     {
         ReadyLight.SetActive(true);
         IdelBox.ClickEvent.SetActive(true);
+        DoCount_UpLevel();
     }
 #endregion 联网数据操作
 }

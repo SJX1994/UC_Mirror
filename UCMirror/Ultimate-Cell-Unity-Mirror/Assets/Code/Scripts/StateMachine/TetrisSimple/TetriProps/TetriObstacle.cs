@@ -22,6 +22,7 @@ public class TetriObstacle : NetworkBehaviour, ITetriProp
     }
     public KeyValuePair<TetriObstacle, BlockObstacle> tetriPairBlock = new();
     // 道具接口对象
+    
     public bool MoveCollect{get;set;} = true;
     public BlocksCreator_Main blocksCreator;
     public BlocksCreator_Main BlocksCreator { 
@@ -133,6 +134,7 @@ public class TetriObstacle : NetworkBehaviour, ITetriProp
         // 重置
         tetriPairBlock.Value.BlockPairTetri = new();
         tetriPairBlock.Value.BlockPropsState.moveCollect = false;
+        tetriPairBlock.Value.BlockPropsState.stopMoveProp = false;
         tetriPairBlock = new();
         Destroy(gameObject);
     }
@@ -223,6 +225,7 @@ public class TetriObstacle : NetworkBehaviour, ITetriProp
         tetriPairBlock = new(this, block);
         block.BlockPairTetri = new(block, this);
         block.MoveCollect = this.MoveCollect;
+        block.StopMoveProp = true;
         posId = block.PosId;
         ResetRotation();
         return true;
