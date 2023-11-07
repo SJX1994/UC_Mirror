@@ -109,7 +109,7 @@ namespace UC_PlayerData
         public static float BlocksAlpha_commandTheBattle = 1.0f;
         public static bool stopEventSend = false; 
         public static UnityAction<int> OnPlayer1BlocksNumbChange;
-        public static int player1_numb = 20;
+        public static int player1_numb = 0;
         public static int Player1_numb
         {
             get { return player1_numb; }
@@ -122,7 +122,7 @@ namespace UC_PlayerData
             }
         }
         public static UnityAction<int> OnPlayer2BlocksNumbChange;
-        public static int player2_numb = 20;
+        public static int player2_numb = 0;
         public static int Player2_numb
         {
             get { return player2_numb; }
@@ -148,7 +148,7 @@ namespace UC_PlayerData
     public static class Referee
     {
         public const float InIdelbox_CreatFirstCountdown = 9f;
-        public const float InIdelbox_CreatCountdown = 9f;
+        public const float InIdelbox_CreatCountdown = 1f;
         public const float InIdelbox_UpLevelCountdown = 6f;
         public static UnityAction OnTimeBeforStartFinish_FromKeyTimeCounter;
         public const float TotalTime_ReverseOrder =  210f;//180f;
@@ -256,6 +256,12 @@ namespace UC_PlayerData
     }
     public static class UIData
     {
+        public static Color32 SoldiersReturnHPColor = new Color32(89,187,63,255);
+        public static string SoldiersReturnHPText = "回血";
+        public static Color32 SoldiersBoostMoraleColor = new Color32(187,63,89,255);
+        public static string SoldiersBoostMoraleText = "士气+";
+        public static int player1FloatingWordIDTemp = 0;
+        public static int player2FloatingWordIDTemp = 0;
         public const float MAX_MORALE = 500f;
         public static float player1MoraleAccumulationAdditionContinuedTime = 12f;
         public static float player2MoraleAccumulationAdditionContinuedTime = 12f;

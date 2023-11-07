@@ -276,14 +276,14 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
             {
                 blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Peace_Player2;
             }
-            // 初始放置区域 中线是 9 和 10 列
-            if(i>=0 && i<=1)
-            {
-                blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player1;
-            }else if(i>=18 && i<=20)
-            {
-                blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player2;
-            }
+            // // 初始放置区域 中线是 9 和 10 列
+            // if(i>=0 && i<=1)
+            // {
+            //     blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player1;
+            // }else if(i>=18 && i<=20)
+            // {
+            //     blockTemp.transform.GetComponent<BlockTetriHandler>().State = BlockTetriHandler.BlockTetriState.Occupied_Player2;
+            // }
         }
     }
     

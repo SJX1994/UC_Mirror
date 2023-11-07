@@ -2022,7 +2022,7 @@ GameObject:
   - component: {fileID: 1484010802450416445}
   - component: {fileID: 3819694275695326824}
   - component: {fileID: 7832242006768518122}
-  - component: {fileID: -1910075198914640824}
+  - component: {fileID: 8193417189122371602}
   m_Layer: 6
   m_Name: J Tetromino
   m_TagString: Untagged
@@ -2147,7 +2147,7 @@ MonoBehaviour:
   compressRotation: 0
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &-1910075198914640824
+--- !u!114 &8193417189122371602
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

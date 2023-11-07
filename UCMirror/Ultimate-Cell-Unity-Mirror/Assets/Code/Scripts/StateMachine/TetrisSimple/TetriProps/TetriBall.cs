@@ -231,17 +231,36 @@ public class TetriBall : NetworkBehaviour , ITetriProp
     }
     public void Collect()
     {
-        if(locked)return;
-        tetriPairBlock.Value.BlockPropsState.propsState = PropsData.PropsState.None;
-        // 特效
-        if(!BlocksCreator)Start();
-        BlocksCreator.GetComponent<BlocksEffects>().LoadAttentionEffect(tetriPairBlock.Value.BlockDisplay,PropsData.PropsState.ChainBall);
-        // 重置
-        tetriPairBlock.Value.BlockPairTetri = new();
-        tetriPairBlock.Value.BlockPropsState.moveCollect = false;
-        tetriPairBlock = new();
-        OnTetriBallCollected?.Invoke(this);
-        Destroy(gameObject);
+        if(Local())
+        {
+            if(locked)return;
+            tetriPairBlock.Value.BlockPropsState.propsState = PropsData.PropsState.None;
+            // 特效
+            if(!BlocksCreator)Start();
+            BlocksCreator.GetComponent<BlocksEffects>().LoadAttentionEffect(tetriPairBlock.Value.BlockDisplay,PropsData.PropsState.ChainBall,"吃掉神助果");
+            // 重置
+            tetriPairBlock.Value.BlockPairTetri = new();
+            tetriPairBlock.Value.BlockPropsState.moveCollect = false;
+            tetriPairBlock = new();
+            OnTetriBallCollected?.Invoke(this);
+            Destroy(gameObject);
+        }else
+        {
+            if(!isServer)return;
+            if(locked)return;
+            tetriPairBlock.Value.BlockPropsState.propsState = PropsData.PropsState.None;
+            // 特效
+            if(!BlocksCreator)Start();
+            BlocksCreator.GetComponent<BlocksEffects>().Server_LoadAttentionEffect(tetriPairBlock.Value.BlockDisplay,PropsData.PropsState.ChainBall,"吃掉神助果");
+            
+            // 重置
+            tetriPairBlock.Value.BlockPairTetri = new();
+            tetriPairBlock.Value.BlockPropsState.moveCollect = false;
+            tetriPairBlock = new();
+            OnTetriBallCollected?.Invoke(this);
+            NetworkServer.Destroy(gameObject);
+        }
+        
     }
     public bool Generate_First()
     {
@@ -337,5 +356,6 @@ public class TetriBall : NetworkBehaviour , ITetriProp
         if(RunModeData.CurrentRunMode == RunMode.Local)return true;
         return false;
     }
+    
 #endregion 联网数据操作
 }

@@ -264,8 +264,27 @@ public class TetriUnitSimple : NetworkBehaviour
             if(!TetriBuoy.blockBuoyHandler)return;
             BlockDisplay blockDisplay = TetriBuoy.blockBuoyHandler.BlockDisplay;
             BlocksEffects bE =  TetrisBlockSimple.blocksCreator.BlocksEffects;
-            bE.LoadAttentionEffect(blockDisplay,TetrisBlockSimple.player);
-            Client_PlayBlockEffect(blockDisplay.posId);
+            bE.Server_LoadAttentionEffect(blockDisplay,TetrisBlockSimple.player);
+            // Client_PlayBlockEffect(blockDisplay.posId);
+        }
+        
+    }
+    public void PlayBlockEffect(string floatingwordToShow , Color color32 = default)
+    {
+        if(Local())
+        {
+            if(!TetriBuoy.blockBuoyHandler)return;
+            BlockDisplay blockDisplay = TetriBuoy.blockBuoyHandler.BlockDisplay;
+            BlocksEffects bE =  TetrisBlockSimple.blocksCreator.BlocksEffects;
+            bE.LoadAttentionEffect(blockDisplay,TetrisBlockSimple.player,floatingwordToShow,color32);
+        }else
+        {
+            if(!isServer)return;
+            if(!TetriBuoy.blockBuoyHandler)return;
+            BlockDisplay blockDisplay = TetriBuoy.blockBuoyHandler.BlockDisplay;
+            BlocksEffects bE =  TetrisBlockSimple.blocksCreator.BlocksEffects;
+            bE.Server_LoadAttentionEffect(blockDisplay,TetrisBlockSimple.player,floatingwordToShow,color32);
+            // Client_PlayBlockEffect(blockDisplay.posId);
         }
         
     }

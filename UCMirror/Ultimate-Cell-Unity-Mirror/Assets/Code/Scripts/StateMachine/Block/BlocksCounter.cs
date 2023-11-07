@@ -164,7 +164,8 @@ public class BlocksCounter : MonoBehaviour
             for (int row = 0; row < 20; row++)
             {
                 var block = BlocksCreator.blocks.Find((block) => block.posId == new Vector2(row,col));
-                BlocksEffects.LoadAttentionEffect(block,player);
+                string floatingwordToShow = "";
+                BlocksEffects.LoadAttentionEffect(block,player,floatingwordToShow);
                 TetriBuoySimple tetriBuoy = block.BlockBuoyHandler.tetriBuoySimple;
                 if(!tetriBuoy)continue;
                 tetriBuoy.TetriBlockSimple.TetriUnitSimple.HaveUnit.Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType.ReachBottomLineGain);

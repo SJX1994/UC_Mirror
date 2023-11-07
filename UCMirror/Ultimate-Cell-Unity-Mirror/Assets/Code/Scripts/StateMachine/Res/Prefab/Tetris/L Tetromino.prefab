@@ -1743,7 +1743,7 @@ GameObject:
   - component: {fileID: 2143654664506366798}
   - component: {fileID: -8305807456091775903}
   - component: {fileID: -7888026593893893779}
-  - component: {fileID: -7550179129300087503}
+  - component: {fileID: -4049009675268389}
   m_Layer: 6
   m_Name: L Tetromino
   m_TagString: Untagged
@@ -1868,7 +1868,7 @@ MonoBehaviour:
   compressRotation: 0
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!114 &-7550179129300087503
+--- !u!114 &-4049009675268389
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

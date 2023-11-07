@@ -146,7 +146,7 @@ public class BuoyInfo : NetworkBehaviour
     }
     Vector3 ClientMouseOffest(Vector3 mousePos)
     {
-        Debug.Log("mousePos++"+mousePos);
+        // Debug.Log("mousePos++"+mousePos);
         Vector3 player1MousePosition = mousePos - new Vector3(100,0,0);
         Vector3 player2MousePosition = mousePos + new Vector3(100,0,0);
         Vector3 mousePosition = player_local == Player.Player1 ? player1MousePosition : player_local == Player.Player2 ? player2MousePosition : Vector3.zero;

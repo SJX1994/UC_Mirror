@@ -127,16 +127,33 @@ public class TetriObstacle : NetworkBehaviour, ITetriProp
     }
     public void Collect()
     {
-        if(locked)return;
-        tetriPairBlock.Value.BlockPropsState.propsState = PropsData.PropsState.None;
-        // 特效
-        BlocksCreator.GetComponent<BlocksEffects>().LoadAttentionEffect(tetriPairBlock.Value.BlockDisplay, PropsData.PropsState.Obstacle);
-        // 重置
-        tetriPairBlock.Value.BlockPairTetri = new();
-        tetriPairBlock.Value.BlockPropsState.moveCollect = false;
-        tetriPairBlock.Value.BlockPropsState.stopMoveProp = false;
-        tetriPairBlock = new();
-        Destroy(gameObject);
+        if(Local())
+        {
+            if(locked)return;
+            tetriPairBlock.Value.BlockPropsState.propsState = PropsData.PropsState.None;
+            // 特效
+            BlocksCreator.GetComponent<BlocksEffects>().LoadAttentionEffect(tetriPairBlock.Value.BlockDisplay, PropsData.PropsState.Obstacle,"摧毁荆棘");
+            // 重置
+            tetriPairBlock.Value.BlockPairTetri = new();
+            tetriPairBlock.Value.BlockPropsState.moveCollect = false;
+            tetriPairBlock.Value.BlockPropsState.stopMoveProp = false;
+            tetriPairBlock = new();
+            Destroy(gameObject);
+        }else
+        {
+            if(!isServer)return;
+            if(locked)return;
+            tetriPairBlock.Value.BlockPropsState.propsState = PropsData.PropsState.None;
+            // 特效
+            BlocksCreator.GetComponent<BlocksEffects>().Server_LoadAttentionEffect(tetriPairBlock.Value.BlockDisplay, PropsData.PropsState.Obstacle,"摧毁荆棘");
+            
+            // 重置
+            tetriPairBlock.Value.BlockPairTetri = new();
+            tetriPairBlock.Value.BlockPropsState.moveCollect = false;
+            tetriPairBlock.Value.BlockPropsState.stopMoveProp = false;
+            tetriPairBlock = new();
+            NetworkServer.Destroy(gameObject);
+        }
     }
 
     public bool Generate(Player turn)
@@ -261,4 +278,11 @@ public class TetriObstacle : NetworkBehaviour, ITetriProp
         });
     }
 # endregion 数据操作
+# region 联网数据操作
+    bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+# endregion 联网数据操作
 }

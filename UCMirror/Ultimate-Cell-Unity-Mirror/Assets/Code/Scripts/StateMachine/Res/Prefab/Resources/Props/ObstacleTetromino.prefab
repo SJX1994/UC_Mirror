@@ -393,9 +393,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5dac455b870bd1e489b03f9366480072, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   state: 0
   maxHealth: 150
   beenAttackedDisplay: 1
+  maybeHaveTheTetriBallProbability: 0.5
 --- !u!65 &1247224777600730304
 BoxCollider:
   m_ObjectHideFlags: 0

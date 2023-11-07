@@ -525,7 +525,9 @@ public class UnitSimple : Unit
         Soldier.Behaviors_ChainTransfer();
         // 首个砖块获得加成
         animator.SetTrigger("DoWin");
-        tetriUnitSimple.PlayBlockEffect();
+        Color color = UIData.SoldiersReturnHPColor;
+        string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
+        tetriUnitSimple.PlayBlockEffect(effectName,color);
         SufferAddHealthSimple((int)maxHealth);
     }
     public void Display_UserCommandTheBattle()
@@ -585,10 +587,15 @@ public class UnitSimple : Unit
     {
         Display_AllWin(tetriUnitSimple.TetriBlock);
         // 整组增强
+        // Color colorTeam = UIData.SoldiersReturnHPColor;
+        // string effectNameTeam = UIData.SoldiersReturnHPText + ":" + maxHealth;
+        Color color2 = UIData.SoldiersBoostMoraleColor;
+        string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 10f;
         tetriUnitSimple.TetrisBlockSimple.ChildTetris.ForEach((System.Action<TetriBlockSimple>)((tetri) => {
-            tetri.TetriUnitSimple.PlayBlockEffect();
+            // tetri.TetriUnitSimple.PlayBlockEffect(effectNameTeam,colorTeam);
+            tetriUnitSimple.PlayBlockEffect(effectName2,color2);
             tetri.TetriUnitSimple.HaveUnit.Soldier.Behaviors_onReachBottomLine();
-            tetri.TetriUnitSimple.HaveUnit.SufferAddHealthSimple((int)maxHealth);
+            // tetri.TetriUnitSimple.HaveUnit.SufferAddHealthSimple((int)maxHealth);
         }));
     }
     // 障碍物表现
@@ -603,16 +610,22 @@ public class UnitSimple : Unit
     void Display_onMoveDirectionChanger()
     {
         // 整组播放特效
+        Color colorTeam = UIData.SoldiersReturnHPColor;
+        string effectNameTeam = UIData.SoldiersReturnHPText + ":" + maxHealth/4;
         tetriUnitSimple.TetrisBlockSimple.ChildTetris.ForEach((tetri) => {
-            tetri.TetriUnitSimple.PlayBlockEffect();
+            tetri.TetriUnitSimple.PlayBlockEffect(effectNameTeam,colorTeam);
+            tetri.TetriUnitSimple.HaveUnit.SufferAddHealthSimple((int)maxHealth/4);
         });
         // 移动方向改变
         tetriUnitSimple.TetrisBlockSimple.MoveUp = tetriUnitSimple.MoveDirectionCatch == PropsData.MoveDirection.Up ? true : false;
         tetriUnitSimple.MoveDirectionCatch=PropsData.MoveDirection.NotReady;
         // 首个砖块获得加成
+        Color color = UIData.SoldiersReturnHPColor;
+        string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth/2;
+        tetriUnitSimple.PlayBlockEffect(effectName,color);
         Soldier.Behaviors_onMoveDirectionChanger();
         animator.SetTrigger("DoWin");
-        SufferAddHealthSimple((int)maxHealth);
+        SufferAddHealthSimple((int)maxHealth/2);
         unitTemplate.attackSpeed *= soldier.strength;
     }
     
@@ -620,10 +633,18 @@ public class UnitSimple : Unit
     void Display_onFullRows()
     {
         ResetRotation();
-        tetriUnitSimple.PlayBlockEffect();
+        Color color = UIData.SoldiersReturnHPColor;
+        string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
+        tetriUnitSimple.PlayBlockEffect(effectName,color);
+
+        Color color2 = UIData.SoldiersBoostMoraleColor;
+        string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 1.2f;
+        tetriUnitSimple.PlayBlockEffect(effectName2,color2);
+
         runningValue = 0f;
         animator.SetFloat("Speed", 0f);
         animator.SetTrigger("DoWin");
+        
         Soldier.Behaviors_OnFullRows();
         SufferAddHealthSimple((int)maxHealth);
         unitTemplate.attackSpeed *= soldier.strength;
@@ -635,7 +656,12 @@ public class UnitSimple : Unit
         if(Local())
         {
             ResetRotation();
-            tetriUnitSimple.PlayBlockEffect();
+            Color color = UIData.SoldiersReturnHPColor;
+            string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
+            tetriUnitSimple.PlayBlockEffect(effectName,color);
+            Color color2 = UIData.SoldiersBoostMoraleColor;
+            string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 1.2f;
+            tetriUnitSimple.PlayBlockEffect(effectName2,color2);
             animator.SetFloat("Speed", 0f);
             animator.SetTrigger("DoWin");
             Soldier.Behaviors_WeakAssociation();
@@ -861,7 +887,12 @@ public class UnitSimple : Unit
     void Server_Display_onWeakAssociation()
     {
         ResetRotation();
-        tetriUnitSimple.PlayBlockEffect();
+        Color color = UIData.SoldiersReturnHPColor;
+        string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
+        tetriUnitSimple.PlayBlockEffect(effectName,color);
+        Color color2 = UIData.SoldiersBoostMoraleColor;
+        string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 1.2f;
+        tetriUnitSimple.PlayBlockEffect(effectName2,color2);
         animator.SetFloat("Speed", 0f);
         animator.SetTrigger("DoWin");
         Soldier.Behaviors_WeakAssociation();
@@ -874,7 +905,12 @@ public class UnitSimple : Unit
     void Client_Display_onWeakAssociation()
     {
         ResetRotation();
-        tetriUnitSimple.PlayBlockEffect();
+        Color color = UIData.SoldiersReturnHPColor;
+        string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
+        tetriUnitSimple.PlayBlockEffect(effectName,color);
+        Color color2 = UIData.SoldiersBoostMoraleColor;
+        string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 1.2f;
+        tetriUnitSimple.PlayBlockEffect(effectName2,color2);
         animator.SetFloat("Speed", 0f);
         animator.SetTrigger("DoWin");
         if(tween_running != null)tween_running.Kill();

@@ -7,6 +7,7 @@ using DG.Tweening;
 using Mirror;
 public class TetriMoveDirection : NetworkBehaviour, ITetriProp
 {
+#region 数据对象
     public Sprite sprite_Up,spirte_Down,sprite_Icon_Up,sprite_Icon_Down;
     [SerializeField]
     public bool MoveCollect{get;set;} = false;
@@ -110,6 +111,8 @@ public class TetriMoveDirection : NetworkBehaviour, ITetriProp
             return cube;
         }
     }
+#endregion 数据对象
+#region 数据关系
     void Start()
     {
         checker = transform.GetChild(0);
@@ -126,6 +129,8 @@ public class TetriMoveDirection : NetworkBehaviour, ITetriProp
         propTimer.UpdateTimer();
         transform.localPosition = new Vector3(transform.localPosition.x, propTimer.NormalizedTime(), transform.localPosition.z);
     }
+#endregion 数据关系
+#region 数据操作
     void Event_OnUserActionStateChanged(UserAction.State UserActionStateChanged)
     {
         switch (UserActionStateChanged)
@@ -234,17 +239,37 @@ public class TetriMoveDirection : NetworkBehaviour, ITetriProp
 
     public void Collect()
     {
-        if(locked)return;
-        tetriPairBlock.Value.BlockPropsState.propsState = PropsData.PropsState.None;
-        // 特效
-        if(!BlocksCreator)Start();
-        BlocksCreator.GetComponent<BlocksEffects>().LoadAttentionEffect(tetriPairBlock.Value.BlockDisplay,PropsData.PropsState.MoveDirectionChanger);
-        // 重置
-        tetriPairBlock.Value.BlockPropsState.moveCollect = false;
-        tetriPairBlock.Value.BlockPairTetri = new();
-        tetriPairBlock = new();
-        OnTetriMoveDirectionCollected?.Invoke(this);
-        Destroy(gameObject);
+        if(Local())
+        {
+            if(locked)return;
+            tetriPairBlock.Value.BlockPropsState.propsState = PropsData.PropsState.None;
+            // 特效
+            if(!BlocksCreator)Start();
+            string floatingwordToShow = moveDirection == PropsData.MoveDirection.Up ? "吃掉上行果" : "吃掉下行果";
+            BlocksCreator.GetComponent<BlocksEffects>().LoadAttentionEffect(tetriPairBlock.Value.BlockDisplay,PropsData.PropsState.MoveDirectionChanger,floatingwordToShow);
+            // 重置
+            tetriPairBlock.Value.BlockPropsState.moveCollect = false;
+            tetriPairBlock.Value.BlockPairTetri = new();
+            tetriPairBlock = new();
+            OnTetriMoveDirectionCollected?.Invoke(this);
+            Destroy(gameObject);
+        }else
+        {
+            if(!isServer)return;
+            if(locked)return;
+            tetriPairBlock.Value.BlockPropsState.propsState = PropsData.PropsState.None;
+            // 特效
+            if(!BlocksCreator)Start();
+            string floatingwordToShow = moveDirection == PropsData.MoveDirection.Up ? "吃掉上行果" : "吃掉下行果";
+            BlocksCreator.GetComponent<BlocksEffects>().Server_LoadAttentionEffect(tetriPairBlock.Value.BlockDisplay,PropsData.PropsState.MoveDirectionChanger,floatingwordToShow);
+            // 重置
+            tetriPairBlock.Value.BlockPropsState.moveCollect = false;
+            tetriPairBlock.Value.BlockPairTetri = new();
+            tetriPairBlock = new();
+            OnTetriMoveDirectionCollected?.Invoke(this);
+            NetworkServer.Destroy(gameObject);
+        }
+        
     }
     void Display_Direction()
     {
@@ -283,4 +308,12 @@ public class TetriMoveDirection : NetworkBehaviour, ITetriProp
             this.Icon.SetActive(true);
         }));
     }
+#endregion 数据操作
+#region 联网数据操作
+    bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
+    }
+# endregion 联网数据操作
 }
