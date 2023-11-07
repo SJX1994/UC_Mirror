@@ -13,8 +13,8 @@ public class UnitSimple : Unit
     {
         get
         {
-            if(!tetriUnitSimple.TetrisBlockSimple)return 0f;
-            if(durationRunning!=tetriUnitSimple.TetrisBlockSimple.OccupyingTime)durationRunning = tetriUnitSimple.TetrisBlockSimple.OccupyingTime;
+            if(!TetriUnitSimple.TetrisBlockSimple)return 0f;
+            if(durationRunning!=TetriUnitSimple.TetrisBlockSimple.OccupyingTime)durationRunning = TetriUnitSimple.TetrisBlockSimple.OccupyingTime;
             return durationRunning;
         }
         set
@@ -24,13 +24,25 @@ public class UnitSimple : Unit
     }
     public Material mat;
     public TetriUnitSimple tetriUnitSimple;
+    public TetriUnitSimple TetriUnitSimple
+    {
+        get
+        {
+            if(!tetriUnitSimple)tetriUnitSimple = transform.parent.GetComponent<TetriUnitSimple>();
+            return tetriUnitSimple;
+        }
+        set
+        {
+            tetriUnitSimple = value;
+        }
+    }
     float runningSpeed = 3f;
     public float RunningSpeed
     {
         get
         {
-            if(!tetriUnitSimple.TetrisBlockSimple)return 0f;
-            if(runningSpeed!=tetriUnitSimple.TetrisBlockSimple.OccupyingTime)runningSpeed = 1/tetriUnitSimple.TetrisBlockSimple.OccupyingTime;
+            if(!TetriUnitSimple.TetrisBlockSimple)return 0f;
+            if(runningSpeed!=TetriUnitSimple.TetrisBlockSimple.OccupyingTime)runningSpeed = 1/TetriUnitSimple.TetrisBlockSimple.OccupyingTime;
             return runningSpeed;
         }
     }
@@ -44,6 +56,7 @@ public class UnitSimple : Unit
         }
     }
     public Tween tween_running;
+    Tween tween_waitFinishRun;
     // 机制相关
     SoldierBehaviors soldier;
     public SoldierBehaviors Soldier
@@ -58,7 +71,7 @@ public class UnitSimple : Unit
     {
         get
         {
-            return tetriUnitSimple.PosId;
+            return TetriUnitSimple.PosId;
         }
     }
     // 可视化
@@ -223,7 +236,7 @@ public class UnitSimple : Unit
     // 道具收集初始化
     public PropsData.PropsState InitPropDoing()
     {
-        PropsData.PropsState propState = tetriUnitSimple.Ray_PorpCollect();
+        PropsData.PropsState propState = TetriUnitSimple.Ray_PorpCollect();
         switch(propState)
         {
             case PropsData.PropsState.ChainBall:
@@ -242,7 +255,7 @@ public class UnitSimple : Unit
     // 道具行为表现
     void PropDoing()
     {
-        PropsData.PropsState propState = tetriUnitSimple.Ray_PorpCollect();
+        PropsData.PropsState propState = TetriUnitSimple.Ray_PorpCollect();
         if(propState == PropsData.PropsState.None)return;
         switch(propState)
         {
@@ -527,7 +540,7 @@ public class UnitSimple : Unit
         animator.SetTrigger("DoWin");
         Color color = UIData.SoldiersReturnHPColor;
         string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
-        tetriUnitSimple.PlayBlockEffect(effectName,color);
+        TetriUnitSimple.PlayBlockEffect(effectName,color);
         SufferAddHealthSimple((int)maxHealth);
     }
     public void Display_UserCommandTheBattle()
@@ -573,27 +586,27 @@ public class UnitSimple : Unit
     // 抵达对方底线后的表现
     void Display_onReachBottomLine()
     {
-        tetriUnitSimple.TetrisSpeedNormal();
-        Display_AllWin(tetriUnitSimple.TetriBlock);
+        TetriUnitSimple.TetrisSpeedNormal();
+        Display_AllWin(TetriUnitSimple.TetriBlock);
         Soldier.Behaviors_onReachBottomLine();
         SufferAddHealthSimple((int)maxHealth);
         tween_DieScale = SkeletonRenderer.transform.DOScale(Vector3.one * 1.2f, 1f + 0.1f).SetEase(Ease.OutExpo);
         tween_DieScale.onComplete = () => {
-            tetriUnitSimple.TetriBlock.tetrisBlockSimple.Stop();
-            tetriUnitSimple.TetrisUnitSimple.KillAllUnits();
+            TetriUnitSimple.TetriBlock.tetrisBlockSimple.Stop();
+            TetriUnitSimple.TetrisUnitSimple.KillAllUnits();
         };
     }
     void Display_onReachBottomLineGain()
     {
-        Display_AllWin(tetriUnitSimple.TetriBlock);
+        Display_AllWin(TetriUnitSimple.TetriBlock);
         // 整组增强
         // Color colorTeam = UIData.SoldiersReturnHPColor;
         // string effectNameTeam = UIData.SoldiersReturnHPText + ":" + maxHealth;
         Color color2 = UIData.SoldiersBoostMoraleColor;
         string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 10f;
-        tetriUnitSimple.TetrisBlockSimple.ChildTetris.ForEach((System.Action<TetriBlockSimple>)((tetri) => {
+        TetriUnitSimple.TetrisBlockSimple.ChildTetris.ForEach((System.Action<TetriBlockSimple>)((tetri) => {
             // tetri.TetriUnitSimple.PlayBlockEffect(effectNameTeam,colorTeam);
-            tetriUnitSimple.PlayBlockEffect(effectName2,color2);
+            TetriUnitSimple.PlayBlockEffect(effectName2,color2);
             tetri.TetriUnitSimple.HaveUnit.Soldier.Behaviors_onReachBottomLine();
             // tetri.TetriUnitSimple.HaveUnit.SufferAddHealthSimple((int)maxHealth);
         }));
@@ -601,8 +614,8 @@ public class UnitSimple : Unit
     // 障碍物表现
     void Display_onObstacle()
     {
-        tetriUnitSimple.PlayBlockEffect();
-        tetriUnitSimple.TetrisSpeedModify(1.5f);
+        TetriUnitSimple.PlayBlockEffect();
+        TetriUnitSimple.TetrisSpeedModify(1.5f);
         SufferAttackSimple((int)currentHP/2);
         Soldier.Behaviors_onObstacle();
     }
@@ -612,17 +625,17 @@ public class UnitSimple : Unit
         // 整组播放特效
         Color colorTeam = UIData.SoldiersReturnHPColor;
         string effectNameTeam = UIData.SoldiersReturnHPText + ":" + maxHealth/4;
-        tetriUnitSimple.TetrisBlockSimple.ChildTetris.ForEach((tetri) => {
+        TetriUnitSimple.TetrisBlockSimple.ChildTetris.ForEach((tetri) => {
             tetri.TetriUnitSimple.PlayBlockEffect(effectNameTeam,colorTeam);
             tetri.TetriUnitSimple.HaveUnit.SufferAddHealthSimple((int)maxHealth/4);
         });
         // 移动方向改变
-        tetriUnitSimple.TetrisBlockSimple.MoveUp = tetriUnitSimple.MoveDirectionCatch == PropsData.MoveDirection.Up ? true : false;
-        tetriUnitSimple.MoveDirectionCatch=PropsData.MoveDirection.NotReady;
+        TetriUnitSimple.TetrisBlockSimple.MoveUp = TetriUnitSimple.MoveDirectionCatch == PropsData.MoveDirection.Up ? true : false;
+        TetriUnitSimple.MoveDirectionCatch=PropsData.MoveDirection.NotReady;
         // 首个砖块获得加成
         Color color = UIData.SoldiersReturnHPColor;
         string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth/2;
-        tetriUnitSimple.PlayBlockEffect(effectName,color);
+        TetriUnitSimple.PlayBlockEffect(effectName,color);
         Soldier.Behaviors_onMoveDirectionChanger();
         animator.SetTrigger("DoWin");
         SufferAddHealthSimple((int)maxHealth/2);
@@ -635,11 +648,11 @@ public class UnitSimple : Unit
         ResetRotation();
         Color color = UIData.SoldiersReturnHPColor;
         string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
-        tetriUnitSimple.PlayBlockEffect(effectName,color);
+        TetriUnitSimple.PlayBlockEffect(effectName,color);
 
         Color color2 = UIData.SoldiersBoostMoraleColor;
         string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 1.2f;
-        tetriUnitSimple.PlayBlockEffect(effectName2,color2);
+        TetriUnitSimple.PlayBlockEffect(effectName2,color2);
 
         runningValue = 0f;
         animator.SetFloat("Speed", 0f);
@@ -658,10 +671,10 @@ public class UnitSimple : Unit
             ResetRotation();
             Color color = UIData.SoldiersReturnHPColor;
             string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
-            tetriUnitSimple.PlayBlockEffect(effectName,color);
+            TetriUnitSimple.PlayBlockEffect(effectName,color);
             Color color2 = UIData.SoldiersBoostMoraleColor;
             string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 1.2f;
-            tetriUnitSimple.PlayBlockEffect(effectName2,color2);
+            TetriUnitSimple.PlayBlockEffect(effectName2,color2);
             animator.SetFloat("Speed", 0f);
             animator.SetTrigger("DoWin");
             Soldier.Behaviors_WeakAssociation();
@@ -695,7 +708,8 @@ public class UnitSimple : Unit
             runningValue = 0f;
             animator.SetFloat("Speed", 0f);
             if(tween_running != null)tween_running.Kill();
-            DOVirtual.DelayedCall(RunningDelay, Server_Display_delayCallRunning);
+            tween_waitFinishRun?.Kill();
+            tween_waitFinishRun = DOVirtual.DelayedCall(RunningDelay, Server_Display_delayCallRunning);
         }
         
     }
@@ -889,10 +903,10 @@ public class UnitSimple : Unit
         ResetRotation();
         Color color = UIData.SoldiersReturnHPColor;
         string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
-        tetriUnitSimple.PlayBlockEffect(effectName,color);
+        TetriUnitSimple.PlayBlockEffect(effectName,color);
         Color color2 = UIData.SoldiersBoostMoraleColor;
         string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 1.2f;
-        tetriUnitSimple.PlayBlockEffect(effectName2,color2);
+        TetriUnitSimple.PlayBlockEffect(effectName2,color2);
         animator.SetFloat("Speed", 0f);
         animator.SetTrigger("DoWin");
         Soldier.Behaviors_WeakAssociation();
@@ -907,10 +921,10 @@ public class UnitSimple : Unit
         ResetRotation();
         Color color = UIData.SoldiersReturnHPColor;
         string effectName = UIData.SoldiersReturnHPText + ":" + maxHealth;
-        tetriUnitSimple.PlayBlockEffect(effectName,color);
+        TetriUnitSimple.PlayBlockEffect(effectName,color);
         Color color2 = UIData.SoldiersBoostMoraleColor;
         string effectName2 = UIData.SoldiersBoostMoraleText + ":" + 1.2f;
-        tetriUnitSimple.PlayBlockEffect(effectName2,color2);
+        TetriUnitSimple.PlayBlockEffect(effectName2,color2);
         animator.SetFloat("Speed", 0f);
         animator.SetTrigger("DoWin");
         if(tween_running != null)tween_running.Kill();

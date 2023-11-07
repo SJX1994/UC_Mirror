@@ -134,13 +134,13 @@ public class BlocksCounter : MonoBehaviour
           if(!soldier)return false;
           if(soldier.UnitSimple.IsDeadOrNull(soldier.UnitSimple))return false;
           // 不包含培养皿中的砖块
-          Transform p = soldier.UnitSimple.tetriUnitSimple.TetrisBlockSimple.transform.parent;
+          Transform p = soldier.UnitSimple.TetriUnitSimple.TetrisBlockSimple.transform.parent;
           if(p==null)return false;
           // 不包含同类玩家
           bool player = soldier.Player == playerIn;
           condition.Add(player);
           // 不包含拖拽的临时士兵
-          bool draging = !soldier.UnitSimple.tetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp);
+          bool draging = !soldier.UnitSimple.TetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp);
           condition.Add(draging);
           bool allTrue = condition.All(b => b);
           return allTrue;

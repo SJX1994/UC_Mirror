@@ -164,6 +164,7 @@ public class IdelBox : NetworkBehaviour,
         }else
         {
             ServerDo();
+            if(!isServer)return;
             if(!loadTetrominos)return;
             changeLiquid.OnLevelUp += Server_Event_OnLevelUp;
             changeLiquid.DoCount();

@@ -95,7 +95,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             if(!Self)Init();
             if(soldierBehavior.UnitSimple.IsDeadOrNull(soldierBehavior.UnitSimple))return false;
             // 不包含培养皿中的砖块
-            Transform p = soldierBehavior.UnitSimple.tetriUnitSimple.TetrisBlockSimple.transform.parent;
+            Transform p = soldierBehavior.UnitSimple.TetriUnitSimple.TetrisBlockSimple.transform.parent;
             if(p==null)return false;
             condition.Add(p);
             if(p)condition.Add(p.TryGetComponent<BlocksCreator_Main>(out BlocksCreator_Main bc));
@@ -104,7 +104,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             // 不包含不同玩家的砖块
             condition.Add(soldierBehavior.UnitSimple.unitTemplate.player == Self.UnitSimple.unitTemplate.player);
             // 不包含拖拽的临时砖块
-            condition.Add(!soldierBehavior.UnitSimple.tetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp));
+            condition.Add(!soldierBehavior.UnitSimple.TetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp));
             bool allTrue = condition.All(b => b);
             return allTrue;
       }
@@ -229,8 +229,8 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
 
             // 停止砖块移动
             bool notCancleOccupied = false;
-            from.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Stop(notCancleOccupied);
-            to.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Stop(notCancleOccupied);
+            from.UnitSimple.TetriUnitSimple.TetrisBlockSimple.Stop(notCancleOccupied);
+            to.UnitSimple.TetriUnitSimple.TetrisBlockSimple.Stop(notCancleOccupied);
             // 停止状态机的移动
             NavMeshAgent agent;
             agent = from.transform.TryGetComponent<NavMeshAgent>(out agent) ? agent : null;
@@ -287,7 +287,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                               // from.unitBase.ExecuteCommand(guard);
                               // from.unitBase.controled = false;
                         }
-                        from.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Move();
+                        from.UnitSimple.TetriUnitSimple.TetrisBlockSimple.Move();
                         tween_SoldiersUpdateRelationFrom.Kill();
                   };
             };
@@ -368,7 +368,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                               soldier.ChainTransfer.bombIsMoving = false;
                               soldier.ChainTransfer.preview = false;
                               // 允许砖块移动
-                              soldier.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Move();
+                              soldier.UnitSimple.TetriUnitSimple.TetrisBlockSimple.Move();
                         }
                         // 公告
                         if(!mechanismInPut)return;
@@ -378,7 +378,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
                         mechanismInPut.warningSystem.inText3 = chainDamageTotal.ToString();
                         mechanismInPut.warningSystem.changeWarningTypes = WarningSystem.WarningType.ChainTransfer;
                         tween_SoldiersEndRelationTo.Kill();
-                        self.UnitSimple.tetriUnitSimple.TetrisBlockSimple.Move();
+                        self.UnitSimple.TetriUnitSimple.TetrisBlockSimple.Move();
                   };
             };
                   
@@ -432,8 +432,8 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             if (other.transform.TryGetComponent(out SoldierBehaviors soldierAttack))
             {
                   if(Self.unitBase.unitTemplate.GetOtherPlayerType() != soldierAttack.unitBase.unitTemplate.player)return;
-                  if(soldierAttack.UnitSimple.tetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp))return;
-                  if(soldierAttack.UnitSimple.tetriUnitSimple.TetrisBlockSimple.transform.parent == null)return;
+                  if(soldierAttack.UnitSimple.TetriUnitSimple.TetrisBlockSimple.name.Contains(UnitData.Temp))return;
+                  if(soldierAttack.UnitSimple.TetriUnitSimple.TetrisBlockSimple.transform.parent == null)return;
                   // 在此处编写碰撞逻辑
                   if(!dealAttackSoldiers.Contains(soldierAttack)) 
                   {

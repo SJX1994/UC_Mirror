@@ -275,7 +275,7 @@ public class TetriBall : NetworkBehaviour , ITetriProp
         var block = BlocksCreator.blocks.Where(b => b.posId == checkId).FirstOrDefault();
         if(block.GetComponent<BlockBuoyHandler>().tetriBuoySimple || block.GetComponent<BlockPropsState>().propsState != PropsData.PropsState.None )
         {
-            Generate_First();
+            Invoke(nameof(Generate_First),0.1f);
             return false;
         }
         StartTimer_Growing();

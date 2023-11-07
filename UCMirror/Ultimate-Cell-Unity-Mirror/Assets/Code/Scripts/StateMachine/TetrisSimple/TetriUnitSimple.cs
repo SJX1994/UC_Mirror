@@ -165,7 +165,7 @@ public class TetriUnitSimple : NetworkBehaviour
             unit.idV2 = tetriBlock.PosId;
             UnitSimple unitSimple = unit as UnitSimple;
             unitSimple.ShaderInit();
-            unitSimple.tetriUnitSimple = this;
+            unitSimple.TetriUnitSimple = this;
             unitSimple.DurationRunning = tetriBlock.tetrisBlockSimple.OccupyingTime;
             unitSimple.ResetRotation();
             unitSimple.SetFlip();
@@ -518,7 +518,7 @@ public class TetriUnitSimple : NetworkBehaviour
         UnitSimple unitSimple = unit as UnitSimple;
         unitSimple.DifferentPlayerInit();
         // unitSimple.ShaderInit();
-        unitSimple.tetriUnitSimple = this;
+        unitSimple.TetriUnitSimple = this;
         unitSimple.DurationRunning = tetriBlock.tetrisBlockSimple.OccupyingTime;
         // unitSimple.ResetRotation();
         // unitSimple.SetFlip();
@@ -550,6 +550,7 @@ public class TetriUnitSimple : NetworkBehaviour
     void Client_InstantiateNewCellUnit(Server_Client_InstantiateNewCellUnit_Data dataIn)
     {
         HaveUnit = FindObjectsOfType<UnitSimple>().ToList().Find(ball => ball.netId == dataIn.unitNetId);
+        HaveUnit.TetriUnitSimple = this;
         HaveUnit.transform.SetParent(transform);
         HaveUnit.transform.localPosition = dataIn.localPosition;
         HaveUnit.transform.localScale = dataIn.localScale;
@@ -610,6 +611,7 @@ public class TetriUnitSimple : NetworkBehaviour
     void Client_LoadCellUnit(uint serverUnitNetId,string skinName)
     {
         HaveUnit = FindObjectsOfType<UnitSimple>().ToList().Find(x => x.netId == serverUnitNetId);
+        HaveUnit.TetriUnitSimple = this;
         HaveUnit.transform.SetParent(transform);
         HaveUnit.transform.localPosition = Vector3.zero;
         HaveUnit.transform.localScale = Vector3.one;

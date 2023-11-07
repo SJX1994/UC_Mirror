@@ -129,7 +129,7 @@ public class TetriAttackable_Attribute : NetworkBehaviour
 
     void OnDead(UnitAttackProp whoAttacking)
     {
-        whoAttacking.UnitSimple.Display_AllWin(whoAttacking.UnitSimple.tetriUnitSimple.TetriBlock);
+        whoAttacking.UnitSimple.Display_AllWin(whoAttacking.UnitSimple.TetriUnitSimple.TetriBlock);
         if(TryGetComponent(out TetriObstacle tetriObstacle))
         {
             float randomValue = Random.value;

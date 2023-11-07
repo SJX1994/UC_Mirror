@@ -159,7 +159,7 @@ public class SoldierBehaviors : NetworkBehaviour
         get
         {
             if(tetriMechanism)return tetriMechanism;
-            tetriMechanism = UnitSimple.tetriUnitSimple.TryGetComponent(out TetriMechanism tm) ? tm : null;
+            tetriMechanism = UnitSimple.TetriUnitSimple.TryGetComponent(out TetriMechanism tm) ? tm : null;
             return tetriMechanism;
         }
     }
