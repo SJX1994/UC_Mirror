@@ -737,7 +737,7 @@ MonoBehaviour:
   timeInterpolationGui: 0
   buoyPlayer1Spawn: {fileID: 326433731}
   buoyPlayer2Spawn: {fileID: 505745779}
-  blocksCreator: {fileID: 470015492767617479, guid: 053ab9262ad679b499f4f6013eb26986,
+  blocksCreator: {fileID: 7004758093251860301, guid: 053ab9262ad679b499f4f6013eb26986,
     type: 3}
   avatarUI: {fileID: 0}
   blocksUI: {fileID: 0}

@@ -257,12 +257,14 @@ public class SoldierBehaviors : NetworkBehaviour
     }
     public void Behaviors_ChainTransfer()
     {
+        
         if(transform.GetComponent<UnitSimple>().unitTemplate.player == UC_PlayerData.Player.NotReady)return;
         if (!transform.TryGetComponent<ChainTransfer>(out ChainTransfer tempChainTransfer))return;
         FirstChainTransfer();
         tempChainTransfer.AllSoldiers();
         if(!(tempChainTransfer.bombIsMoving == false && tempChainTransfer.CanDoChain()))return;
         tempChainTransfer.FirstChain(false);
+        
     }
     public void Behaviors_onMoveDirectionChanger()
     {

@@ -77,6 +77,17 @@ public class TetriAttackable_Attribute : NetworkBehaviour
     public void SufferAttackSimple(int damage,UnitAttackProp whoAttacking)
     {
         OnBeenAttackedDisplay();
+        switch(beenAttackedDisplay)
+        {
+            case BeenAttackedDisplay.NotReady:
+                break;
+            case BeenAttackedDisplay.Obstacle:
+                string Sound_ThornsBeenHit = "Sound_ThornsBeenHit";
+                float volume = Random.Range(0.3f,0.5f);
+                float delay = 0.5f;
+                AudioSystemManager.Instance.PlaySoundSimple(Sound_ThornsBeenHit,volume,delay);
+                break;
+        }
         currentHP -= damage;
         shaderHP = UC_Tool.Remap((float)currentHP, 0, (float)maxHealth, 0, 1);
         UpdateMatHealth(shaderHP);

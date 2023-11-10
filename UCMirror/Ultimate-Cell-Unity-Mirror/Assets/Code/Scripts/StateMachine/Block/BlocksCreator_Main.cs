@@ -107,6 +107,8 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
             InitPutzone();
             if(Local())
             {
+                
+                Music_BattlefieldBackground();
                 Event_ReflashPlayerBlocksOccupied();
                 BlocksReferee.Active();
                 blocks.ForEach((block) => {
@@ -125,7 +127,7 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
                 ServerLogic.Local_palayer = Player.NotReady;
                 ServerLogic.On_Local_palayer_ready += Client_Event_On_Local_player_ready;
                 if(!isServer)return;
-                
+                Music_BattlefieldBackground();
                 Event_ReflashPlayerBlocksOccupied();
                 blocks.ForEach((block) => {
                     block.GetComponent<BlockTetriHandler>().OnBlockTetriStateChanged += Server_Event_OnBlockTetriStateChanged;
@@ -155,10 +157,24 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
     }
 #endregion 数据关系
 #region 数据操作
+    void Music_BattlefieldBackground()
+    {
+        string Music_BattlefieldBackground = "Music_BattlefieldBackground";
+        AudioSystemManager.Instance.PlayMusicSimple(Music_BattlefieldBackground, 0.3f);
+    }
     public void Event_BlocksCounterInvoke(Vector2 posId = default(Vector2), int state = 0)
     {
-        BlocksCounter.CheckFullRows();
-        BlocksCounter.OnStateChange();
+        if(Local())
+        {
+            BlocksCounter.CheckFullRows();
+            BlocksCounter.OnStateChange();
+        }else
+        {
+            if(!isServer)return;
+            BlocksCounter.CheckFullRows();
+            BlocksCounter.OnStateChange();
+        }
+        
     }
     public void Event_ReflashPlayerBlocksOccupied(Vector2 posId = default(Vector2), int state = 0)
     {
@@ -298,10 +314,11 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
     {
         
         if(!isServer)return;
-        string music_BattlefieldBackground = "Music_BattlefieldBackground";
-        AudioSystemManager.Instance.PlayMusic(music_BattlefieldBackground, 99);
+        // string music_BattlefieldBackground = "Music_BattlefieldBackground";
+        // AudioSystemManager.Instance.PlayMusic(music_BattlefieldBackground, 99);
         BlocksReferee.Active();
-        Client_PlayMusic(music_BattlefieldBackground, 99);
+        Debug.Log("BlocksUIActive!!!!");
+        // Client_PlayMusic(music_BattlefieldBackground, 99);
     }
     [ClientRpc]
     void Client_PlayMusic(string musicName, int loopTime)
@@ -333,6 +350,7 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
     [Client]
     public void Client_Event_On_Local_player_ready()
     {
+        Music_BattlefieldBackground();
         if(ServerLogic.Local_palayer == Player.Player1)
         {
             transform.localPosition = new Vector3(transform.localPosition.x+2,transform.localPosition.y,transform.localPosition.z);

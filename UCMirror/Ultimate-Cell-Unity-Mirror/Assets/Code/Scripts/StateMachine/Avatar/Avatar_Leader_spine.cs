@@ -67,6 +67,16 @@ public class Avatar_Leader_spine : NetworkBehaviour
             leaderData.leaderState = LeaderData.LeaderState.Attack;
             PlayAnimation(leaderData.leaderState, false);
             DirtyTalk();
+            Sound_DirtyTalk();
+            
+
+            switch(leaderType)
+            {
+                case LeaderData.LeaderType.Bao:
+                    break;
+                case LeaderData.LeaderType.Zhao:
+                    break;
+            }
         }else
         {
             // Debug.Log("PlayAttackAnimation_buttonClick!!!");
@@ -143,6 +153,11 @@ public class Avatar_Leader_spine : NetworkBehaviour
             DirtyTalkImage.gameObject.SetActive(false);
         }
     }
+    void Sound_DirtyTalk()
+    {
+        string Sound_DirtyTalk = "Sound_DirtyTalk";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_DirtyTalk,1f);
+    }
 #endregion 数据操作
 #region 联网数据操作
     bool Local()
@@ -160,12 +175,14 @@ public class Avatar_Leader_spine : NetworkBehaviour
     {
         PlayAnimation(leaderData.leaderState, true);
         DirtyTalk();
+        Sound_DirtyTalk();
         Rpc_PlayAnimation(leaderData.leaderState, true);
         Rpc_DirtyTalk(dirtyImageIndex,leaderData.leaderPosition);
     }
     [ClientRpc]
     void Rpc_PlayAnimation(LeaderData.LeaderState leaderState,bool loop)
     {
+        Sound_DirtyTalk();
         PlayAnimation(leaderData.leaderState, true);
     }
     [ClientRpc]

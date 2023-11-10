@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UC_PlayerData;
 using System.Linq;
 using System.Collections;
-public class BlocksCounter : MonoBehaviour
+using Mirror;
+public class BlocksCounter : NetworkBehaviour
 {
+#region 数据对象
     BlocksCreator_Main blocksCreator;
     public BlocksCreator_Main BlocksCreator
     {
@@ -29,12 +31,16 @@ public class BlocksCounter : MonoBehaviour
     List<SoldierBehaviors> weakAssociationSoldiers = new();
     Player playerForAssociation = Player.NotReady;
     private object lockObject = new object(); // 用于锁的对象
+#endregion 数据对象
+#region 数据关系
     
     void Start()
     {
         BlocksData.OnPlayer1BlocksNumbChange += Event_GetP1BlockNumb;
         BlocksData.OnPlayer2BlocksNumbChange += Event_GetP2BlockNumb;    
     }
+#endregion 数据关系
+#region 数据操作
     // 获取颜色砖块
     public List<BlockTetriHandler> GetOccupiedP1Blocks()
     {
@@ -68,7 +74,6 @@ public class BlocksCounter : MonoBehaviour
     public void Event_GetP1BlockNumb(int P1numb)
     {
         P1BlocksNumb = P1numb;
-        
     }
     public void Event_GetP2BlockNumb(int P2numb)
     {
@@ -86,12 +91,21 @@ public class BlocksCounter : MonoBehaviour
         if (Mathf.Approximately(ratio, 1f / 2f))
         {
             // 触发事件
-            Debug.Log("P1需要帮助");
+            // Debug.Log("P1需要帮助");
+            if(BlocksCreator.Local())
+            {
+                Sound_Mechanism_WeakAss_Drum();
+            }else
+            {
+                if(isServer)Server_Sound_Mechanism_WeakAss_Drum();
+            }
+            
+            
             playerForAssociation = Player.Player1;
         }else if(Mathf.Approximately(ratio, 2f))
         {
             // 触发事件
-            Debug.Log("P2需要帮助");
+            // Debug.Log("P2需要帮助");
             playerForAssociation = Player.Player2;
         }
         AllSoldiers(playerForAssociation);
@@ -214,6 +228,14 @@ public class BlocksCounter : MonoBehaviour
             if(!haveUnit)continue;
             haveUnit.Event_BlocksMechanismDoing(BlocksData.BlocksMechanismType.FullRows);
         }
+        if(BlocksCreator.Local())
+        {
+            Sound_Mechanism_WeakAss_Drum();
+        }else
+        {
+            if(isServer)Server_Sound_Mechanism_WeakAss_Drum();
+        }
+        
     }
     void DoFullRowsFail()
     {
@@ -236,4 +258,25 @@ public class BlocksCounter : MonoBehaviour
         if(blockTetriHandler.State == BlockTetriHandler.BlockTetriState.Peace)return;
         blockTetriHandler.State = BlockTetriHandler.BlockTetriState.Peace;
     }
+    void Sound_Mechanism_WeakAss_Drum()
+    {
+        string Sound_Mechanism_WeakAss_Drum = "Sound_Mechanism_WeakAss_Drum";
+        float delay = Random.Range(0, 1f);
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Mechanism_WeakAss_Drum,1.0f,delay);
+    }
+#endregion 数据操作
+#region 联网数据操作
+    [Server]
+    void Server_Sound_Mechanism_WeakAss_Drum()
+    {
+        Sound_Mechanism_WeakAss_Drum();
+        Rcp_Sound_Mechanism_WeakAss_Drum();
+    }
+    [ClientRpc]
+    void Rcp_Sound_Mechanism_WeakAss_Drum()
+    {
+        Sound_Mechanism_WeakAss_Drum();
+    }
+#endregion 联网数据操作
+
 }

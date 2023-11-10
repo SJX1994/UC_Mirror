@@ -98,6 +98,7 @@ public class BlocksEffects : NetworkBehaviour
                 main.startColor = color32;
                 break;
             case PropsData.PropsState.Obstacle:
+                Sound_ThornsBeenHit();
                 color32 = new Color32(27, 255, 102, 255);
                 main.startColor = color32;
                 break;
@@ -206,6 +207,7 @@ public class BlocksEffects : NetworkBehaviour
     [Server]
     public void Server_LoadAttentionEffect(BlockDisplay blockDisplay, PropsData.PropsState propsState = PropsData.PropsState.None,string floatingwordToShow = "...")
     {
+        
         blockAttention = Resources.Load<ParticleSystem>("Effect/BlockEffect_attention");
         blockAttention = Instantiate(blockAttention,blockDisplay.transform);
         blockAttention.transform.localPosition = Vector3.zero;
@@ -230,6 +232,7 @@ public class BlocksEffects : NetworkBehaviour
                 main.startColor = color32;
                 break;
             case PropsData.PropsState.Obstacle:
+                Sound_ThornsBeenHit();
                 color32 = new Color32(27, 255, 102, 255);
                 main.startColor = color32;
                 break;
@@ -244,6 +247,14 @@ public class BlocksEffects : NetworkBehaviour
     {
         BlockDisplay blockDisplay = BlocksCreator.blocks.Find((block) => block.posId == posId);
         BlocksCreator.GetComponent<BlocksEffects>().LoadAttentionEffect(blockDisplay, propsState, floatingwordToShow);
+
+    }
+    void Sound_ThornsBeenHit()
+    {
+        string Sound_ThornsBeenHit = "Sound_ThornsBeenHit";
+        float volume = Random.Range(0.8f,1f);
+        float delay = 0.5f;
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_ThornsBeenHit,volume,delay);
     }
 #endregion 联网数据操作
 }

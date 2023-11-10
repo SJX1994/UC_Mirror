@@ -329,7 +329,8 @@ public class UnitSimple : Unit
         Display_HideUnit();
         Display_HideMorale();
         HideForPlayerScreen();
-        AudioSystemManager.Instance.PlaySound("Sound_FrequentBubbles");
+        Sound_FrequentBubbles();
+        
     }
     // 玩家差异
     public void DifferentPlayerInit()
@@ -534,6 +535,13 @@ public class UnitSimple : Unit
     // 链式传递表现
     public void Display_onChainBall()
     {
+        if(Local())
+        {
+            Sound_Bite_Swallow_Enhancement();
+        }else
+        {
+            if(isServer)Server_Sound_Bite_Swallow_Enhancement();
+        }
         // 链式传递
         Soldier.Behaviors_ChainTransfer();
         // 首个砖块获得加成
@@ -594,6 +602,14 @@ public class UnitSimple : Unit
         tween_DieScale.onComplete = () => {
             TetriUnitSimple.TetriBlock.tetrisBlockSimple.Stop();
             TetriUnitSimple.TetrisUnitSimple.KillAllUnits();
+            if(Local())
+            {
+                Sound_Mechanism_WeakAss();
+            }else
+            {
+                if(isServer)Server_Sound_Mechanism_WeakAss();
+            }
+           
         };
     }
     void Display_onReachBottomLineGain()
@@ -609,6 +625,13 @@ public class UnitSimple : Unit
             TetriUnitSimple.PlayBlockEffect(effectName2,color2);
             tetri.TetriUnitSimple.HaveUnit.Soldier.Behaviors_onReachBottomLine();
             // tetri.TetriUnitSimple.HaveUnit.SufferAddHealthSimple((int)maxHealth);
+            if(Local())
+            {
+                Sound_Mechanism_WeakAss();
+            }else
+            {
+                if(isServer)Server_Sound_Mechanism_WeakAss();
+            }
         }));
     }
     // 障碍物表现
@@ -622,12 +645,21 @@ public class UnitSimple : Unit
     // 移动方向改变
     void Display_onMoveDirectionChanger()
     {
+        
+
         // 整组播放特效
         Color colorTeam = UIData.SoldiersReturnHPColor;
         string effectNameTeam = UIData.SoldiersReturnHPText + ":" + maxHealth/4;
         TetriUnitSimple.TetrisBlockSimple.ChildTetris.ForEach((tetri) => {
             tetri.TetriUnitSimple.PlayBlockEffect(effectNameTeam,colorTeam);
             tetri.TetriUnitSimple.HaveUnit.SufferAddHealthSimple((int)maxHealth/4);
+            if(Local())
+            {
+                Sound_Bite_Swallow_Enhancement();
+            }else
+            {
+                if(isServer)Server_Sound_Bite_Swallow_Enhancement();
+            }
         });
         // 移动方向改变
         TetriUnitSimple.TetrisBlockSimple.MoveUp = TetriUnitSimple.MoveDirectionCatch == PropsData.MoveDirection.Up ? true : false;
@@ -874,6 +906,7 @@ public class UnitSimple : Unit
         ResetRotation();
         SetFlip();
         Client_DifferentPlayerInit(serverToClient_Unit);
+        Sound_FrequentBubbles();
     }
     [ClientRpc]
     void Client_DifferentPlayerInit(ServerToClient_Unit serverToClient_Unit_In)
@@ -896,6 +929,7 @@ public class UnitSimple : Unit
         if(unitTemplate.player == ServerLogic.Local_palayer)return;
         Color DistinguishBelongingColor = unitTemplate.player == Player.Player1 ? Color.red * 0.4f + Color.white*0.6f : Color.blue * 0.4f + Color.white * 0.6f;
         UpdateColorMultiplication(DistinguishBelongingColor);
+        
     }
     [Server]
     void Server_Display_onWeakAssociation()

@@ -207,7 +207,14 @@ public class TetrisBlockSimple : NetworkBehaviour
         }
         EvaluateCollision();
         // 道具检测
-        TetrisUnitSimple.InitPropDoing();
+        if(Local())
+        {
+            TetrisUnitSimple.InitPropDoing();
+        }else
+        {
+            if(isServer)TetrisUnitSimple.InitPropDoing();
+        }
+        
         return true;
     }
     public bool Active_X()

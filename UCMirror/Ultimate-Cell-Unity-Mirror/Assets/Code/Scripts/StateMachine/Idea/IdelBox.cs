@@ -32,6 +32,7 @@ public class IdelBox : NetworkBehaviour,
     }
     public IdelUI idelUI;
     public Player player = Player.NotReady;
+    
     public LayerMask blockTargetMask;
     public IdelTemplate idelTemplate;
     public GameObject idelContainer;
@@ -224,9 +225,13 @@ public class IdelBox : NetworkBehaviour,
             {
                 PlayAnimation_OpenUp();
                 InFlow();
+                Sound_Command_Zoom();
+                
             }else
             {
                 Invoke(nameof(DoRotate),0.3f);
+                Sound_Command_Rotation();
+               
             }
             
         }else
@@ -236,7 +241,6 @@ public class IdelBox : NetworkBehaviour,
             if(!isClient)return;
             if(idelHolder.playerPVP_local != idelHolder.player)return;
             Invoke(nameof(Cmd_DoRotate),0.3f);
-
             if(inRotationEditMode)return;
             InFlow();
         }
@@ -284,6 +288,7 @@ public class IdelBox : NetworkBehaviour,
         {
             OutFlow();
             Local_OnEndDrag();
+            Sound_Command_Out();
         }else
         {
             if(!tetrominoe)return;
@@ -292,11 +297,40 @@ public class IdelBox : NetworkBehaviour,
             mousePos_Temp = Input.mousePosition;
             Cmd_OnEndDrag(mousePos_Temp);
             OutFlow();
+            Sound_Command_Out();
         }
     }
-    
+    public void RefreshGameObj()
+    {
+        if(!tetrominoe)return;
+        if(IdelHolder.Local())
+        {
+            DestroyImmediate(tetrominoe.gameObject);
+            changeLiquid.DoCount();
+        }else
+        {
+            if(idelHolder.playerPVP_local != idelHolder.player)return;
+            Cmd_RefreshGameObj();
+            Sound_PetriDish_ReflashButton();
+        }
+    }
 #endregion 数据关系
 #region 数据操作
+    void Sound_Command_Out()
+    {
+        string Sound_Command_Out = "Sound_Command_Out";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Command_Out,1.0f);
+    }
+    void Sound_Command_Rotation()
+    {
+        string Sound_Command_Rotation = "Sound_Command_Rotation";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Command_Rotation,1.0f);
+    }
+    void Sound_Command_Zoom()
+    {
+        string Sound_Command_Zoom = "Sound_Command_Zoom";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Command_Zoom,1.0f);
+    }
     void Local_OnBeginDrag()
     {
         if(!tetrominoe)return;
@@ -505,23 +539,12 @@ public class IdelBox : NetworkBehaviour,
         }
         return null;
     }
-    /// <summary>
-    /// 刷新想法
-    /// </summary>
-    public void RefreshGameObj()
+  
+    void Sound_PetriDish_ReflashButton()
     {
-        if(!tetrominoe)return;
-        if(IdelHolder.Local())
-        {
-            DestroyImmediate(tetrominoe.gameObject);
-            changeLiquid.DoCount();
-        }else
-        {
-            if(idelHolder.playerPVP_local != idelHolder.player)return;
-            Cmd_RefreshGameObj();
-        }
+        string Sound_PetriDish_ReflashButton = "Sound_PetriDish_ReflashButton";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_PetriDish_ReflashButton);
     }
-    
     public void DoRotate()
     {
         if(!tetrominoe)return;
@@ -703,6 +726,8 @@ public class IdelBox : NetworkBehaviour,
     [Command(requiresAuthority = false)]
     void Cmd_OnEndDrag(Vector3 mousePos_Temp)
     {
+        Sound_Command_Out();
+        Client_OnEndDrag();
         OutFlow();
         if(!tetrominoe)return;
         tetrominoe.GetComponent<TetrisUnitSimple>().OnEndDragDisplay();
@@ -715,7 +740,12 @@ public class IdelBox : NetworkBehaviour,
         SuccessToCreat();
         Client_SuccessToCreat();
     }
-    
+    [ClientRpc]
+    void Client_OnEndDrag()
+    {
+        if(ServerLogic.local_palayer != IdelHolder.player)return;
+        Sound_Command_Out();
+    }
     [ClientRpc]
     void Client_FailToCreat()
     {
@@ -790,6 +820,7 @@ public class IdelBox : NetworkBehaviour,
     [Command(requiresAuthority = false)]
     public void Cmd_RefreshGameObj()
     {
+        Sound_PetriDish_ReflashButton();
         if(!tetrominoe)return;
         NetworkServer.Destroy(tetrominoe.gameObject);
         changeLiquid.DoCount();
@@ -802,15 +833,23 @@ public class IdelBox : NetworkBehaviour,
         {
             PlayAnimation_OpenUp();
             InFlow();
+            Sound_Command_Zoom();
+            Client_OpenUp();
             // Client_InFlow(tetrominoe.netId,player);
         }else
         {
-            
+            Sound_Command_Rotation();
             Server_DoRotate();
             Client_DoRotate();
             // Invoke(nameof(Server_DoRotate),0.3f);
             // Invoke(nameof(Client_DoRotate),0.3f);
         }
+    }
+    [ClientRpc]
+    void Client_OpenUp()
+    {
+        if(ServerLogic.local_palayer != IdelHolder.player)return;
+        Sound_Command_Zoom();
     }
     [ClientRpc]
     void Client_InFlow(uint tetrominoeID,Player player)
@@ -862,6 +901,8 @@ public class IdelBox : NetworkBehaviour,
     {
         if(!tetrominoe)return;
         tetrominoe.Client_Rotate(tetrominoe.transform.forward);
+        if(ServerLogic.Local_palayer != IdelHolder.player)return;
+        Sound_Command_Rotation();
     }
     [Server]
     public void Server_DoRotate()
@@ -869,6 +910,7 @@ public class IdelBox : NetworkBehaviour,
         
         if(!tetrominoe)return;
         tetrominoe.Server_Rotate(tetrominoe.transform.forward);
+        Sound_Command_Rotation();
     }
 #endregion 联网数据操作
 

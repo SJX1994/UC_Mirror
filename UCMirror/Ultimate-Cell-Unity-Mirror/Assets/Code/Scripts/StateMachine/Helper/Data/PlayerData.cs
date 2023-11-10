@@ -148,7 +148,7 @@ namespace UC_PlayerData
     public static class Referee
     {
         public const float InIdelbox_CreatFirstCountdown = 9f;
-        public const float InIdelbox_CreatCountdown = 1f;
+        public const float InIdelbox_CreatCountdown = 9f;
         public const float InIdelbox_UpLevelCountdown = 6f;
         public static UnityAction OnTimeBeforStartFinish_FromKeyTimeCounter;
         public const float TotalTime_ReverseOrder =  210f;//180f;

@@ -1,6 +1,7 @@
 using UnityEngine;
-
-public class Paintable : MonoBehaviour {
+using Mirror;
+using UC_PlayerData;
+public class Paintable : NetworkBehaviour {
     const int TEXTURE_SIZE = 1024;
 
     public float extendsIslandOffset = 1;
@@ -21,22 +22,32 @@ public class Paintable : MonoBehaviour {
     public Renderer getRenderer() => rend;
 
     void Start() {
-        maskRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
-        maskRenderTexture.filterMode = FilterMode.Bilinear;
+        if(Local())
+        {
+            maskRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+            maskRenderTexture.filterMode = FilterMode.Bilinear;
 
-        extendIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
-        extendIslandsRenderTexture.filterMode = FilterMode.Bilinear;
+            extendIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+            extendIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
-        uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
-        uvIslandsRenderTexture.filterMode = FilterMode.Bilinear;
+            uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+            uvIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
-        supportTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
-        supportTexture.filterMode =  FilterMode.Bilinear;
+            supportTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+            supportTexture.filterMode =  FilterMode.Bilinear;
 
-        rend = GetComponent<Renderer>();
-        rend.material.SetTexture(maskTextureID, extendIslandsRenderTexture);
+            rend = GetComponent<Renderer>();
+            rend.material.SetTexture(maskTextureID, extendIslandsRenderTexture);
 
-        PaintManager.instance.initTextures(this);
+            PaintManager.instance.initTextures(this);
+        }else
+        {
+            if(!isServer)
+            {
+                enabled = false;
+                return;
+            }
+        }
     }
 
     void OnDisable(){
@@ -44,5 +55,10 @@ public class Paintable : MonoBehaviour {
         uvIslandsRenderTexture.Release();
         extendIslandsRenderTexture.Release();
         supportTexture.Release();
+    }
+    bool Local()
+    {
+        if(RunModeData.CurrentRunMode == RunMode.Local)return true;
+        return false;
     }
 }

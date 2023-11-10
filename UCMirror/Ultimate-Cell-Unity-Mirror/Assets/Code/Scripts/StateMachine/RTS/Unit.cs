@@ -624,6 +624,13 @@ public class Unit : NetworkBehaviour
     }
     public virtual void DieSimple(float destoryTime)
     {
+        if(Local())
+        {
+            Sound_Died();
+        }else
+        {
+            if(isServer)Server_Sound_Died();
+        }
         animator.speed = 3f;
         state = UnitState.Dead;
         animator.SetTrigger("DoDeath");
@@ -643,6 +650,7 @@ public class Unit : NetworkBehaviour
         StartCoroutine(DieDispaly(animator.transform.localScale.y, 0.1f, destoryTime - 1f));
         Destroy(this, destoryTime);
         Destroy(this.transform.gameObject, destoryTime + 2f);
+        
     }
     protected virtual IEnumerator DieDispaly(float v_start, float v_end, float duration)
     {
@@ -733,6 +741,20 @@ public class Unit : NetworkBehaviour
         //         stateMachineManager.OnUnitDying(s, damage);
         //     };
         // }
+        
+        switch(Weapon.thisWeaponType)
+        {
+            case WeaponTemplate.WeaponType.Shield:
+                if(Local())
+                {
+                    Sound_BeenAttacked_Shield();
+                }else
+                {
+                    Server_Sound_BeenAttacked_Shield();
+                }
+                
+                break;
+        }
         OnBeenAttacked?.Invoke(damage);
         unitTemplate.health -= damage;
         // 血条 着色器
@@ -846,6 +868,18 @@ public class Unit : NetworkBehaviour
             if(!animator)break;
             RunEffect(EffectTemplate.EffectType.Attacking);
             animator.SetTrigger("DoAttack");
+            switch(Weapon.thisWeaponType)
+            {
+                case WeaponTemplate.WeaponType.Bow:
+                    Sound_Attack_Remote();
+                    break;
+                case WeaponTemplate.WeaponType.Sword:
+                    Sound_Attack_Melee();
+                    break;
+                case WeaponTemplate.WeaponType.Spear:
+                    Sound_Attack_Mid();
+                    break;
+            }
             OnAttacking?.Invoke();
             WeaponDisplay();
             targetOfAttack.SufferAttackSimple(unitTemplate.attackPower);
@@ -953,12 +987,129 @@ public class Unit : NetworkBehaviour
     {
         targetOfAttack = null;
     }
+    
+    void Sound_Died()
+    {
+        string Sound_Died = "Sound_Died";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Died,1.0f);
+    }
+    void Sound_BeenAttacked_Shield()
+    {
+        float soundVolume = Random.Range(0.1f,0.5f);
+        string Sound_BeenAttacked_Shield = "Sound_BeenAttacked_Shield";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_BeenAttacked_Shield,soundVolume);
+    }
+    public void Sound_Attack_Remote()
+    {
+        float soundVolume = Random.Range(0.1f,0.5f);
+        string Sound_Attack_Remote = "Sound_Attack_Remote";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Attack_Remote,soundVolume);
+    }
+    public void Sound_Attack_Melee()
+    {
+        float soundVolume = Random.Range(0.1f,0.5f);
+        string Sound_Attack_Melee = "Sound_Attack_Melee";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Attack_Melee,soundVolume);
+    }
+    public void Sound_Attack_Mid()
+    {
+        float soundVolume = Random.Range(0.1f,0.5f);
+        string Sound_Attack_Mid = "Sound_Attack_Mid";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Attack_Mid,soundVolume);
+    }
+    public void Sound_FrequentBubbles()
+    {
+        string Sound_FrequentBubbles = "Sound_FrequentBubbles";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_FrequentBubbles,0.1f);
+    }
+    public void Sound_Bite_Swallow_Enhancement()
+    {
+        string Sound_Bite = "Sound_Bite";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Bite,15.5f);
+        string Sound_Swallow = "Sound_Swallow";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Swallow,5.5f,2.0f);
+        string Sound_Enhancement = "Sound_Enhancement";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Enhancement,1.5f,0.5f);
+    }
+    public void Sound_Mechanism_WeakAss()
+    {
+        string Sound_Mechanism_WeakAss = "Sound_Mechanism_WeakAss";
+        float randomVolum = Random.Range(0.1f,0.7f);
+        float randomDelay = Random.Range(0.0f,0.7f);
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Mechanism_WeakAss,randomVolum,randomDelay);
+    }
     #endregion 数据操作
     #region 联网数据操作
     public bool Local()
     {
         if(RunModeData.CurrentRunMode == RunMode.Local)return true;
         return false;
+    }
+    [Server]
+    public void Server_Sound_Mechanism_WeakAss()
+    {
+        Sound_Mechanism_WeakAss();
+        Client_Sound_Mechanism_WeakAss();
+    }
+    [ClientRpc]
+    public void Client_Sound_Mechanism_WeakAss()
+    {
+        if(ServerLogic.Local_palayer != unitTemplate.player)return;
+        Sound_Mechanism_WeakAss();
+    }
+    [Server]
+    public void Server_Sound_Bite_Swallow_Enhancement()
+    {
+        Sound_Bite_Swallow_Enhancement();
+        Client_Sound_Bite_Swallow_Enhancement();
+    }
+    [ClientRpc]
+    public void Client_Sound_Bite_Swallow_Enhancement()
+    {
+        if(ServerLogic.Local_palayer != unitTemplate.player)return;
+        Sound_Bite_Swallow_Enhancement();
+    }
+    [ClientRpc]
+    public void Client_Sound_Attack_Mid()
+    {
+        if(ServerLogic.Local_palayer != unitTemplate.player)return;
+        Sound_Attack_Mid();
+    }
+    [ClientRpc]
+    public void Client_Sound_Attack_Melee()
+    {
+        if(ServerLogic.Local_palayer != unitTemplate.player)return;
+        Sound_Attack_Melee();
+    }
+    [ClientRpc]
+    public void Client_Sound_Attack_Remote()
+    {
+        if(ServerLogic.Local_palayer != unitTemplate.player)return;
+        Sound_Attack_Remote();
+    }
+    [Server]
+    void Server_Sound_BeenAttacked_Shield()
+    {
+        Sound_BeenAttacked_Shield();
+        Client_Sound_BeenAttacked_Shield();
+    }
+    [ClientRpc]
+    void Client_Sound_BeenAttacked_Shield()
+    {
+        if(ServerLogic.Local_palayer != unitTemplate.player)return;
+        Sound_BeenAttacked_Shield();
+    }
+    [Server]
+    void Server_Sound_Died()
+    {
+        Sound_Died();
+        Client_Sound_Died();
+    }
+    [ClientRpc]
+    void Client_Sound_Died()
+    {
+        if(ServerLogic.Local_palayer != unitTemplate.player)return;
+        Sound_Died();
     }
     [Server]
     public virtual IEnumerator Server_DealAttackSimple()
@@ -968,6 +1119,21 @@ public class Unit : NetworkBehaviour
             if(!animator)break;
             RunEffect(EffectTemplate.EffectType.Attacking);
             animator.SetTrigger("DoAttack");
+            switch(Weapon.thisWeaponType)
+            {
+                case WeaponTemplate.WeaponType.Bow:
+                    Sound_Attack_Remote();
+                    Client_Sound_Attack_Remote();
+                    break;
+                case WeaponTemplate.WeaponType.Sword:
+                    Sound_Attack_Melee();
+                    Client_Sound_Attack_Melee();
+                    break;
+                case WeaponTemplate.WeaponType.Spear:
+                    Sound_Attack_Mid();
+                    Client_Sound_Attack_Mid();
+                    break;
+            }
             Client_DealAttackSimple_DoAttackAnimation();
             OnAttacking?.Invoke();
             WeaponDisplay();

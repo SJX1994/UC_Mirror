@@ -52,6 +52,19 @@ public class UnitAttackProp : NetworkBehaviour
             if(!UnitSimple.animator)break;
             UnitSimple.RunEffect(EffectTemplate.EffectType.Attacking);
             UnitSimple.animator.SetTrigger("DoAttack");
+            switch(UnitSimple.Weapon.thisWeaponType)
+            {
+                case WeaponTemplate.WeaponType.Bow:
+                    UnitSimple.Sound_Attack_Remote();
+                    break;
+                case WeaponTemplate.WeaponType.Sword:
+                    UnitSimple.Sound_Attack_Melee();
+                    break;
+                case WeaponTemplate.WeaponType.Spear:
+                    UnitSimple.Sound_Attack_Mid();
+                    break;
+            }
+            
             UnitSimple.OnAttacking?.Invoke();
             UnitSimple.WeaponDisplay();
             targetPropOfAttack.SufferAttackSimple(UnitSimple.unitTemplate.attackPower,this);
@@ -81,6 +94,21 @@ public class UnitAttackProp : NetworkBehaviour
             if(!UnitSimple.animator)break;
             UnitSimple.RunEffect(EffectTemplate.EffectType.Attacking);
             UnitSimple.animator.SetTrigger("DoAttack");
+            switch(UnitSimple.Weapon.thisWeaponType)
+            {
+                case WeaponTemplate.WeaponType.Bow:
+                    UnitSimple.Sound_Attack_Remote();
+                    UnitSimple.Client_Sound_Attack_Remote();
+                    break;
+                case WeaponTemplate.WeaponType.Sword:
+                    UnitSimple.Sound_Attack_Melee();
+                    UnitSimple.Client_Sound_Attack_Melee();
+                    break;
+                case WeaponTemplate.WeaponType.Spear:
+                    UnitSimple.Sound_Attack_Mid();
+                    UnitSimple.Client_Sound_Attack_Mid();
+                    break;
+            }
             UnitSimple.Client_DealAttackSimple_DoAttackAnimation();
             UnitSimple.OnAttacking?.Invoke();
             UnitSimple.WeaponDisplay();

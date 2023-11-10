@@ -26,6 +26,7 @@ public class IdelUI : NetworkBehaviour
         {
             if(!Info)continue;
             Info.GetComponent<IdelBox>().idelUI = this;
+            Info.GetComponent<IdelBox>().player = player;
         }
     }
     public void Active()
@@ -101,7 +102,8 @@ public class IdelUI : NetworkBehaviour
             if(!Info)continue;
             Info.GetComponent<IdelBox>().RefreshGameObj();
         }
-        AudioSystemManager.Instance.PlaySound("Sound_Button_Click");
+        
+        
     }
     
     #endregion

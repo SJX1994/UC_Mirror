@@ -4,7 +4,8 @@ using DG.Tweening;
 using UnityEngine.Events;
 using System.Linq;
 using UC_PlayerData;
-public class WeakAssociation : MonoBehaviour, ISoldierRelation
+using Mirror;
+public class WeakAssociation : NetworkBehaviour, ISoldierRelation
 {
       private bool needRender;
       public bool NeedRender { 
@@ -106,6 +107,7 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
 
       public void SoldiersStartRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
+           
             needRender = true;
             if(from == null || to == null) return;
             if(to.unitBase.IsDeadOrNull(to.unitBase) || from.unitBase.IsDeadOrNull(from.unitBase))return;
@@ -148,6 +150,14 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
             //       PuppetEffectDataStruct p2 = new (PuppetEffectDataStruct.EffectType.WeakAssociationStart,to.transform.position,sortingLayerName);
             //       from.weakAssociation.OnPlayEffect?.Invoke(p2);
             // });
+            if(Self.Local())
+            {
+                  Sound_Mechanism_WeakAss();
+            }else
+            {
+                  if(isServer)Server_Sound_Mechanism_WeakAss();
+            }
+            
             
       }
 
@@ -278,5 +288,25 @@ public class WeakAssociation : MonoBehaviour, ISoldierRelation
                  
             
       }
+      void Sound_Mechanism_WeakAss()
+      {
+            string Sound_Mechanism_WeakAss = "Sound_Mechanism_WeakAss";
+            float randomVolum = Random.Range(0.1f,0.7f);
+            float randomDelay = Random.Range(0.0f,0.5f);
+            AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Mechanism_WeakAss,randomVolum,randomDelay);
+      }
 #endregion 数据操作
+#region 联网数据操作
+      [Server]
+      void Server_Sound_Mechanism_WeakAss()
+      {
+            Sound_Mechanism_WeakAss();
+            Rpc_Sound_Mechanism_WeakAss();
+      }
+      [ClientRpc]
+      void Rpc_Sound_Mechanism_WeakAss()
+      {
+            Sound_Mechanism_WeakAss();
+      }
+#endregion 联网数据操作
 }

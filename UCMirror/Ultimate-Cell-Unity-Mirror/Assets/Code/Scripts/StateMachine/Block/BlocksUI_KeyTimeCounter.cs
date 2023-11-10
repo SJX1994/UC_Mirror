@@ -44,7 +44,6 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
             if(time_WhenGameStart == 0)
             {
                 isGameStart = true;
-                
                 DisplayTheKeyTimeCounter_WhenGameStart_Stop();
             }else
             {
@@ -115,6 +114,8 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
             default:
                 break;
         }
+        Sound_EndKeyCount();
+        
         if(Local())return;
         if(!isServer)return;
         Rpc_DisplayTheKeyTimeCounter_BeforEndGame(Time_BeforEndGame);
@@ -138,6 +139,7 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
                 ImageRenderer.sprite = one;
                 break;
             case 2:
+                Sound_CountdownBeginsOnTheBattlefield();
                 ImageRenderer.sprite = two;
                 break;
             case 3:
@@ -164,6 +166,8 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
             default:
                 break;
         }
+        Sound_StartKeyCount();
+        
         if(Local())return;
         if(!isServer)return;
         Rpc_DisplayTheKeyTimeCounter_WhenGameStart(time_WhenGameStart);
@@ -176,7 +180,21 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
         if(!isServer)return;
         Rpc_DisplayTheKeyTimeCounter_WhenGameStart_Stop();
     }
-    
+    void Sound_CountdownBeginsOnTheBattlefield()
+    {
+        string Sound_CountdownBeginsOnTheBattlefield = "Sound_CountdownBeginsOnTheBattlefield";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_CountdownBeginsOnTheBattlefield,0.8f,1.0f);
+    }
+    void Sound_StartKeyCount()
+    {
+        string Sound_StartKeyCount = "Sound_StartKeyCount";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_StartKeyCount);
+    }
+    void Sound_EndKeyCount()
+    {
+        string Sound_EndKeyCount = "Sound_EndKeyCount";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_EndKeyCount);
+    }
 #endregion 数据操作
 #region 联网数据操作
     bool Local()
@@ -208,6 +226,7 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
                 ImageRenderer.sprite = zero;
                 break;
             case 1:
+                Sound_CountdownBeginsOnTheBattlefield();
                 ImageRenderer.sprite = one;
                 break;
             case 2:
@@ -237,6 +256,7 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
             default:
                 break;
         }
+        Sound_EndKeyCount();
     }
     [ClientRpc]
     void Rpc_DisplayTheKeyTimeCounter_WhenGameStart_Stop()
@@ -294,6 +314,7 @@ public class BlocksUI_KeyTimeCounter : NetworkBehaviour
             default:
                 break;
         }
+        Sound_StartKeyCount();
     }
 #endregion 联网数据操作
 }

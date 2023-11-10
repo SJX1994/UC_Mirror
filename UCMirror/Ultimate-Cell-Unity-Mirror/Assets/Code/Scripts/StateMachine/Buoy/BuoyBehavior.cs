@@ -75,7 +75,7 @@ public class BuoyBehavior : NetworkBehaviour
             originPos = transform.parent.localPosition;
             if(!buoyInfo.MouseButtonDown(false))return;
             Behavior_OnMouseDown();
-            
+            Sound_Command_Zoom();
         }else
         {
             // 联网
@@ -101,6 +101,8 @@ public class BuoyBehavior : NetworkBehaviour
         {
             Behavior_OnMouseUp();
             Reset();
+            Sound_Command_Out();
+            
         }else
         {
             if(!isLocalPlayer)return;
@@ -110,6 +112,16 @@ public class BuoyBehavior : NetworkBehaviour
     }
 # endregion 数据关系
 # region 数据操作
+    void Sound_Command_Out()
+    {
+        string Sound_Command_Out = "Sound_Command_Out";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Command_Out,1.5f);
+    }
+    void Sound_Command_Zoom()
+    {
+        string Sound_Command_Zoom = "Sound_Command_Zoom";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Command_Zoom,1.5f);
+    }
     void Behavior_OnMouseDown()
     {
         buoyInfo.OnBuoyDrag?.Invoke();
@@ -395,6 +407,7 @@ public class BuoyBehavior : NetworkBehaviour
     [Client]
     void Client_Behavior_OnMouseDown()
     {
+        
         state = buoyInfo.buoyTurnHandle.GetControlState();
         
         if(state == BuoyTurnHandle.TurnHandleControlState.Scaning_1)
@@ -407,10 +420,13 @@ public class BuoyBehavior : NetworkBehaviour
             // 过时，暂未启用
             // Cmd_BehaviorMultiple_OnMouseDown(Input.mousePosition);
         }
+        if(ServerLogic.Local_palayer != buoyInfo.player)return;
+        Sound_Command_Zoom();
     }
     [Command(requiresAuthority = false)]
     void Cmd_Behavior_OnMouseDown(Vector3 mousePos_Temp,Vector3 buoyOriginPos_PVP)
     {
+        
         originPos_PVP = buoyOriginPos_PVP;
         buoyInfo.OnBuoyDrag?.Invoke();
         // UserAction.Player1UserState = UserAction.State.CommandTheBattle_Buoy;
@@ -431,7 +447,8 @@ public class BuoyBehavior : NetworkBehaviour
             // tetrisBuoySimpleTemp = Instantiate(tsBuoyControled, transform.parent);
         Player whichPlayer = tsBuoyControled.TetrisBlockSimple.player;
         Server_OnGameObjCreate_tetrisBuoySimpleTemp(tsBuoyControled.name.Replace("(Clone)",""),whichPlayer);
-        
+        if(ServerLogic.Local_palayer != buoyInfo.player)return;
+        Sound_Command_Zoom();
         
     }
     [Client]
@@ -530,11 +547,13 @@ public class BuoyBehavior : NetworkBehaviour
         {
             // Cmd_BehaviorMultiple_OnMouseUp();
         }
-        
+        if(ServerLogic.Local_palayer != buoyInfo.player)return;
+        Sound_Command_Out();
     }
     [Command]
     void Cmd_Behavior_OnMouseUp()
     {
+        
         if(buoyInfo.player_local == Player.Player1)
         {
             UserAction.Player1UserState = UserAction.State.WatchingFight;
@@ -560,6 +579,8 @@ public class BuoyBehavior : NetworkBehaviour
         // 可以放置
         PutAction();
         Client_PutAction(whichPlayer);
+        if(ServerLogic.Local_palayer != buoyInfo.player)return;
+        Sound_Command_Out();
     }
     [ClientRpc]
     void Client_CantPutAction(Player whichPlayer)

@@ -7,9 +7,11 @@ using UnityEngine.AI;
 using Unity.VisualScripting;
 using System.Linq;
 using UC_PlayerData;
+using Mirror;
 
-public class ChainTransfer : MonoBehaviour, ISoldierRelation
+public class ChainTransfer : NetworkBehaviour, ISoldierRelation
 {
+#region 数据对象
       private bool needRender;
       public bool NeedRender { 
             get {return needRender;}
@@ -75,7 +77,8 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       Tween tween_SoldiersEndRelationTo;
       Tween tween_ChainTransfering;
       Vector3 originLocalPosition;
-      
+#endregion 数据对象
+#region 数据关系
       void Start()
       {
             needRender = true;
@@ -84,6 +87,8 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             originLocalPosition = transform.localPosition;
             Invoke(nameof(Init), 0.1f);
       }
+#endregion 数据关系
+#region 数据操作 
       public void AllSoldiers()
       {
             soldiers = new List<SoldierBehaviors>(FindObjectsOfType<SoldierBehaviors>().ToList().Where(x=>CheckSoldier(x)));
@@ -256,7 +261,6 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             };
             
       }
-      
       public void SoldiersUpdateRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
             
@@ -294,6 +298,7 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
       }
       public void SoldiersEndRelation(SoldierBehaviors from, SoldierBehaviors to)
       {
+            
             // 发出射线
             targetPosition = originLocalPosition;
             if (Physics.Raycast(from.transform.position, (to.transform.position - from.transform.position), out RaycastHit hit, Mathf.Infinity, targetLayer))
@@ -383,6 +388,14 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             };
                   
             };
+            if(Self.Local())
+            {
+                  Sound_Mechanism_ChainBall();
+            }else
+            {
+                  if(!isServer)return;
+                  Server_Sound_Mechanism_ChainBall();
+            }
             
       }
       void ResetPos()
@@ -522,45 +535,6 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             soldier.ChainTransfer.counted = true;
             FindSoliderRecursion(soldier,soldiers);
       }
-      // List<SoldierBehaviors> GetSoldiersArranged(SoldierBehaviors firstSoldier)
-      // {
-      //       // soldiers = GetSameTypeSoldier();
-      //       // AllSoldiers();
-      //       List<SoldierBehaviors> tempSoldiers = new List<SoldierBehaviors>();
-
-      //       firstSoldier.chainTransfer.counted = true;
-      //       tempSoldiers.Add(firstSoldier);
-
-      //       SoldierBehaviors nextSoldier = null;
-      //       for(int i = 0; i < this.soldiers.Count-1; i++)
-      //       {
-      //             if(nextSoldier == null)
-      //             {
-      //                   nextSoldier = firstSoldier.chainTransfer.GetClosestSoldier();
-      //                   if(nextSoldier!=null)
-      //                   {
-      //                         nextSoldier.chainTransfer.counted = true;
-      //                         tempSoldiers.Add(nextSoldier);
-      //                   }
-      //             }else
-      //             {
-      //                   nextSoldier = nextSoldier.chainTransfer.GetClosestSoldier();
-      //                   if(nextSoldier!=null)
-      //                   {
-      //                         nextSoldier.chainTransfer.counted = true;
-      //                         tempSoldiers.Add(nextSoldier);
-      //                   }     
-                        
-      //             }
-                  
-      //       }
-      //       foreach(SoldierBehaviors s in tempSoldiers)
-      //       {
-      //           s.chainTransfer.counted = false;
-      //       }
-
-      //       return tempSoldiers;
-      // }
       void Display_setSkine()
       {
             // if(!skillCooldown) skillCooldown = FindObjectOfType<SkillCooldown>();
@@ -641,4 +615,24 @@ public class ChainTransfer : MonoBehaviour, ISoldierRelation
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position + capsuleCollider.center, capsuleCollider.radius * Mathf.Max(transform.localScale.x, transform.localScale.y, transform.localScale.z));
       }
+      void Sound_Mechanism_ChainBall()
+      {
+            string Sound_Mechanism_ChainBall = "Sound_Mechanism_ChainBall";
+            AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_Mechanism_ChainBall,1f);
+      }
+#endregion 数据操作 
+#region 联网数据操作
+      [Server]
+      void Server_Sound_Mechanism_ChainBall()
+      {
+            Sound_Mechanism_ChainBall();
+            Rpc_Sound_Mechanism_ChainBall();
+      }
+      [ClientRpc]
+      void Rpc_Sound_Mechanism_ChainBall()
+      {
+            Sound_Mechanism_ChainBall();
+      }
+#endregion 联网数据操作
+
 }

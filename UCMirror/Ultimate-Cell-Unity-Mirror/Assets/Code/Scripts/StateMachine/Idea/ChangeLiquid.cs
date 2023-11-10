@@ -224,7 +224,10 @@ public class ChangeLiquid : NetworkBehaviour
                 // ideaBox.idelContainer.SetActive(true);
                 IdelBox.OnGameObjCreate();
                 Invoke(nameof(DoCount_UpLevel),preventionKillTweenWhenUsing);
+                Sound_PetriDish_LoadingCompleted();
             };
+            Sound_PetriDish_Loading();
+            
         }else
         {
             if(!isServer)return;
@@ -255,6 +258,8 @@ public class ChangeLiquid : NetworkBehaviour
             Level++;
             Invoke(nameof(DoCount_UpLevel),preventionKillTweenWhenUsing);
         };
+        if(ServerLogic.Local_palayer != IdelBox.player)return;
+        Sound_PetriDish_UpLevel();
     }
     public void ResetLiquidLoader_UpLevel()
     {
@@ -335,6 +340,21 @@ public class ChangeLiquid : NetworkBehaviour
         if(IsInvoking(nameof(DoCount)))CancelInvoke(nameof(DoCount));
         return true;
     }
+    void Sound_PetriDish_Loading()
+    {
+        string Sound_PetriDish_Loading = "Sound_PetriDish_Loading";
+        AudioSystemManager.Instance.PlaySoundSimpleScaleTemp(Sound_PetriDish_Loading,Referee.InIdelbox_CreatCountdown,0.5f);
+    }
+    void Sound_PetriDish_LoadingCompleted()
+    {
+        string Sound_PetriDish_LoadingCompleted = "Sound_PetriDish_LoadingCompleted";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_PetriDish_LoadingCompleted);
+    }
+    void Sound_PetriDish_UpLevel()
+    {
+        string Sound_PetriDish_UpLevel = "Sound_PetriDish_UpLevel";
+        AudioSystemManager.Instance.PlaySoundSimpleTemp(Sound_PetriDish_UpLevel);
+    }
 #endregion 数据操作
 #region 联网数据操作
     bool Local()
@@ -371,11 +391,13 @@ public class ChangeLiquid : NetworkBehaviour
         {
             ReadyLight.SetActive(true);
             IdelBox.ClickEvent.SetActive(true);
+            Sound_PetriDish_LoadingCompleted();
             ClientDoCountOnComplete();
             // // ideaBox.idelContainer.SetActive(true);
             IdelBox.OnGameObjCreate();
             Invoke(nameof(DoCount_UpLevel),preventionKillTweenWhenUsing);
         };
+        Sound_PetriDish_Loading();
     }
     [ClientRpc]
     void ClientDoCountStart()
@@ -385,6 +407,8 @@ public class ChangeLiquid : NetworkBehaviour
         TopLiquid.GetComponent<RectTransform>().anchoredPosition = originPositionTop;
         ReadyLight.SetActive(false);
         IdelBox.ClickEvent.SetActive(false);
+        if(ServerLogic.Local_palayer != IdelBox.player)return;
+        Sound_PetriDish_Loading();
     }
     [ClientRpc]
     void ClientDoCount(float fade,Vector3 finallyReachesPosition)
@@ -398,6 +422,8 @@ public class ChangeLiquid : NetworkBehaviour
         ReadyLight.SetActive(true);
         IdelBox.ClickEvent.SetActive(true);
         DoCount_UpLevel();
+        if(ServerLogic.Local_palayer != IdelBox.player)return;
+        Sound_PetriDish_LoadingCompleted();
     }
 #endregion 联网数据操作
 }
