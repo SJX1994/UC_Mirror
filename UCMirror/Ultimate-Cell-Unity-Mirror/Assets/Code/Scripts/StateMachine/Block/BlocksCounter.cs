@@ -4,6 +4,7 @@ using UC_PlayerData;
 using System.Linq;
 using System.Collections;
 using Mirror;
+using UnityEngine.Events;
 public class BlocksCounter : NetworkBehaviour
 {
 #region 数据对象
@@ -31,6 +32,8 @@ public class BlocksCounter : NetworkBehaviour
     List<SoldierBehaviors> weakAssociationSoldiers = new();
     Player playerForAssociation = Player.NotReady;
     private object lockObject = new object(); // 用于锁的对象
+    public UnityAction<Player> OnPlayerNeedHelp_WeakAss;
+    public UnityAction<Player> OnPlayer_FullRows;
 #endregion 数据对象
 #region 数据关系
     
@@ -92,6 +95,7 @@ public class BlocksCounter : NetworkBehaviour
         {
             // 触发事件
             // Debug.Log("P1需要帮助");
+            OnPlayerNeedHelp_WeakAss?.Invoke(Player.Player1);
             if(BlocksCreator.Local())
             {
                 Sound_Mechanism_WeakAss_Drum();
@@ -106,6 +110,7 @@ public class BlocksCounter : NetworkBehaviour
         {
             // 触发事件
             // Debug.Log("P2需要帮助");
+            OnPlayerNeedHelp_WeakAss?.Invoke(Player.Player2);
             playerForAssociation = Player.Player2;
         }
         AllSoldiers(playerForAssociation);
@@ -213,6 +218,17 @@ public class BlocksCounter : NetworkBehaviour
             if (isRowFull)
             {
                 Debug.Log("Row " + row + " is full.~~!!!!");
+                int player1Count = rowFullTetris.FindAll((tetri) => tetri.tetriBlockSimple.Player == Player.Player1).Count;
+                int player2Count = rowFullTetris.FindAll((tetri) => tetri.tetriBlockSimple.Player == Player.Player2).Count;
+                Debug.Log("Player1Count:" + player1Count + " Player2Count:" + player2Count);
+                if(player1Count > player2Count)
+                {
+                    OnPlayer_FullRows?.Invoke(Player.Player1);
+                }else
+                {
+                    OnPlayer_FullRows?.Invoke(Player.Player2);
+                }
+                
                 DoFullRowsSuccess();
             }
         }

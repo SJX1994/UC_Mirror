@@ -51,6 +51,7 @@ public class Paintable : NetworkBehaviour {
     }
 
     void OnDisable(){
+        if(!maskRenderTexture || !uvIslandsRenderTexture || !extendIslandsRenderTexture || !supportTexture)return;
         maskRenderTexture.Release();
         uvIslandsRenderTexture.Release();
         extendIslandsRenderTexture.Release();

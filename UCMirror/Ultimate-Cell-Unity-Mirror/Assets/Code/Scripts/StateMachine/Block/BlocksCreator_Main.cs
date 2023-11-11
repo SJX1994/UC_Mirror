@@ -146,14 +146,30 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
                 InvokeRepeating(nameof(ProcessDataFromStack),0.1f,0.1f);
             }
         };
-        UIData.OnPlayer1MoraleAccumulationMaxed += BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
-        UIData.OnPlayer2MoraleAccumulationMaxed += BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
+        if(Local())
+        {
+            UIData.OnPlayer1MoraleAccumulationMaxed += BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
+            UIData.OnPlayer2MoraleAccumulationMaxed += BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
+        }else
+        {
+            UIData.OnPlayer1MoraleAccumulationMaxed += BlocksProps.Server_Event_GenerateChainBall_MoraleAccumulationMaxed;
+            UIData.OnPlayer2MoraleAccumulationMaxed += BlocksProps.Server_Event_GenerateChainBall_MoraleAccumulationMaxed;
+        }
+        
     }
     void OnDisable()
     {
-        UIData.OnPlayer1MoraleAccumulationMaxed -= BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
-        UIData.OnPlayer2MoraleAccumulationMaxed -= BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
-        ServerLogic.On_Local_palayer_ready -= Client_Event_On_Local_player_ready;
+        if(Local())
+        {
+            UIData.OnPlayer1MoraleAccumulationMaxed -= BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
+            UIData.OnPlayer2MoraleAccumulationMaxed -= BlocksProps.Event_GenerateChainBall_MoraleAccumulationMaxed;
+            ServerLogic.On_Local_palayer_ready -= Client_Event_On_Local_player_ready;
+        }else
+        {
+            UIData.OnPlayer1MoraleAccumulationMaxed -= BlocksProps.Server_Event_GenerateChainBall_MoraleAccumulationMaxed;
+            UIData.OnPlayer2MoraleAccumulationMaxed -= BlocksProps.Server_Event_GenerateChainBall_MoraleAccumulationMaxed;
+            ServerLogic.On_Local_palayer_ready -= Client_Event_On_Local_player_ready;
+        }
     }
 #endregion 数据关系
 #region 数据操作
@@ -317,7 +333,7 @@ public class BlocksCreator_Main : SingletonNetwork<BlocksCreator_Main>
         // string music_BattlefieldBackground = "Music_BattlefieldBackground";
         // AudioSystemManager.Instance.PlayMusic(music_BattlefieldBackground, 99);
         BlocksReferee.Active();
-        Debug.Log("BlocksUIActive!!!!");
+        ServerLogic.OnServerLogicStart?.Invoke();
         // Client_PlayMusic(music_BattlefieldBackground, 99);
     }
     [ClientRpc]

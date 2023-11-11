@@ -4,9 +4,38 @@ using UnityEngine;
 using UC_PlayerData;
 using DG.Tweening;
 using Mirror;
+using UnityEngine.UI;
+using System.Linq;
 public class AvatarUI_Main : NetworkBehaviour
 {
 #region 数据对象
+    BlocksCounter blocksCounter;
+    public BlocksCounter BlocksCounter
+    {
+       get
+        {
+            if(!blocksCounter)blocksCounter = FindObjectOfType<BlocksCounter>();
+            return blocksCounter;
+        }
+    }
+    AvatarUI_Buff player1_Buff;
+    public AvatarUI_Buff Player1_Buff
+    {
+        get
+        {
+            if(!player1_Buff)player1_Buff = Player1AvatarSet.GetComponentInChildren<AvatarUI_Buff>();
+            return player1_Buff;
+        }
+    }
+    AvatarUI_Buff player2_Buff;
+    public AvatarUI_Buff Player2_Buff
+    {
+        get
+        {
+            if(!player2_Buff)player2_Buff = Player2AvatarSet.GetComponentInChildren<AvatarUI_Buff>();
+            return player2_Buff;
+        }
+    }
     Tween player1MaxFadeAway;
     Tween player2MaxFadeAway;
     Transform player1AvatarSet;
@@ -71,19 +100,49 @@ public class AvatarUI_Main : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        float localModeCreatDelay = 0.1f;
-        Invoke(nameof(Init),localModeCreatDelay);
+        if(Local())
+        {
+            float localModeCreatDelay = 0.3f;
+            Invoke(nameof(Init),localModeCreatDelay);
+        }else
+        {
+            if(!isServer)return;
+            Server_Init();
+        }
+        
+    }
+    void Server_Init()
+    {
+        
+        UIData.Player1MoraleAccumulation = 0;
+        UIData.Player2MoraleAccumulation = 0;
+        UIData.player1isAdditioning = false;
+        UIData.player2isAdditioning = false;
+        ServerLogic.OnServerLogicStart += Init;
+        
     }
     void Init()
     {
-        UIData.OnPlayer1MoraleAccumulationMaxed += MoraleAccumulationMaxed;
-        UIData.OnPlayer2MoraleAccumulationMaxed += MoraleAccumulationMaxed;
+        UIData.OnPlayer1MoraleAccumulationMaxed += Event_MoraleAccumulationMaxed;
+        UIData.OnPlayer2MoraleAccumulationMaxed += Event_MoraleAccumulationMaxed;
         UIData.Player1MoraleAccumulation = 0;
         UIData.Player2MoraleAccumulation = 0;
+        BlocksCounter.OnPlayerNeedHelp_WeakAss += Event_WeakAssociationUI;
+        BlocksCounter.OnPlayer_FullRows += Event_FullRowsUI;
+        UnitData.OnUnitChainTransfer += Event_ChainTransfer;
+        if(Local())return;
+        Clinet_Init();
     }
     void OnDisable() {
-        UIData.OnPlayer1MoraleAccumulationMaxed -= MoraleAccumulationMaxed;
-        UIData.OnPlayer2MoraleAccumulationMaxed -= MoraleAccumulationMaxed;
+        UIData.OnPlayer1MoraleAccumulationMaxed -= Event_MoraleAccumulationMaxed;
+        UIData.OnPlayer2MoraleAccumulationMaxed -= Event_MoraleAccumulationMaxed;
+        if(!BlocksCounter)return;
+        BlocksCounter.OnPlayerNeedHelp_WeakAss -= Event_WeakAssociationUI;
+        BlocksCounter.OnPlayer_FullRows -= Event_FullRowsUI;
+        UnitData.OnUnitChainTransfer -= Event_ChainTransfer;
+        if(!Local())return;
+        ServerLogic.OnServerLogicStart -= Init;
+        ServerLogic.On_Local_palayer_ready -= HideOtherUI;
     }
     // Update is called once per frame
     void LateUpdate()
@@ -105,7 +164,46 @@ public class AvatarUI_Main : NetworkBehaviour
     }
 #endregion 数据关系
 #region 数据操作
-    void MoraleAccumulationMaxed(Player player)
+    void Event_ChainTransfer(Player playerIn)
+    {
+        if(playerIn == Player.Player1)
+        {
+            Player1_Buff.AddBuff(AvatarUI_Buff.Buff.ChainTransfer);
+        }
+        if(playerIn == Player.Player2)
+        {
+            Player2_Buff.AddBuff(AvatarUI_Buff.Buff.ChainTransfer);
+        }
+        if(Local())return;
+        Client_AddBuff(playerIn,AvatarUI_Buff.Buff.ChainTransfer);
+    }
+    void Event_FullRowsUI(Player playerIn)
+    {
+        if(playerIn == Player.Player1)
+        {
+            Player1_Buff.AddBuff(AvatarUI_Buff.Buff.FullRows);
+        }
+        if(playerIn == Player.Player2)
+        {
+            Player2_Buff.AddBuff(AvatarUI_Buff.Buff.FullRows);
+        }
+        if(Local())return;
+        Client_AddBuff(playerIn,AvatarUI_Buff.Buff.FullRows);
+    }
+    void Event_WeakAssociationUI(Player playerIn)
+    {
+        if(playerIn == Player.Player1)
+        {
+            Player1_Buff.AddBuff(AvatarUI_Buff.Buff.WeakAssociation);
+        }
+        if(playerIn == Player.Player2)
+        {
+            Player2_Buff.AddBuff(AvatarUI_Buff.Buff.WeakAssociation);
+        }
+        if(Local())return;
+        Client_AddBuff(playerIn,AvatarUI_Buff.Buff.WeakAssociation);
+    }
+    void Event_MoraleAccumulationMaxed(Player player)
     {
         if(player == Player.Player1)
         {
@@ -116,6 +214,9 @@ public class AvatarUI_Main : NetworkBehaviour
             {
                 UIData.Player1MoraleAccumulation = value;
             }));
+            Player1_Buff.AddBuff(AvatarUI_Buff.Buff.MoraleAccumulationMaxed);
+            if(Local())return;
+            Client_AddBuff(Player.Player1,AvatarUI_Buff.Buff.MoraleAccumulationMaxed);
         }else if(player == Player.Player2)
         {
             Invoke(nameof(Player2MoraleAccumulationFinished),UIData.player2MoraleAccumulationAdditionContinuedTime);
@@ -125,6 +226,9 @@ public class AvatarUI_Main : NetworkBehaviour
             {
                 UIData.Player2MoraleAccumulation = value;
             }));
+            Player2_Buff.AddBuff(AvatarUI_Buff.Buff.MoraleAccumulationMaxed);
+            if(Local())return;
+            Client_AddBuff(Player.Player2,AvatarUI_Buff.Buff.MoraleAccumulationMaxed);
         }
     }
     void Player1MoraleAccumulationFinished()
@@ -156,6 +260,45 @@ public class AvatarUI_Main : NetworkBehaviour
         if(RunModeData.CurrentRunMode == RunMode.Local)return true;
         return false;
     }
+    [ClientRpc]
+    void Clinet_Init()
+    {
+        UIData.Player1MoraleAccumulation = 0;
+        UIData.Player2MoraleAccumulation = 0;
+        UIData.player1isAdditioning = false;
+        UIData.player2isAdditioning = false;
+        ServerLogic.On_Local_palayer_ready += HideOtherUI;
+    }
+    void HideOtherUI()
+    {
+        if(ServerLogic.Local_palayer == Player.Player1)
+        {
+            player2AvatarSet = transform.Find("UI_Panel_Player2");
+            if(!player2AvatarSet)return;
+            player2AvatarSet.gameObject.SetActive(false);
+        }
+        if(ServerLogic.Local_palayer == Player.Player2)
+        {
+            player1AvatarSet = transform.Find("UI_Panel_Player1");
+            if(!player1AvatarSet)return;
+            player1AvatarSet.gameObject.SetActive(false);
+        }
+    }
+    [ClientRpc]
+    void Client_AddBuff(Player playerIn,AvatarUI_Buff.Buff buffType)
+    {
+        if(ServerLogic.Local_palayer != playerIn)return;
+
+        if(playerIn == Player.Player1)
+        {
+            Player1_Buff.AddBuff(buffType);
+        }
+        if(playerIn == Player.Player2)
+        {
+            Player2_Buff.AddBuff(buffType);
+        }
+    }
+    
     [ClientRpc]
     public void Client_UpdateMoraleAccumulation(float player1MoraleAccumulation,float player2MoraleAccumulation)
     {

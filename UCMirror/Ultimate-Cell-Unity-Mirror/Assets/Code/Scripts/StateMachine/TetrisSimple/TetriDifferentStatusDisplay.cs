@@ -33,15 +33,15 @@ public class TetriDifferentStatusDisplay : NetworkBehaviour
     }
     Sprite originSprite;
 
-    [SyncVar]
     Player player;
     Player Player
     {
         get
         {
-            if(!IdelBox)return Player.NotReady;
-            if(!TetriUnitSimple)return IdelBox.player;
-            if(!TetriUnitSimple.TetriBlock)return IdelBox.player;
+            // if(!IdelBox)return Player.NotReady;
+            // if(!TetriUnitSimple)return IdelBox.player;
+            // if(!TetriUnitSimple.TetriBlock)return IdelBox.player;
+            if(player != Player.NotReady)return player;
             player = TetriUnitSimple.TetriBlock.Player;
             return player;
         }
@@ -60,10 +60,6 @@ public class TetriDifferentStatusDisplay : NetworkBehaviour
                 if(idelBoxes[i].player != player)continue;
                 idelBox = idelBoxes[i];
             }
-            if(!idelBox)return null;
-            idelBox.OnTetriBeginDrag += Event_Display_OnBeginDrag;
-            idelBox.OnTetriEndDrag += Event_Display_OnEndDrag;
-            idelBox.OnTheCheckerboard += Event_Display_OnTheCheckerboard;
             return idelBox;
 
         }
@@ -108,18 +104,7 @@ public class TetriDifferentStatusDisplay : NetworkBehaviour
 #region 数据关系
     void Start()
     {
-        if(TetriUnitSimple.TetriBlock.Player == Player.Player1)
-        {
-            UserAction.OnPlayer1UserActionStateChanged += Event_OnUserActionStateChanged;
-            player1ActionBox = Resources.Load<Sprite>("Foreshadow/BrightRed");
-        }
-        else
-        {
-            UserAction.OnPlayer2UserActionStateChanged += Event_OnUserActionStateChanged;
-            player2ActionBox = Resources.Load<Sprite>("Foreshadow/LakeBlue");
-        }
-        float waitLoading = 0.1f;
-        Invoke(nameof(Init),waitLoading);
+        Event_Register();
     }
     void OnDisable()
     {
@@ -132,15 +117,54 @@ public class TetriDifferentStatusDisplay : NetworkBehaviour
     }
 #endregion 数据关系
 #region 数据操作
+    void Event_Register()
+    {
+        if(Local())
+        {
+            if(TetriUnitSimple.TetriBlock.Player == Player.Player1)
+            {
+                UserAction.OnPlayer1UserActionStateChanged += Event_OnUserActionStateChanged;
+                player1ActionBox = Resources.Load<Sprite>("Foreshadow/BrightRed");
+            }
+            if(TetriUnitSimple.TetriBlock.Player == Player.Player2)
+            {
+                UserAction.OnPlayer2UserActionStateChanged += Event_OnUserActionStateChanged;
+                player2ActionBox = Resources.Load<Sprite>("Foreshadow/LakeBlue");
+            }
+        }else
+        {
+            if(!isServer)return;
+            if(TetriUnitSimple.TetriBlock.Player == Player.Player1)
+            {
+                UserAction.OnPlayer1UserActionStateChanged += Server_Event_OnUserActionStateChanged;
+                player1ActionBox = Resources.Load<Sprite>("Foreshadow/BrightRed");
+            }
+            if(TetriUnitSimple.TetriBlock.Player == Player.Player2)
+            {
+                UserAction.OnPlayer2UserActionStateChanged += Server_Event_OnUserActionStateChanged;
+                player2ActionBox = Resources.Load<Sprite>("Foreshadow/LakeBlue");
+            }
+        }
+        
+        float waitLoading = 0.1f;
+        Invoke(nameof(Init),waitLoading);
+    }
     void Init()
     {
         TryGetComponent<TetriUnitSimple>(out tetriUnitSimple);
         transform.Find("Display_Range").TryGetComponent<TetriDisplayRange>(out tetriDisplayRange);
         transform.TryGetComponent<TetriBuoySimple>(out tetriBuoySimple);
-        Dispaly_UserWatchingFight();
+        
         if(Local())
         {
-            idelBox = IdelBox;
+            Dispaly_UserWatchingFight();
+            player = Player.NotReady;
+            idelBox = null;
+            player = Player;
+            if(!IdelBox)return;
+            IdelBox.OnTetriBeginDrag += Event_Display_OnBeginDrag;
+            IdelBox.OnTetriEndDrag += Event_Display_OnEndDrag;
+            IdelBox.OnTheCheckerboard += Event_Display_OnTheCheckerboard;
         }else
         {
             if(!isServer)return;
@@ -169,6 +193,27 @@ public class TetriDifferentStatusDisplay : NetworkBehaviour
         }
 
     }
+    [Server]
+    public void Server_Event_OnUserActionStateChanged(UserAction.State UserActionStateChanged)
+    {
+        switch (UserActionStateChanged)
+        {
+            case UserAction.State.CommandTheBattle_IdeaBox:
+                Server_Display_UserCommandTheBattle();
+                break;
+            case UserAction.State.CommandTheBattle_Buoy:
+                Server_Display_UserCommandTheBattle();
+                break;
+            case UserAction.State.WatchingFight:
+                Server_Dispaly_UserWatchingFight();
+                break;
+            case UserAction.State.Loading:
+                Dispaly_UserLoading();
+                break;
+            default:
+                break;
+        }
+    }
     void Event_Display_OnTheCheckerboard()
     {
         if(!IdelBox)return;
@@ -190,6 +235,7 @@ public class TetriDifferentStatusDisplay : NetworkBehaviour
         if(!TetriUnitSimple.HaveUnit)return;
         TetriUnitSimple.HaveUnit.Display_HideMorale();
     }
+    
     void Event_Display_OnEndDrag()
     {
         if(!IdelBox)return;
@@ -200,6 +246,7 @@ public class TetriDifferentStatusDisplay : NetworkBehaviour
         if(!TetriUnitSimple.HaveUnit)return;
         TetriUnitSimple.HaveUnit.Display_ShowMorale();
     }
+    
     void Display_UserCommandTheBattle()
     {
         if(!tetriUnitSimple)return;
@@ -281,18 +328,220 @@ public class TetriDifferentStatusDisplay : NetworkBehaviour
     [Server]
     void Server_Init()
     {
+        
+        player = Player.NotReady;
+        idelBox = null;
         player = Player;
-        idelBox = IdelBox;
+        if(!IdelBox)return;
+        IdelBox.OnTetriBeginDrag += Server_Event_Display_OnBeginDrag;
+        IdelBox.OnTetriEndDrag += Server_Event_Display_OnEndDrag;
+        IdelBox.OnTheCheckerboard += Server_Event_Display_OnTheCheckerboard;
         Clinet_Init(idelBox.netId,player);
+        Server_Dispaly_UserWatchingFight();
+    }
+    [Server]
+    void Server_Display_UserCommandTheBattle()
+    {
+        if(!tetriUnitSimple)return;
+        if(!TetriUnitSimple.TetrisBlockSimple)return;
+        if(!TetriUnitSimple.HaveUnit)return;
+        TetriUnitSimple.SetUnitSortingOrderToFlow();
+        bool isInIdeaBox = TetriUnitSimple.TetrisBlockSimple.transform.parent == null;
+        // if(isInIdeaBox)return;
+        if(isInIdeaBox)
+        {
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(0.0f);
+        }else
+        {
+            if(!TetriUnitSimple)return;
+            TetriUnitSimple.Display_UserCommandTheBattle();
+            if(!TetriDisplayRange)return;
+            TetriDisplayRange.SetSortingOrder(UC_PlayerData.Dispaly.FlowOrder+1);
+            TetriDisplayRange.SetAlpha(1f);
+            if(!TetriBuoySimple)return;
+            TetriBuoySimple.Event_Display_Evaluate();
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(1.0f);
+        }
+        Client_Display_UserCommandTheBattle(isInIdeaBox,Player);
+    }
+    [ClientRpc]
+    void Client_Display_UserCommandTheBattle(bool isInIdeaBox,Player playerIn)
+    {
+        if(ServerLogic.Local_palayer != playerIn)
+        {   
+            if(!TetriUnitSimple)return;
+            TetriUnitSimple.Display_UserCommandTheBattle();
+            if(!TetriDisplayRange)return;
+            TetriDisplayRange.SetAlpha(0f);
+            if(!TetriBuoySimple)return;
+            TetriBuoySimple.Event_Display_Evaluate();
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(0.0f);
+            return;
+        }
+        if(!TetriUnitSimple)return;
+        TetriUnitSimple.SetUnitSortingOrderToFlow();
+        if(isInIdeaBox)
+        {
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(0.0f);
+        }else
+        {
+            if(!TetriUnitSimple)return;
+            TetriUnitSimple.Display_UserCommandTheBattle();
+            if(!TetriDisplayRange)return;
+            TetriDisplayRange.SetSortingOrder(UC_PlayerData.Dispaly.FlowOrder+1);
+            TetriDisplayRange.SetAlpha(1f);
+            if(!TetriBuoySimple)return;
+            TetriBuoySimple.Event_Display_Evaluate();
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(1.0f);
+        }
+    }
+    [Server]
+    void Server_Dispaly_UserWatchingFight()
+    {
+        if(!tetriUnitSimple)return;
+        if(!tetriUnitSimple.TetrisBlockSimple)return;
+        if(!tetriUnitSimple.HaveUnit)return;
+        tetriUnitSimple.SetUnitSortingOrderToNormal();
+        bool isInIdeaBox = TetriUnitSimple.TetrisBlockSimple.transform.parent == null;
+        // if(isInIdeaBox)return;
+        if(isInIdeaBox)
+        {
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(0.0f);
+        }else
+        {
+            if(!TetriUnitSimple)return;
+            TetriUnitSimple.Display_UserWatchingFight();
+            if(!TetriDisplayRange)return;
+            TetriDisplayRange.SetSortingOrder(UC_PlayerData.Dispaly.NotFlowOrder+1);
+            TetriDisplayRange.SetAlpha(0f);
+            if(!TetriBuoySimple)return;
+            TetriBuoySimple.Event_Display_Evaluate();
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(0.0f);
+        }
+        Client_Dispaly_UserWatchingFight(isInIdeaBox,Player);
+    }
+    [ClientRpc]
+    void Client_Dispaly_UserWatchingFight(bool isInIdeaBox,Player playerIn)
+    {
+        if(ServerLogic.Local_palayer != playerIn)
+        {
+            if(!TetriUnitSimple)return;
+            TetriUnitSimple.Display_UserWatchingFight();
+            if(!TetriDisplayRange)return;
+            TetriDisplayRange.SetSortingOrder(UC_PlayerData.Dispaly.NotFlowOrder+1);
+            TetriDisplayRange.SetAlpha(0f);
+            if(!TetriBuoySimple)return;
+            TetriBuoySimple.Event_Display_Evaluate();
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(0.0f);
+            return;
+        }
+        if(!TetriUnitSimple)return;
+        TetriUnitSimple.SetUnitSortingOrderToNormal();
+        if(isInIdeaBox)
+        {
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(0.0f);
+        }else
+        {
+            if(!TetriUnitSimple)return;
+            TetriUnitSimple.Display_UserWatchingFight();
+            if(!TetriDisplayRange)return;
+            TetriDisplayRange.SetSortingOrder(UC_PlayerData.Dispaly.NotFlowOrder+1);
+            TetriDisplayRange.SetAlpha(0f);
+            if(!TetriBuoySimple)return;
+            TetriBuoySimple.Event_Display_Evaluate();
+            SetCubeAlpha(0.0f);
+            SetSpriteAlpha(0.0f);
+        }
+    }
+    [Server]
+    void Server_Event_Display_OnTheCheckerboard()
+    {
+        if(!tetriUnitSimple)return;
+        if(!IdelBox)return;
+        if(IdelBox.player != Player)return;
+        
+        transform.GetComponent<SpriteRenderer>().sortingOrder = UC_PlayerData.Dispaly.FlowOrder;
+        originSprite = transform.GetComponent<SpriteRenderer>().sprite;
+        transform.GetComponent<SpriteRenderer>().sprite = Player == Player.Player1?Player1ActionBox:Player == Player.Player2 ? Player2ActionBox : null;
+        transform.GetComponent<SpriteRenderer>().color = Color.white;
+        SetSpriteAlpha(1.0f);
+        if(!TetriUnitSimple)return;
+        if(!TetriUnitSimple.HaveUnit)return;
+        TetriUnitSimple.HaveUnit.Display_ShowMorale();
+        Clinet_Event_Display_OnTheCheckerboard(Player);
+    }
+    [ClientRpc]
+    void Clinet_Event_Display_OnTheCheckerboard(Player playerIn)
+    {
+        if(ServerLogic.Local_palayer != playerIn)return;
+        transform.GetComponent<SpriteRenderer>().sortingOrder = UC_PlayerData.Dispaly.FlowOrder;
+        originSprite = transform.GetComponent<SpriteRenderer>().sprite;
+        transform.GetComponent<SpriteRenderer>().sprite = playerIn == Player.Player1?Player1ActionBox:playerIn == Player.Player2 ? Player2ActionBox : null;
+        transform.GetComponent<SpriteRenderer>().color = Color.white;
+        SetSpriteAlpha(1.0f);
+        if(!TetriUnitSimple)return;
+        if(!TetriUnitSimple.HaveUnit)return;
+        TetriUnitSimple.HaveUnit.Display_ShowMorale();
+    }
+    [Server]
+    void Server_Event_Display_OnEndDrag()
+    {
+        if(!tetriUnitSimple)return;
+        if(!IdelBox)return;
+        if(IdelBox.player != Player)return;
+        transform.GetComponent<SpriteRenderer>().sprite = originSprite;
+        SetSpriteAlpha(0.0f);
+        if(!TetriUnitSimple)return;
+        if(!TetriUnitSimple.HaveUnit)return;
+        TetriUnitSimple.HaveUnit.Display_ShowMorale();
+        Clinet_Event_Display_OnEndDrag(Player);
+    }
+    [ClientRpc]
+    void Clinet_Event_Display_OnEndDrag(Player playerIn)
+    {
+        if(ServerLogic.Local_palayer != playerIn)return;
+        transform.GetComponent<SpriteRenderer>().sprite = originSprite;
+        SetSpriteAlpha(0.0f);
+        if(!TetriUnitSimple)return;
+        if(!TetriUnitSimple.HaveUnit)return;
+        TetriUnitSimple.HaveUnit.Display_ShowMorale();
+    }
+    [Server]
+    void Server_Event_Display_OnBeginDrag()
+    {
+        if(!IdelBox)return;
+        if(IdelBox.player != Player)return;
+        if(!tetriUnitSimple)return;
+        if(!TetriUnitSimple)return;
+        if(!TetriUnitSimple.HaveUnit)return;
+        TetriUnitSimple.HaveUnit.Display_HideMorale();
+        Clinet_Event_Display_OnBeginDrag(Player);
+    }
+    [ClientRpc]
+    void Clinet_Event_Display_OnBeginDrag(Player playerIn)
+    {
+        if(ServerLogic.Local_palayer != playerIn)return;
+        if(!TetriUnitSimple)return;
+        if(!TetriUnitSimple.HaveUnit)return;
+        TetriUnitSimple.HaveUnit.Display_HideMorale();
     }
     [ClientRpc]
     void Clinet_Init(uint serverIdelBoxUint,Player serverPlayer)
     {
+        Dispaly_UserWatchingFight();
         if(!idelBox)idelBox = FindObjectsOfType<IdelBox>().ToList().Find(idelBox => idelBox.netId == serverIdelBoxUint);
         if(!idelBox)return;
         idelBox.player = serverPlayer;
         player = serverPlayer;
-        // Debug.Log(idelBox.player);
     }
 #endregion 联网数据操作
 }

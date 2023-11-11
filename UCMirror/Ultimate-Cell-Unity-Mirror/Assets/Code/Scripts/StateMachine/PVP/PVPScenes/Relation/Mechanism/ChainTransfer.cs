@@ -27,9 +27,6 @@ public class ChainTransfer : NetworkBehaviour, ISoldierRelation
       public int chainDamage = 10;
       [HideInInspector]
       public int chainDamageTotal = 10;
-      //通讯
-      public UnityAction<PuppetEffectDataStruct> OnPlayEffect;
-
       public LayerMask targetLayer;
       MechanismInPut mechanismInPut;
       List<SoldierBehaviors> soldiers = new();
@@ -131,6 +128,7 @@ public class ChainTransfer : NetworkBehaviour, ISoldierRelation
       }
       public void FirstChain(bool preview)
       {
+            UnitData.OnUnitChainTransfer?.Invoke(Self.Player);
             this.preview = preview;
             // skillCooldown.NotActive();
             theFirst = true;
@@ -320,8 +318,8 @@ public class ChainTransfer : NetworkBehaviour, ISoldierRelation
             Vector3 backPos = to.transform.position;
             Vector3 targetPos = this.targetPosition;
             //大炮发射表现
-            PuppetEffectDataStruct ped = new(PuppetEffectDataStruct.EffectType.ChainTransferTrail,targetPos,duration/2);
-            to.ChainTransfer.OnPlayEffect?.Invoke(ped);
+            // PuppetEffectDataStruct ped = new(PuppetEffectDataStruct.EffectType.ChainTransferTrail,targetPos,duration/2);
+            // to.ChainTransfer.OnPlayEffect?.Invoke(ped);
             GameObject obj = new("TrailObject");
             TrailRenderer trail = obj.AddComponent<TrailRenderer>();
             trail.startColor = Color.red;

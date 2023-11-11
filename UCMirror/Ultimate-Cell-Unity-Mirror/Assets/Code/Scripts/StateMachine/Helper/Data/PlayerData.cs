@@ -54,6 +54,7 @@ namespace UC_PlayerData
     }
     public class UnitData
     {
+        public static UnityAction<Player> OnUnitChainTransfer;
         public enum Color
         {
             notReady,
@@ -172,6 +173,7 @@ namespace UC_PlayerData
     }
     public static class ServerLogic
     {
+        public static UnityAction OnServerLogicStart;
         public static Player local_palayer = Player.NotReady;
         public static Player Local_palayer
         {

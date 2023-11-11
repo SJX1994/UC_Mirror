@@ -220,6 +220,13 @@ public class BlocksProps : NetworkBehaviour
         NetworkServer.Spawn(tetriMoveDirection.gameObject);
     }
     [Server]
+    public void Server_Event_GenerateChainBall_MoraleAccumulationMaxed(Player whoMax)
+    {
+        InstantiateTetriBallOnServer();
+        tetriBall.BlocksCreator = transform.GetComponent<BlocksCreator_Main>();
+        tetriBall.Generate(whoMax);
+    }
+    [Server]
     void SetTetriBallOnServer()
     {
         tetriBall.BlocksCreator = transform.GetComponent<BlocksCreator_Main>();

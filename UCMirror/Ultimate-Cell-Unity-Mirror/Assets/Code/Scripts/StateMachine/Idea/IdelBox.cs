@@ -175,7 +175,8 @@ public class IdelBox : NetworkBehaviour,
             {
                 UserAction.OnPlayer1UserActionStateChanged += Event_OnUserActionStateChanged;
                 UserAction.Player1UserState = UserAction.State.Loading;
-            }else if(idelHolder.playerPVP_local == Player.Player2)
+            }
+            if(idelHolder.playerPVP_local == Player.Player2)
             {
                 UserAction.OnPlayer2UserActionStateChanged += Event_OnUserActionStateChanged;
                 UserAction.Player2UserState = UserAction.State.Loading;
@@ -251,6 +252,7 @@ public class IdelBox : NetworkBehaviour,
         {
             CancelInvoke(nameof(DoRotate));
             Local_OnBeginDrag();
+            OnTheCheckerboard?.Invoke();
         }else
         {
             CancelInvoke(nameof(Cmd_DoRotate));
@@ -264,7 +266,7 @@ public class IdelBox : NetworkBehaviour,
             if(inRotationEditMode)return;
             InFlow();
         }
-        OnTheCheckerboard?.Invoke();
+        
     }
     public void OnDrag(PointerEventData data)
     {
@@ -699,12 +701,14 @@ public class IdelBox : NetworkBehaviour,
     void Cmd_OnBeginDrag()
     {
         if(!tetrominoe)return;
+        OnTheCheckerboard?.Invoke();
         tetrominoe.GetComponent<TetrisUnitSimple>().OnBeginDragDisplay();
         ResetAnimation();
         // PlayAnimation_OpenUp();
         OnBoardChecker();
         if(inRotationEditMode)return;
         InFlow();
+        
         // Client_InFlow(tetrominoe.netId,player);
     }
     [Server]

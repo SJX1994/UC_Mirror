@@ -377,7 +377,7 @@ public class ChangeLiquid : NetworkBehaviour
         // Counting
         Vector3 finallyReachesPosition = new Vector3(-28.3f,390f,0f);
         float fillAmountStart = 0;
-        float fillAmountEnd = 1;
+        float fillAmountEnd = 1f + 0.1f;
         float preventionKillTweenWhenUsing = 0.1f;
         topTween_createInIdelBox = TopLiquid.GetComponent<RectTransform>().DOAnchorPos(finallyReachesPosition,inIdelbox_CreatCountdown - preventionKillTweenWhenUsing);
         fillLiquidTween_createInIdelBox = DOVirtual.Float(fillAmountStart, fillAmountEnd, inIdelbox_CreatCountdown, (TweenCallback<float>)((float value) =>

@@ -191,9 +191,9 @@ public class PuppetLine : MonoBehaviour
         mechanismInPut.modeChangeAction += (MechanismInPut.ModeTest mode) => {
             OnPuppetMechModeChange?.Invoke(mode);
         };
-        chainTransfer.OnPlayEffect += (PuppetEffectDataStruct effectData) => {
-            OnPuppetPlayEffect?.Invoke(effectData);
-        };
+        // chainTransfer.OnPlayEffect += (PuppetEffectDataStruct effectData) => {
+        //     OnPuppetPlayEffect?.Invoke(effectData);
+        // };
         fourDirectionsLinker.OnPlayEffect += (PuppetEffectDataStruct effectData) => {
             OnPuppetPlayEffect?.Invoke(effectData);
         };

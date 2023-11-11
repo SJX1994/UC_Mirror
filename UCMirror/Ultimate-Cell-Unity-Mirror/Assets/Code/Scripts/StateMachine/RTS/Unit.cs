@@ -716,7 +716,13 @@ public class Unit : NetworkBehaviour
         // 血条 着色器
         currentHP = unitTemplate.health;
         shaderHP = Remap(currentHP, 0, maxHealth, 0, 1);
-        UpdateMatHealth(shaderHP);
+        if(Local())
+        {
+            UpdateMatHealth(shaderHP);
+        }else
+        {
+            Server_UpdateMatHealth(shaderHP);
+        }
 
 
         if (unitTemplate.health <= 0)
@@ -760,7 +766,13 @@ public class Unit : NetworkBehaviour
         // 血条 着色器
         currentHP = unitTemplate.health;
         shaderHP = Remap(currentHP, 0, maxHealth, 0, 1);
-        UpdateMatHealth(shaderHP);
+        if(Local())
+        {
+            UpdateMatHealth(shaderHP);
+        }else
+        {
+            Server_UpdateMatHealth(shaderHP);
+        }
         if (unitTemplate.health <= 0)
         {
             unitTemplate.health = 0;
@@ -788,7 +800,13 @@ public class Unit : NetworkBehaviour
         // 血条 着色器
         currentHP = unitTemplate.health;
         shaderHP = Remap(currentHP, 0, maxHealth, 0, 1);
-        UpdateMatHealth(shaderHP);
+        if(Local())
+        {
+            UpdateMatHealth(shaderHP);
+        }else
+        {
+            Server_UpdateMatHealth(shaderHP);
+        }
         if (unitTemplate.health >= 0)
         {
             unitTemplate.health = (int)maxHealth;
@@ -1044,6 +1062,17 @@ public class Unit : NetworkBehaviour
     {
         if(RunModeData.CurrentRunMode == RunMode.Local)return true;
         return false;
+    }
+    [Server]
+    public void Server_UpdateMatHealth(float SetFloat)
+    {
+        UpdateMatHealth(SetFloat);
+        Client_UpdateMatHealth(SetFloat);
+    }
+    [ClientRpc]
+    public void Client_UpdateMatHealth(float SetFloat)
+    {
+        UpdateMatHealth(SetFloat);
     }
     [Server]
     public void Server_Sound_Mechanism_WeakAss()
