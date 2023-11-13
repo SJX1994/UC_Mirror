@@ -149,8 +149,10 @@ public class BuoyInfo : NetworkBehaviour
         // Debug.Log("mousePos++"+mousePos);
 
         // 1920 * 1080 Computer
-        Vector3 player1MousePosition = mousePos + new Vector3(-300f,0f,0);
-        Vector3 player2MousePosition = mousePos + new Vector3(-100f,0f,0);
+        // Vector3 player1MousePosition = mousePos + new Vector3(-300f,0f,0);
+        // Vector3 player2MousePosition = mousePos + new Vector3(-100f,0f,0);
+        Vector3 player1MousePosition = mousePos + new Vector3(0f,0f,0);
+        Vector3 player2MousePosition = mousePos + new Vector3(0f,0f,0);
 
         // 1920 * 1080 Android
         // Vector3 player1MousePosition = mousePos + new Vector3(87.9f, 102.2ff, 0);

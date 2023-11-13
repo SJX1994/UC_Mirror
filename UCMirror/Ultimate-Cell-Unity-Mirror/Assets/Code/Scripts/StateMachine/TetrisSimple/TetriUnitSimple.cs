@@ -18,6 +18,7 @@ public class TetriUnitSimple : NetworkBehaviour
         get
         {
             if(haveUnit)return haveUnit;
+            if(dead)return null;
             if(!haveUnit)haveUnit = FindUnitSimple();
             if(!haveUnit)
             {
@@ -97,7 +98,7 @@ public class TetriUnitSimple : NetworkBehaviour
             moveDirectionCatch = value;
         }
     }
-    bool dead = false;
+    public bool dead = false;
 #endregion 数据对象
 #region 联网数据对象
     NetworkManagerUC_PVP networkManagerUC_PVP;
@@ -356,6 +357,15 @@ public class TetriUnitSimple : NetworkBehaviour
         dead = true;
         Destroy(gameObject,timeToDestory);
     }
+    public void UnitTempDead()
+    {
+        dead = true;
+        if(!tetrisUnitSimple)return;
+        tetrisUnitSimple.TetriUnits.Remove(this);
+        tetrisUnitSimple.GetComponent<TetrisBlockSimple>().ChildTetris.Remove(this.GetComponent<TetriBlockSimple>());
+        tetrisUnitSimple.GetComponent<TetrisBuoySimple>().ChildTetris.Remove(this.GetComponent<TetriBuoySimple>());
+        Destroy(gameObject);
+    }
     public void FailToCreat()
     {
         if(!HaveUnit)return;
@@ -419,6 +429,7 @@ public class TetriUnitSimple : NetworkBehaviour
         }else
         {
             if(!isServer)return;
+            if(!HaveUnit)return;
             HaveUnit.Server_Display_OnBeginDragDisplay();
         }
         
@@ -435,36 +446,44 @@ public class TetriUnitSimple : NetworkBehaviour
         }else
         {
             if(!isServer)return;
+            if(!HaveUnit)return;
             HaveUnit.Server_Display_OnEndDragDisplay();
         }
         
     }
     public void Display_UserCommandTheBattle()
     {
+        if(!HaveUnit)return;
         HaveUnit.Display_UserCommandTheBattle();
     }
     public void Display_UserWatchingFight()
     {
+        if(!HaveUnit)return;
         HaveUnit.Display_UserWatchingFight();
     }
     public void Display_HideUnit()
     {
+        if(!HaveUnit)return;
         HaveUnit.Display_HideUnit();
     }
     public void Display_ShowForPlayerScreen()
     {
+        if(!HaveUnit)return;
         HaveUnit.ShowForPlayerScreen();
     }
     public void Display_ShowUnit()
     {
+        if(!HaveUnit)return;
         HaveUnit.Display_ShowUnit();
     }
     public void SetUnitSortingOrderToFlow()
     {
+        if(!HaveUnit)return;
         HaveUnit.SetUnitSortingOrderToFlow();
     }
     public void SetUnitSortingOrderToNormal()
     {
+        if(!HaveUnit)return;
         HaveUnit.SetUnitSortingOrderToNormal();
     }
     void EvaluatePioneersWhenUnitDie()

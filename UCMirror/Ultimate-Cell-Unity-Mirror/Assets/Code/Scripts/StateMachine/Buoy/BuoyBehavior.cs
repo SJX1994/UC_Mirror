@@ -108,6 +108,7 @@ public class BuoyBehavior : NetworkBehaviour
             if(!isLocalPlayer)return;
             Client_Behavior_OnMouseUp();
             Cmd_Reset();
+
         }
     }
 # endregion 数据关系
@@ -353,7 +354,7 @@ public class BuoyBehavior : NetworkBehaviour
         tsBuoyControled.tetrisBlockSimple.SuccessToCreat();
         tsBuoyControled.tetrisBlockSimple.Active();
         // 机制检测
-        TetrisBlockSimple tetrisBlockSimple = tsBuoyControled.TetrisBlockSimple;
+        TetrisBlockSimple tetrisBlockSimple = tsBuoyControled.tetrisBlockSimple;
         tetrisBlockSimple.BlocksCreator.Event_BlocksCounterInvoke();
         
         if(buoyInfo.Local())
@@ -439,6 +440,7 @@ public class BuoyBehavior : NetworkBehaviour
         if(buoyInfo.player_local == Player.Player1)
         {
             UserAction.Player1UserState = UserAction.State.CommandTheBattle_Buoy;
+
         }else if(buoyInfo.player_local == Player.Player2)
         {
             UserAction.Player2UserState = UserAction.State.CommandTheBattle_Buoy;
@@ -446,7 +448,14 @@ public class BuoyBehavior : NetworkBehaviour
         // 俄罗斯方块组 预示
             // tetrisBuoySimpleTemp = Instantiate(tsBuoyControled, transform.parent);
         Player whichPlayer = tsBuoyControled.TetrisBlockSimple.player;
-        Server_OnGameObjCreate_tetrisBuoySimpleTemp(tsBuoyControled.name.Replace("(Clone)",""),whichPlayer);
+
+        List<string> childTetrisSurvivedNames = new();
+        foreach(var childTetris in tsBuoyControled.ChildTetris)
+        {
+            if(!childTetris)continue;
+            childTetrisSurvivedNames.Add(childTetris.name);
+        }
+        Server_OnGameObjCreate_tetrisBuoySimpleTemp(tsBuoyControled.name.Replace("(Clone)",""),childTetrisSurvivedNames,whichPlayer);
         if(ServerLogic.Local_palayer != buoyInfo.player)return;
         Sound_Command_Zoom();
         
@@ -711,23 +720,47 @@ public class BuoyBehavior : NetworkBehaviour
         Reset();
     }
     [Server]
-    void Server_OnGameObjCreate_tetrisBuoySimpleTemp(string tetrominoeName,Player whichPlayer)
+    void Server_OnGameObjCreate_tetrisBuoySimpleTemp(string tetrominoeName,List<string> childTetrisSurvivedNames,Player whichPlayer)
     {
         // Debug.Log("Server_OnGameObjCreate_tetrisBuoySimpleTemp----");
         tetrisBuoySimpleTemp = Instantiate(NetworkManagerUC_PVP.spawnPrefabs.Find(prefab => prefab.name == tetrominoeName),transform.parent).GetComponent<TetrisBuoySimple>();
         tetrisBuoySimpleTemp.Server_Init_TetriUnits();
         tetrisBuoySimpleTemp.player = whichPlayer;
         tetrisBuoySimpleTemp.TetrisBlockSimple.Player = whichPlayer;
+        List<TetriBuoySimple> needRemoveTetris = new();
+        needRemoveTetris = tetrisBuoySimpleTemp.ChildTetris.FindAll(item => item == null || !childTetrisSurvivedNames.Contains(item.name));
+        for(int i = 0; i < needRemoveTetris.Count; i++)
+        {
+            
+            Debug.Log("needRemoveTetris[i].name" + needRemoveTetris[i].name);
+            if(!needRemoveTetris[i])continue;
+            TetriUnitSimple tetriUnitSimple = needRemoveTetris[i].gameObject.GetComponent<TetriUnitSimple>(); 
+            tetriUnitSimple.UnitTempDead();
+        }
         NetworkServer.Spawn(tetrisBuoySimpleTemp.gameObject);
-        Client_OnGameObjCreate_tetrisBuoySimpleTemp(tetrisBuoySimpleTemp.netId,whichPlayer);
+        
+       
+        Client_OnGameObjCreate_tetrisBuoySimpleTemp(tetrisBuoySimpleTemp.netId,childTetrisSurvivedNames,whichPlayer);
         Server_SetCorrect_tetrisBuoySimpleTemp();
     }
     [ClientRpc]
-    void Client_OnGameObjCreate_tetrisBuoySimpleTemp(uint tetrisBuoySimpleTempNetID,Player whichPlayerDragging)
+    void Client_OnGameObjCreate_tetrisBuoySimpleTemp(uint tetrisBuoySimpleTempNetID,List<string> childTetrisSurvivedNames,Player whichPlayerDragging)
     {
         
         if(!tetrisBuoySimpleTemp)tetrisBuoySimpleTemp = FindObjectsOfType<TetrisBuoySimple>().ToList().Find(item => item.netId == tetrisBuoySimpleTempNetID);
         tetrisBuoySimpleTemp.transform.parent = transform.parent;
+
+        List<TetriBuoySimple> needRemoveTetris = new();
+        needRemoveTetris = tetrisBuoySimpleTemp.ChildTetris.FindAll(item => item == null || !childTetrisSurvivedNames.Contains(item.name));
+        for(int i = 0; i < needRemoveTetris.Count; i++)
+        {
+            
+            Debug.Log("needRemoveTetris[i].name" + needRemoveTetris[i].name);
+            if(!needRemoveTetris[i])continue;
+            TetriUnitSimple tetriUnitSimple = needRemoveTetris[i].gameObject.GetComponent<TetriUnitSimple>(); 
+            tetriUnitSimple.UnitTempDead();
+        }
+
         if(whichPlayerDragging != ServerLogic.Local_palayer)return;
         buoyInfo.OnBuoyDrag?.Invoke();
         Invoke(nameof(Display_ShowForPlayerScreen),0.1f);
