@@ -43,16 +43,20 @@ public class IdelUI : NetworkBehaviour
     }
     public void Hide()
     {
-        foreach (var Info in BoxInfo)
-        {
-            // ChangeHideColorRecursive(Info.transform);
-        }
+        
+        // foreach (var Info in BoxInfo)
+        // {
+        //     // ChangeHideColorRecursive(Info.transform);
+        // }
         RectTransform rectTransform = transform.GetComponent<RectTransform>();
         Vector2 newPosition = new Vector2(-4.44f, rectTransform.anchoredPosition.y);
         rectTransform.anchoredPosition = newPosition;
         hiden = true;
         Button refalshButton = transform.Find("RefreshButton").GetComponent<Button>();
         refalshButton.interactable  = false;
+        refalshButton.gameObject.SetActive(false);
+        GameObject refalshButtonBase = transform.Find("RefreshButton_Base").gameObject;
+        refalshButtonBase.SetActive(false);
     }
     #endregion
 

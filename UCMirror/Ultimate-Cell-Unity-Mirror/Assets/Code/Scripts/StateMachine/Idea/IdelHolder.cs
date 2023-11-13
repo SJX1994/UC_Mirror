@@ -72,7 +72,6 @@ public class IdelHolder : NetworkBehaviour
             if(tetrominoe.player == player)continue;
             tetrominoe.DisPlayOnline(false); 
         }
-        
     }
     public bool Local()
     {

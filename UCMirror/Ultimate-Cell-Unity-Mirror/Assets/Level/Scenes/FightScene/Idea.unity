@@ -177,10 +177,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1410097429502208665, guid: 5c67d411d927e43449ba309cac340c1d,
+    - target: {fileID: 1401213177237535476, guid: 5c67d411d927e43449ba309cac340c1d,
         type: 3}
-      propertyPath: m_IsActive
-      value: 1
+      propertyPath: m_AnchoredPosition.x
+      value: -7.659973
+      objectReference: {fileID: 0}
+    - target: {fileID: 1401213177237535476, guid: 5c67d411d927e43449ba309cac340c1d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -42.9
       objectReference: {fileID: 0}
     - target: {fileID: 2668756216071858016, guid: 5c67d411d927e43449ba309cac340c1d,
         type: 3}
@@ -247,22 +252,7 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2701864879143248223, guid: 5c67d411d927e43449ba309cac340c1d,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -28.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5465089804142228572, guid: 5c67d411d927e43449ba309cac340c1d,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6237592307753500119, guid: 5c67d411d927e43449ba309cac340c1d,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6473054255737435707, guid: 5c67d411d927e43449ba309cac340c1d,
         type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -276,6 +266,11 @@ PrefabInstance:
         type: 3}
       propertyPath: sceneId
       value: 4034342780
+      objectReference: {fileID: 0}
+    - target: {fileID: 9140299456212091888, guid: 5c67d411d927e43449ba309cac340c1d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c67d411d927e43449ba309cac340c1d, type: 3}

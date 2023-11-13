@@ -107,7 +107,9 @@ public class AvatarUI_Main : NetworkBehaviour
         }else
         {
             if(!isServer)return;
-            Server_Init();
+            float localModeCreatDelay = 0.3f;
+            Invoke(nameof(Server_Init),localModeCreatDelay);
+            
         }
         
     }
@@ -118,7 +120,9 @@ public class AvatarUI_Main : NetworkBehaviour
         UIData.Player2MoraleAccumulation = 0;
         UIData.player1isAdditioning = false;
         UIData.player2isAdditioning = false;
-        ServerLogic.OnServerLogicStart += Init;
+        // ServerLogic.OnServerLogicStart += Init;
+        float localModeCreatDelay = 0.2f;
+        Invoke(nameof(Init),localModeCreatDelay);
         
     }
     void Init()
@@ -276,12 +280,16 @@ public class AvatarUI_Main : NetworkBehaviour
             player2AvatarSet = transform.Find("UI_Panel_Player2");
             if(!player2AvatarSet)return;
             player2AvatarSet.gameObject.SetActive(false);
+
+            ServerLogic.On_Local_palayer_ready -= HideOtherUI;
         }
-        if(ServerLogic.Local_palayer == Player.Player2)
+        else if(ServerLogic.Local_palayer == Player.Player2)
         {
             player1AvatarSet = transform.Find("UI_Panel_Player1");
             if(!player1AvatarSet)return;
             player1AvatarSet.gameObject.SetActive(false);
+
+            ServerLogic.On_Local_palayer_ready -= HideOtherUI;
         }
     }
     [ClientRpc]
