@@ -131,6 +131,7 @@ public class AvatarUI_Main : NetworkBehaviour
         UIData.OnPlayer2MoraleAccumulationMaxed += Event_MoraleAccumulationMaxed;
         UIData.Player1MoraleAccumulation = 0;
         UIData.Player2MoraleAccumulation = 0;
+        if(!BlocksCounter)return;
         BlocksCounter.OnPlayerNeedHelp_WeakAss += Event_WeakAssociationUI;
         BlocksCounter.OnPlayer_FullRows += Event_FullRowsUI;
         UnitData.OnUnitChainTransfer += Event_ChainTransfer;

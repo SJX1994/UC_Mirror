@@ -776,12 +776,18 @@ public class IdelBox : NetworkBehaviour,
         // 置空
         tetrominoe = null;
     }
-   
+    Vector3 ClientMouseOffest(Vector3 mousePos)
+    {
+        Vector3 player1MousePosition = mousePos + new Vector3(0f,0f,0);
+        Vector3 player2MousePosition = mousePos + new Vector3(0f,0f,0);
+        Vector3 mousePosition = player == Player.Player1 ? player1MousePosition : player == Player.Player2 ? player2MousePosition : Vector3.zero;
+        return mousePosition;
+    }
     [Command(requiresAuthority = false)]
     void Cmd_OnDrag(Vector3 mousePos_Temp)
     {
         //传输鼠标当前位置
-        Ray ray = Camera.main.ScreenPointToRay(mousePos_Temp);
+        Ray ray = Camera.main.ScreenPointToRay(ClientMouseOffest(mousePos_Temp));
         RaycastHit hit;
         bool hitBlock = Physics.Raycast(ray, out hit, Mathf.Infinity, blockTargetMask);
         if (!hitBlock)return;
